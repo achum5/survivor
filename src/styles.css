@@ -1,24 +1,26 @@
 /* ============================================================
    BACKYARD SURVIVOR WIKI — STYLES
-   Dark tribal aesthetic with earthy tones
+   Clean wiki / database reference style
    ============================================================ */
 
 :root {
-  --bg-primary: #0d0d0d;
-  --bg-secondary: #1a1a1a;
-  --bg-card: #222;
-  --bg-card-hover: #2a2a2a;
-  --text-primary: #f0e6d3;
-  --text-secondary: #a89a85;
-  --text-muted: #6b6050;
-  --accent: #d4a843;
-  --accent-glow: #d4a84355;
-  --danger: #c0392b;
-  --border: #333;
-  --font-display: "Cinzel", serif;
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --radius: 8px;
-  --radius-lg: 12px;
+  --bg: #fff;
+  --bg-light: #f6f6f6;
+  --bg-infobox: #f8f9fa;
+  --text: #202122;
+  --text-secondary: #54595d;
+  --text-muted: #72777d;
+  --link: #3366cc;
+  --link-hover: #5b4adb;
+  --border: #a2a9b1;
+  --border-light: #c8ccd1;
+  --border-table: #a2a9b1;
+  --accent: #36c;
+  --danger: #d33;
+  --highlight: #fef6e7;
+  --tribe-text: #fff;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
 }
 
 *,
@@ -29,16 +31,21 @@
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 14px;
 }
 
-body {
-  font-family: var(--font-body);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.6;
-  min-height: 100vh;
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 /* ─── App Shell ──────────────────────────────────────────── */
@@ -51,698 +58,542 @@ body {
 
 .main {
   flex: 1;
-  max-width: 1100px;
+  max-width: 960px;
   width: 100%;
   margin: 0 auto;
-  padding: 24px 20px 60px;
+  padding: 0 20px 40px;
 }
 
 /* ─── Navigation ─────────────────────────────────────────── */
 
 .nav {
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .nav-inner {
-  max-width: 1100px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 60px;
-  gap: 16px;
+  height: 44px;
+  gap: 24px;
 }
 
 .logo {
-  background: none;
-  border: none;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--text-primary);
-  flex-shrink: 0;
+  gap: 6px;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .logo-icon {
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .logo-text {
-  font-family: var(--font-display);
-  font-size: 16px;
+  font-family: var(--font-serif);
+  font-size: 17px;
   font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.logo:hover {
+  text-decoration: none;
 }
 
 .nav-links {
   display: flex;
-  gap: 4px;
+  gap: 0;
   overflow-x: auto;
 }
 
 .nav-links a {
-  background: none;
-  border: none;
   color: var(--text-secondary);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 14px;
-  border-radius: var(--radius);
-  cursor: pointer;
+  font-size: 13px;
+  padding: 10px 12px;
   white-space: nowrap;
-  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
   text-decoration: none;
 }
 
 .nav-links a:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  background: var(--bg-light);
+  text-decoration: none;
 }
 
 .nav-links a.active {
-  color: var(--accent);
-  background: rgba(212, 168, 67, 0.1);
+  color: var(--text);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
 }
 
-/* ─── Home / Hero ────────────────────────────────────────── */
+/* ─── Home ───────────────────────────────────────────────── */
 
-.hero {
-  text-align: center;
-  padding: 60px 0 40px;
+.home {
+  padding-top: 24px;
 }
 
-.hero h1 {
-  font-family: var(--font-display);
-  font-size: 42px;
-  font-weight: 900;
-  color: var(--accent);
+.home-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
   margin-bottom: 12px;
-  text-shadow: 0 0 40px var(--accent-glow);
 }
 
-.hero p {
+.home-header h1 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 400;
+}
+
+.home-intro {
   color: var(--text-secondary);
-  font-size: 18px;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.season-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 10px;
-}
-
-.season-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  cursor: pointer;
-  transition: all 0.25s;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
-.season-card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-}
-
-.season-card.coming-soon {
-  opacity: 0.5;
-  cursor: default;
-}
-
-.season-card.coming-soon:hover {
-  transform: none;
-  border-color: var(--border);
-  box-shadow: none;
-  background: var(--bg-card);
-}
-
-.season-card-header h2 {
-  font-family: var(--font-display);
-  font-size: 22px;
-  color: var(--accent);
-  margin-bottom: 4px;
-}
-
-.season-subtitle {
-  color: var(--text-muted);
+  margin-bottom: 20px;
   font-size: 14px;
-  font-style: italic;
 }
 
-.season-card-stats {
-  display: flex;
-  gap: 16px;
-  margin-top: 16px;
-  color: var(--text-secondary);
+/* Season table on home */
+.season-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.season-table th {
+  background: var(--bg-infobox);
+  text-align: left;
+  padding: 6px 10px;
+  border: 1px solid var(--border-table);
+  font-weight: 600;
   font-size: 13px;
 }
 
-.season-card-tribes {
-  display: flex;
-  gap: 8px;
-  margin-top: 14px;
+.season-table td {
+  padding: 6px 10px;
+  border: 1px solid var(--border-table);
+  vertical-align: top;
 }
 
-.coming-soon-text {
+.season-table tr:hover td {
+  background: var(--bg-light);
+}
+
+.season-table .coming-soon td {
   color: var(--text-muted);
   font-style: italic;
-  margin-top: 16px;
 }
 
-/* ─── Tribe Badge ────────────────────────────────────────── */
-
-.tribe-badge {
+.tribe-dot {
   display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: 0.3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
 }
 
-.tribe-badge.small {
-  padding: 2px 8px;
-  font-size: 11px;
-}
-
-/* ─── Season Sub-Nav ─────────────────────────────────────── */
+/* ─── Season Sub-Nav (tabs) ──────────────────────────────── */
 
 .season-nav {
   display: flex;
-  gap: 4px;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
+  gap: 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .season-nav a {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s;
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-bottom: 2px solid transparent;
   text-decoration: none;
 }
 
 .season-nav a:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  background: var(--bg-light);
+  text-decoration: none;
 }
 
 .season-nav a.active {
-  color: var(--accent);
-  background: rgba(212, 168, 67, 0.12);
+  color: var(--text);
+  border-bottom-color: var(--accent);
   font-weight: 600;
+  background: var(--bg);
 }
 
-/* ─── Avatar ─────────────────────────────────────────────── */
+/* ─── Page Headings (wiki style) ─────────────────────────── */
 
-.avatar {
-  border-radius: 50%;
+.page-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 400;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  margin: 16px 0 12px;
+}
+
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 2px;
+  margin: 24px 0 10px;
+}
+
+.sub-heading {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+
+/* ─── Infobox (sidebar on overview) ──────────────────────── */
+
+.overview-layout {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 700;
-  font-family: var(--font-display);
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+.overview-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.infobox {
+  width: 260px;
   flex-shrink: 0;
-  text-transform: uppercase;
+  border: 1px solid var(--border-table);
+  background: var(--bg-infobox);
+  font-size: 13px;
 }
 
-/* ─── Overview ───────────────────────────────────────────── */
-
-.overview-header h1 {
-  font-family: var(--font-display);
-  font-size: 32px;
-  color: var(--accent);
-  margin-bottom: 12px;
+.infobox-title {
+  background: var(--accent);
+  color: #fff;
+  text-align: center;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 15px;
 }
+
+.infobox table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.infobox th,
+.infobox td {
+  padding: 5px 10px;
+  border-top: 1px solid var(--border-light);
+  vertical-align: top;
+  text-align: left;
+}
+
+.infobox th {
+  background: var(--bg-light);
+  font-weight: 600;
+  white-space: nowrap;
+  width: 40%;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.infobox .infobox-section {
+  background: var(--bg-light);
+  text-align: center;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-top: 1px solid var(--border-light);
+  font-size: 13px;
+}
+
+/* ─── Tribe badges (small inline) ────────────────────────── */
+
+.tribe-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tribe-text);
+}
+
+.tribe-badge.small {
+  padding: 1px 6px;
+  font-size: 11px;
+}
+
+/* ─── Overview page ──────────────────────────────────────── */
 
 .overview-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
   color: var(--text-secondary);
   font-size: 14px;
-  margin-bottom: 32px;
-}
-
-.overview-highlights {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.highlight-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  text-align: center;
-}
-
-.highlight-card.winner {
-  border-color: var(--accent);
-  background: linear-gradient(135deg, var(--bg-card), rgba(212, 168, 67, 0.08));
-}
-
-.highlight-label {
-  display: block;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-}
-
-.highlight-value {
-  font-family: var(--font-display);
-  font-size: 20px;
-  color: var(--text-primary);
-  font-weight: 700;
-}
-
-.highlight-card.winner .highlight-value {
-  color: var(--accent);
-}
-
-.overview h2 {
-  font-family: var(--font-display);
-  font-size: 22px;
-  color: var(--accent);
-  margin: 32px 0 16px;
-}
-
-/* ─── Elimination Order ──────────────────────────────────── */
-
-.elimination-order {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.elim-slot {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px 14px;
-  min-width: 200px;
-}
-
-.elim-name {
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.elim-place {
-  color: var(--text-muted);
-  font-size: 12px;
-  margin-left: auto;
-}
-
-.jury-tag {
-  background: var(--accent);
-  color: #000;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* ─── Tribes Section ─────────────────────────────────────── */
-
-.tribes-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.tribe-block {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-}
-
-.tribe-block h3 {
-  font-family: var(--font-display);
-  font-size: 18px;
-  margin-bottom: 12px;
-}
-
-.tribe-members {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.tribe-member {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-}
-
-/* ─── Cast ───────────────────────────────────────────────── */
-
-.cast h1 {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--accent);
-  margin-bottom: 24px;
-}
-
-.cast-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 14px;
-}
-
-.cast-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 18px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.cast-card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--accent);
-  transform: translateY(-1px);
-}
-
-.cast-card-info h3 {
-  font-size: 15px;
-  margin-bottom: 4px;
-}
-
-.cast-placement {
-  display: block;
-  color: var(--text-muted);
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-/* ─── Player Modal ───────────────────────────────────────── */
-
-.player-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-  padding: 20px;
-}
-
-.player-modal {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 32px;
-  max-width: 480px;
-  width: 100%;
-  position: relative;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-close {
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 20px;
-  cursor: pointer;
-  padding: 4px;
-}
-
-.modal-close:hover {
-  color: var(--text-primary);
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
   margin-bottom: 16px;
 }
 
-.modal-header h2 {
-  font-family: var(--font-display);
-  font-size: 24px;
-  color: var(--text-primary);
-  margin-bottom: 6px;
+.overview-meta span {
+  margin-right: 16px;
 }
 
-.modal-bio {
-  color: var(--text-secondary);
-  font-size: 14px;
-  margin-bottom: 20px;
-  line-height: 1.6;
+/* Elimination table */
+.elim-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 16px;
 }
 
-.modal-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-
-.modal-stats > div {
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  padding: 12px;
-}
-
-.stat-label {
-  display: block;
-  color: var(--text-muted);
-  font-size: 11px;
+.elim-table th {
+  background: var(--bg-infobox);
+  text-align: left;
+  padding: 5px 10px;
+  border: 1px solid var(--border-table);
   font-weight: 600;
+  font-size: 12px;
+}
+
+.elim-table td {
+  padding: 4px 10px;
+  border: 1px solid var(--border-table);
+}
+
+.elim-table .winner-row td {
+  background: var(--highlight);
+  font-weight: 600;
+}
+
+.jury-tag {
+  background: #555;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 2px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+}
+
+/* Tribe listing */
+.tribe-section {
+  margin-bottom: 16px;
+}
+
+.tribe-name {
+  font-weight: 600;
+  font-size: 14px;
   margin-bottom: 4px;
 }
 
-.stat-value {
-  font-size: 16px;
+.tribe-member-list {
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding-left: 18px;
+  margin: 0;
+}
+
+.tribe-member-list li {
+  margin-bottom: 2px;
+}
+
+/* ─── Cast page ──────────────────────────────────────────── */
+
+.cast-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.cast-table th {
+  background: var(--bg-infobox);
+  text-align: left;
+  padding: 5px 10px;
+  border: 1px solid var(--border-table);
   font-weight: 600;
-  color: var(--text-primary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.cast-table td {
+  padding: 5px 10px;
+  border: 1px solid var(--border-table);
+}
+
+.cast-table tr:hover td {
+  background: var(--bg-light);
+}
+
+.cast-table .player-link {
+  cursor: pointer;
+  color: var(--link);
+}
+
+.cast-table .player-link:hover {
+  text-decoration: underline;
+}
+
+/* Player detail (inline expand, not modal) */
+.player-detail {
+  background: var(--bg-infobox);
+  border: 1px solid var(--border-table);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.player-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.player-detail h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.player-detail-close {
+  background: none;
+  border: 1px solid var(--border-light);
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.player-detail-close:hover {
+  background: var(--bg-light);
+}
+
+.player-detail-bio {
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.player-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.player-stat {
+  font-size: 13px;
+}
+
+.player-stat-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.player-stat-value {
+  font-weight: 600;
 }
 
 /* ─── Voting History ─────────────────────────────────────── */
 
-.voting h1 {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--accent);
-  margin-bottom: 24px;
-}
-
-.tribal-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+.tribal-section {
   margin-bottom: 20px;
-  overflow: hidden;
 }
 
-.tribal-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.tribal-header h3 {
-  font-family: var(--font-display);
-  font-size: 16px;
-  color: var(--text-primary);
+.tribal-heading {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
 .tribal-note {
-  color: var(--accent);
+  color: var(--text-muted);
   font-size: 12px;
   font-style: italic;
-}
-
-.vote-table-wrapper {
-  overflow-x: auto;
+  margin-bottom: 6px;
 }
 
 .vote-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13px;
+  margin-bottom: 4px;
 }
 
 .vote-table th {
+  background: var(--bg-infobox);
   text-align: left;
-  padding: 10px 20px;
-  color: var(--text-muted);
-  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-table);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid var(--border);
+  font-size: 12px;
 }
 
 .vote-table td {
-  padding: 10px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.vote-table tr.eliminated {
-  background: rgba(192, 57, 43, 0.1);
+  padding: 4px 10px;
+  border: 1px solid var(--border-table);
 }
 
 .vote-table tr.eliminated td {
+  background: #fce4e4;
   color: var(--danger);
-}
-
-.voter-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.vote-target {
-  font-weight: 500;
 }
 
 .tribal-result {
-  padding: 12px 20px;
-  border-top: 1px solid var(--border);
-  font-size: 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
 }
 
-.eliminated-label {
+.tribal-result strong {
   color: var(--danger);
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 /* ─── Challenges ─────────────────────────────────────────── */
 
-.challenges h1 {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--accent);
-  margin-bottom: 24px;
+.challenge-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 16px;
 }
 
-.challenge-episode {
-  margin-bottom: 28px;
-}
-
-.challenge-episode h3 {
-  font-family: var(--font-display);
-  font-size: 18px;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-}
-
-.challenge-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
-}
-
-.challenge-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-}
-
-.challenge-type-badge {
+.challenge-table th {
+  background: var(--bg-infobox);
+  text-align: left;
+  padding: 5px 10px;
+  border: 1px solid var(--border-table);
+  font-weight: 600;
   font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
 }
 
-.challenge-card h4 {
-  font-family: var(--font-display);
-  font-size: 16px;
-  color: var(--accent);
-  margin-bottom: 6px;
+.challenge-table td {
+  padding: 5px 10px;
+  border: 1px solid var(--border-table);
+  vertical-align: top;
 }
 
-.challenge-card p {
-  color: var(--text-secondary);
-  font-size: 13px;
-  margin-bottom: 12px;
+.challenge-table tr:hover td {
+  background: var(--bg-light);
 }
 
-.challenge-winner {
-  font-size: 13px;
-  color: var(--text-primary);
-}
-
-.winner-label {
-  color: var(--text-muted);
-  font-weight: 600;
+.challenge-type {
   font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 /* ─── Empty State ────────────────────────────────────────── */
 
 .empty-state {
-  text-align: center;
   color: var(--text-muted);
-  padding: 60px 20px;
-  font-size: 16px;
+  padding: 40px 20px;
   font-style: italic;
 }
 
@@ -750,52 +601,37 @@ body {
 
 .footer {
   text-align: center;
-  padding: 24px 20px;
+  padding: 16px 20px;
   color: var(--text-muted);
   font-size: 12px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-light);
+  margin-top: 20px;
 }
 
 /* ─── Responsive ─────────────────────────────────────────── */
 
-@media (max-width: 768px) {
-  .hero h1 {
-    font-size: 28px;
+@media (max-width: 700px) {
+  .overview-layout {
+    flex-direction: column-reverse;
   }
 
-  .hero p {
-    font-size: 15px;
+  .infobox {
+    width: 100%;
   }
 
   .nav-inner {
     flex-direction: column;
     height: auto;
-    padding: 12px 16px;
-    gap: 8px;
+    padding: 8px 16px;
+    gap: 4px;
+    align-items: flex-start;
   }
 
   .nav-links {
     width: 100%;
-    justify-content: center;
   }
 
-  .overview-header h1 {
-    font-size: 24px;
-  }
-
-  .overview-meta {
-    gap: 12px;
-  }
-
-  .elimination-order {
-    flex-direction: column;
-  }
-
-  .elim-slot {
-    min-width: unset;
-  }
-
-  .modal-stats {
-    grid-template-columns: 1fr;
+  .player-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
