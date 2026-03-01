@@ -31,180 +31,206 @@ export const SEASONS = [
     episodes: [
       { eid: "s1_e01", number: 1, title: "Pilot" },
       { eid: "s1_e02", number: 2, title: "Episode 2" },
-      { eid: "s1_e03", number: 3, title: "Episode 3" },
+      { eid: "s1_e03", number: 3, title: "The Swap" },
       { eid: "s1_e04", number: 4, title: "Episode 4" },
       { eid: "s1_e05", number: 5, title: "Episode 5" },
       { eid: "s1_e06", number: 6, title: "The Merge" },
       { eid: "s1_e07", number: 7, title: "Episode 7" },
       { eid: "s1_e08", number: 8, title: "Episode 8" },
       { eid: "s1_e09", number: 9, title: "Episode 9" },
-      { eid: "s1_e10", number: 10, title: "Finale" },
+      { eid: "s1_e10", number: 10, title: "Episode 10" },
+      { eid: "s1_e11", number: 11, title: "Finale" },
     ],
 
     tribes: [
-      { tid: "s1_t1", name: "Tribe A", color: "#e74c3c" },
-      { tid: "s1_t2", name: "Tribe B", color: "#3498db" },
+      { tid: "s1_t1", name: "Tribe A", color: "#555555" },
+      { tid: "s1_t2", name: "Tribe B", color: "#6a5acd" },
     ],
 
     cast: [
-      { pid: "s1_p01", name: "Player 1",  tid: "s1_t1", age: 18, hometown: "Your City", bio: "The winner of Season 1.",       placement: 1,  juryMember: false, votesAgainst: 2, challengeWins: 3, daysLasted: 14 },
-      { pid: "s1_p02", name: "Player 2",  tid: "s1_t2", age: 17, hometown: "Your City", bio: "Runner-up of Season 1.",        placement: 2,  juryMember: false, votesAgainst: 4, challengeWins: 2, daysLasted: 14 },
-      { pid: "s1_p03", name: "Player 3",  tid: "s1_t1", age: 18, hometown: "Your City", bio: "Fan favorite of Season 1.",     placement: 3,  juryMember: true,  votesAgainst: 3, challengeWins: 1, daysLasted: 12 },
-      { pid: "s1_p04", name: "Player 4",  tid: "s1_t2", age: 17, hometown: "Your City", bio: "A strong competitor.",           placement: 4,  juryMember: true,  votesAgainst: 5, challengeWins: 2, daysLasted: 11 },
-      { pid: "s1_p05", name: "Player 5",  tid: "s1_t1", age: 16, hometown: "Your City", bio: "Known for big moves.",           placement: 5,  juryMember: true,  votesAgainst: 3, challengeWins: 1, daysLasted: 10 },
-      { pid: "s1_p06", name: "Player 6",  tid: "s1_t2", age: 18, hometown: "Your City", bio: "A social threat.",               placement: 6,  juryMember: true,  votesAgainst: 4, challengeWins: 0, daysLasted: 9 },
-      { pid: "s1_p07", name: "Player 7",  tid: "s1_t1", age: 17, hometown: "Your City", bio: "The underdog story.",            placement: 7,  juryMember: true,  votesAgainst: 6, challengeWins: 1, daysLasted: 8 },
-      { pid: "s1_p08", name: "Player 8",  tid: "s1_t2", age: 16, hometown: "Your City", bio: "A strategic player.",            placement: 8,  juryMember: true,  votesAgainst: 4, challengeWins: 0, daysLasted: 7 },
-      { pid: "s1_p09", name: "Player 9",  tid: "s1_t1", age: 18, hometown: "Your City", bio: "Early merge boot.",              placement: 9,  juryMember: true,  votesAgainst: 5, challengeWins: 1, daysLasted: 6 },
-      { pid: "s1_p10", name: "Player 10", tid: "s1_t2", age: 17, hometown: "Your City", bio: "Pre-merge player.",              placement: 10, juryMember: false, votesAgainst: 7, challengeWins: 0, daysLasted: 5 },
-      { pid: "s1_p11", name: "Player 11", tid: "s1_t1", age: 16, hometown: "Your City", bio: "Pre-merge player.",              placement: 11, juryMember: false, votesAgainst: 5, challengeWins: 0, daysLasted: 4 },
-      { pid: "s1_p12", name: "Player 12", tid: "s1_t2", age: 18, hometown: "Your City", bio: "Early elimination.",             placement: 12, juryMember: false, votesAgainst: 8, challengeWins: 0, daysLasted: 3 },
-      { pid: "s1_p13", name: "Player 13", tid: "s1_t1", age: 17, hometown: "Your City", bio: "Second boot.",                   placement: 13, juryMember: false, votesAgainst: 6, challengeWins: 0, daysLasted: 2 },
-      { pid: "s1_p14", name: "Player 14", tid: "s1_t2", age: 16, hometown: "Your City", bio: "First boot of the season.",      placement: 14, juryMember: false, votesAgainst: 9, challengeWins: 0, daysLasted: 1 },
+      { pid: "s1_p01", name: "Jace",      tid: "s1_t2", age: 18, hometown: "Your City", bio: "The winner of Season 1. Played two hidden immunity idols to survive post-merge votes and won the Final Tribal Council 8-1-0.", placement: 1,  juryMember: false, votesAgainst: 4, challengeWins: 3, daysLasted: 14 },
+      { pid: "s1_p02", name: "Olivia",    tid: "s1_t1", age: 17, hometown: "Your City", bio: "Runner-up of Season 1. Received one jury vote from Dom at Final Tribal Council.",                                              placement: 2,  juryMember: false, votesAgainst: 3, challengeWins: 2, daysLasted: 14 },
+      { pid: "s1_p03", name: "Meredith",  tid: "s1_t1", age: 18, hometown: "Your City", bio: "Finalist of Season 1. Made it to the end but received zero jury votes.",                                                       placement: 3,  juryMember: false, votesAgainst: 5, challengeWins: 1, daysLasted: 14 },
+      { pid: "s1_p04", name: "Caroline",  tid: "s1_t2", age: 17, hometown: "Your City", bio: "Eliminated without a vote due to a twist or advantage. A strong strategic player who made it deep into the merge.",            placement: 4,  juryMember: true,  votesAgainst: 1, challengeWins: 0, daysLasted: 13 },
+      { pid: "s1_p05", name: "Abdul",     tid: "s1_t2", age: 16, hometown: "Your City", bio: "Voted out 3-2 at the final five. Played a hidden immunity idol to survive the Madison tribal.",                                placement: 5,  juryMember: true,  votesAgainst: 8, challengeWins: 1, daysLasted: 13 },
+      { pid: "s1_p06", name: "Jacob",     tid: "s1_t1", age: 18, hometown: "Your City", bio: "Voted out 2-4 (after idol play). Targeted Jace but was blindsided when Jace played an idol.",                                  placement: 6,  juryMember: true,  votesAgainst: 2, challengeWins: 0, daysLasted: 12 },
+      { pid: "s1_p07", name: "Madison",   tid: "s1_t1", age: 17, hometown: "Your City", bio: "Voted out 2-5 (after idol play). Five votes on Abdul were nullified by an idol, leaving Madison eliminated with just two.",    placement: 7,  juryMember: true,  votesAgainst: 4, challengeWins: 1, daysLasted: 11 },
+      { pid: "s1_p08", name: "Kelsey",    tid: "s1_t2", age: 16, hometown: "Your City", bio: "Voted out 5-3 at the merge. Targeted Meredith but the majority sent her home.",                                                placement: 8,  juryMember: true,  votesAgainst: 5, challengeWins: 0, daysLasted: 10 },
+      { pid: "s1_p09", name: "Savannah",  tid: "s1_t2", age: 18, hometown: "Your City", bio: "First merge boot, voted out 8-1. The lone vote for Meredith wasn't enough to save her.",                                       placement: 9,  juryMember: true,  votesAgainst: 8, challengeWins: 0, daysLasted: 9 },
+      { pid: "s1_p10", name: "Dom",       tid: "s1_t1", age: 17, hometown: "Your City", bio: "Voted out 2-1 during the switched tribes phase. Cast the lone jury vote for Olivia at Final Tribal Council.",                  placement: 10, juryMember: true,  votesAgainst: 3, challengeWins: 0, daysLasted: 8 },
+      { pid: "s1_p11", name: "Clara",     tid: "s1_t2", age: 16, hometown: "Your City", bio: "Voted out 3-1 during the switched tribes phase.",                                                                              placement: 11, juryMember: true,  votesAgainst: 3, challengeWins: 0, daysLasted: 7 },
+      { pid: "s1_p12", name: "Sean",      tid: "s1_t2", age: 18, hometown: "Your City", bio: "Eliminated after a 2-2 tie and 2-0 revote during the swap episode.",                                                           placement: 12, juryMember: true,  votesAgainst: 4, challengeWins: 0, daysLasted: 6 },
+      { pid: "s1_p13", name: "Marissa",   tid: "s1_t1", age: 17, hometown: "Your City", bio: "Second boot of the season, voted out 5-1. Pre-jury.",                                                                          placement: 13, juryMember: false, votesAgainst: 5, challengeWins: 0, daysLasted: 5 },
+      { pid: "s1_p14", name: "Sam",       tid: "s1_t1", age: 16, hometown: "Your City", bio: "First boot of the season, voted out 6-1. Pre-jury.",                                                                           placement: 14, juryMember: false, votesAgainst: 6, challengeWins: 0, daysLasted: 3 },
     ],
 
     votingHistory: [
+      // ── Original Tribes Phase ──
       {
-        tcid: "s1_tc01", eid: "s1_e01", episode: 1, tid: "s1_t2", notes: "",
+        tcid: "s1_tc01", eid: "s1_e01", episode: 1, tid: "s1_t1", notes: "Vote: 6-1. Sam voted out.",
         votes: [
-          { vid: "s1_tc01_v01", voterPid: "s1_p14", votedForPid: "s1_p01" },
-          { vid: "s1_tc01_v02", voterPid: "s1_p12", votedForPid: "s1_p14" },
-          { vid: "s1_tc01_v03", voterPid: "s1_p10", votedForPid: "s1_p14" },
-          { vid: "s1_tc01_v04", voterPid: "s1_p08", votedForPid: "s1_p14" },
-          { vid: "s1_tc01_v05", voterPid: "s1_p06", votedForPid: "s1_p14" },
-          { vid: "s1_tc01_v06", voterPid: "s1_p04", votedForPid: "s1_p14" },
-          { vid: "s1_tc01_v07", voterPid: "s1_p02", votedForPid: "s1_p14" },
+          { vid: "s1_tc01_v01", voterPid: "s1_p14", votedForPid: "s1_p03" }, // Sam → Meredith
+          { vid: "s1_tc01_v02", voterPid: "s1_p13", votedForPid: "s1_p14" }, // Marissa → Sam
+          { vid: "s1_tc01_v03", voterPid: "s1_p02", votedForPid: "s1_p14" }, // Olivia → Sam
+          { vid: "s1_tc01_v04", voterPid: "s1_p03", votedForPid: "s1_p14" }, // Meredith → Sam
+          { vid: "s1_tc01_v05", voterPid: "s1_p06", votedForPid: "s1_p14" }, // Jacob → Sam
+          { vid: "s1_tc01_v06", voterPid: "s1_p07", votedForPid: "s1_p14" }, // Madison → Sam
+          { vid: "s1_tc01_v07", voterPid: "s1_p10", votedForPid: "s1_p14" }, // Dom → Sam
         ],
         eliminatedPid: "s1_p14",
       },
       {
-        tcid: "s1_tc02", eid: "s1_e02", episode: 2, tid: "s1_t1", notes: "",
+        tcid: "s1_tc02", eid: "s1_e02", episode: 2, tid: "s1_t1", notes: "Vote: 5-1. Marissa voted out.",
         votes: [
-          { vid: "s1_tc02_v01", voterPid: "s1_p13", votedForPid: "s1_p05" },
-          { vid: "s1_tc02_v02", voterPid: "s1_p11", votedForPid: "s1_p13" },
-          { vid: "s1_tc02_v03", voterPid: "s1_p09", votedForPid: "s1_p13" },
-          { vid: "s1_tc02_v04", voterPid: "s1_p07", votedForPid: "s1_p13" },
-          { vid: "s1_tc02_v05", voterPid: "s1_p05", votedForPid: "s1_p13" },
-          { vid: "s1_tc02_v06", voterPid: "s1_p03", votedForPid: "s1_p13" },
-          { vid: "s1_tc02_v07", voterPid: "s1_p01", votedForPid: "s1_p13" },
+          { vid: "s1_tc02_v01", voterPid: "s1_p13", votedForPid: "s1_p02" }, // Marissa → Olivia
+          { vid: "s1_tc02_v02", voterPid: "s1_p02", votedForPid: "s1_p13" }, // Olivia → Marissa
+          { vid: "s1_tc02_v03", voterPid: "s1_p03", votedForPid: "s1_p13" }, // Meredith → Marissa
+          { vid: "s1_tc02_v04", voterPid: "s1_p06", votedForPid: "s1_p13" }, // Jacob → Marissa
+          { vid: "s1_tc02_v05", voterPid: "s1_p07", votedForPid: "s1_p13" }, // Madison → Marissa
+          { vid: "s1_tc02_v06", voterPid: "s1_p10", votedForPid: "s1_p13" }, // Dom → Marissa
         ],
         eliminatedPid: "s1_p13",
       },
+      // ── Tribe Swap Phase ──
       {
-        tcid: "s1_tc03", eid: "s1_e03", episode: 3, tid: "s1_t2", notes: "",
+        tcid: "s1_tc03", eid: "s1_e03", episode: 3, tid: null, notes: "Tribe swap. Initial vote: 2-2 tie (Sean vs Madison). Swapped tribe: Jace, Olivia, Madison, Sean.",
         votes: [
-          { vid: "s1_tc03_v01", voterPid: "s1_p12", votedForPid: "s1_p10" },
-          { vid: "s1_tc03_v02", voterPid: "s1_p10", votedForPid: "s1_p12" },
-          { vid: "s1_tc03_v03", voterPid: "s1_p08", votedForPid: "s1_p12" },
-          { vid: "s1_tc03_v04", voterPid: "s1_p06", votedForPid: "s1_p12" },
-          { vid: "s1_tc03_v05", voterPid: "s1_p04", votedForPid: "s1_p12" },
-          { vid: "s1_tc03_v06", voterPid: "s1_p02", votedForPid: "s1_p12" },
+          { vid: "s1_tc03_v01", voterPid: "s1_p01", votedForPid: "s1_p07" }, // Jace → Madison
+          { vid: "s1_tc03_v02", voterPid: "s1_p02", votedForPid: "s1_p12" }, // Olivia → Sean
+          { vid: "s1_tc03_v03", voterPid: "s1_p07", votedForPid: "s1_p12" }, // Madison → Sean
+          { vid: "s1_tc03_v04", voterPid: "s1_p12", votedForPid: "s1_p07" }, // Sean → Madison
+        ],
+        eliminatedPid: null,
+      },
+      {
+        tcid: "s1_tc04", eid: "s1_e03", episode: 3, tid: null, notes: "Revote: 2-0. Sean eliminated. Only non-tied players (Jace, Olivia) vote.",
+        votes: [
+          { vid: "s1_tc04_v01", voterPid: "s1_p01", votedForPid: "s1_p12" }, // Jace → Sean
+          { vid: "s1_tc04_v02", voterPid: "s1_p02", votedForPid: "s1_p12" }, // Olivia → Sean
         ],
         eliminatedPid: "s1_p12",
       },
       {
-        tcid: "s1_tc04", eid: "s1_e04", episode: 4, tid: "s1_t1", notes: "",
+        tcid: "s1_tc05", eid: "s1_e04", episode: 4, tid: null, notes: "Switched tribes. Vote: 3-1. Clara voted out. Swapped tribe: Caroline, Abdul, Clara, Dom.",
         votes: [
-          { vid: "s1_tc04_v01", voterPid: "s1_p11", votedForPid: "s1_p09" },
-          { vid: "s1_tc04_v02", voterPid: "s1_p09", votedForPid: "s1_p11" },
-          { vid: "s1_tc04_v03", voterPid: "s1_p07", votedForPid: "s1_p11" },
-          { vid: "s1_tc04_v04", voterPid: "s1_p05", votedForPid: "s1_p11" },
-          { vid: "s1_tc04_v05", voterPid: "s1_p03", votedForPid: "s1_p11" },
-          { vid: "s1_tc04_v06", voterPid: "s1_p01", votedForPid: "s1_p11" },
+          { vid: "s1_tc05_v01", voterPid: "s1_p04", votedForPid: "s1_p11" }, // Caroline → Clara
+          { vid: "s1_tc05_v02", voterPid: "s1_p05", votedForPid: "s1_p11" }, // Abdul → Clara
+          { vid: "s1_tc05_v03", voterPid: "s1_p11", votedForPid: "s1_p10" }, // Clara → Dom
+          { vid: "s1_tc05_v04", voterPid: "s1_p10", votedForPid: "s1_p11" }, // Dom → Clara
         ],
         eliminatedPid: "s1_p11",
       },
       {
-        tcid: "s1_tc05", eid: "s1_e05", episode: 5, tid: "s1_t2", notes: "Last pre-merge tribal.",
+        tcid: "s1_tc06", eid: "s1_e05", episode: 5, tid: null, notes: "Switched tribes. Vote: 2-1. Dom voted out. Last pre-merge tribal.",
         votes: [
-          { vid: "s1_tc05_v01", voterPid: "s1_p10", votedForPid: "s1_p08" },
-          { vid: "s1_tc05_v02", voterPid: "s1_p08", votedForPid: "s1_p10" },
-          { vid: "s1_tc05_v03", voterPid: "s1_p06", votedForPid: "s1_p10" },
-          { vid: "s1_tc05_v04", voterPid: "s1_p04", votedForPid: "s1_p10" },
-          { vid: "s1_tc05_v05", voterPid: "s1_p02", votedForPid: "s1_p10" },
+          { vid: "s1_tc06_v01", voterPid: "s1_p04", votedForPid: "s1_p10" }, // Caroline → Dom
+          { vid: "s1_tc06_v02", voterPid: "s1_p05", votedForPid: "s1_p10" }, // Abdul → Dom
+          { vid: "s1_tc06_v03", voterPid: "s1_p10", votedForPid: "s1_p04" }, // Dom → Caroline
         ],
         eliminatedPid: "s1_p10",
       },
+      // ── Merged Tribe Phase ──
       {
-        tcid: "s1_tc06", eid: "s1_e06", episode: 6, tid: null, notes: "Merge episode.",
+        tcid: "s1_tc07", eid: "s1_e06", episode: 6, tid: null, notes: "Merge episode. Vote: 8-1. Savannah voted out (first merge boot).",
         votes: [
-          { vid: "s1_tc06_v01", voterPid: "s1_p09", votedForPid: "s1_p04" },
-          { vid: "s1_tc06_v02", voterPid: "s1_p08", votedForPid: "s1_p09" },
-          { vid: "s1_tc06_v03", voterPid: "s1_p07", votedForPid: "s1_p09" },
-          { vid: "s1_tc06_v04", voterPid: "s1_p06", votedForPid: "s1_p09" },
-          { vid: "s1_tc06_v05", voterPid: "s1_p05", votedForPid: "s1_p09" },
-          { vid: "s1_tc06_v06", voterPid: "s1_p04", votedForPid: "s1_p09" },
-          { vid: "s1_tc06_v07", voterPid: "s1_p03", votedForPid: "s1_p04" },
-          { vid: "s1_tc06_v08", voterPid: "s1_p02", votedForPid: "s1_p09" },
-          { vid: "s1_tc06_v09", voterPid: "s1_p01", votedForPid: "s1_p09" },
+          { vid: "s1_tc07_v01", voterPid: "s1_p01", votedForPid: "s1_p09" }, // Jace → Savannah
+          { vid: "s1_tc07_v02", voterPid: "s1_p02", votedForPid: "s1_p09" }, // Olivia → Savannah
+          { vid: "s1_tc07_v03", voterPid: "s1_p03", votedForPid: "s1_p09" }, // Meredith → Savannah
+          { vid: "s1_tc07_v04", voterPid: "s1_p04", votedForPid: "s1_p09" }, // Caroline → Savannah
+          { vid: "s1_tc07_v05", voterPid: "s1_p05", votedForPid: "s1_p09" }, // Abdul → Savannah
+          { vid: "s1_tc07_v06", voterPid: "s1_p06", votedForPid: "s1_p09" }, // Jacob → Savannah
+          { vid: "s1_tc07_v07", voterPid: "s1_p07", votedForPid: "s1_p09" }, // Madison → Savannah
+          { vid: "s1_tc07_v08", voterPid: "s1_p08", votedForPid: "s1_p09" }, // Kelsey → Savannah
+          { vid: "s1_tc07_v09", voterPid: "s1_p09", votedForPid: "s1_p03" }, // Savannah → Meredith
         ],
         eliminatedPid: "s1_p09",
       },
       {
-        tcid: "s1_tc07", eid: "s1_e07", episode: 7, tid: null, notes: "",
+        tcid: "s1_tc08", eid: "s1_e07", episode: 7, tid: null, notes: "Vote: 5-3. Kelsey voted out.",
         votes: [
-          { vid: "s1_tc07_v01", voterPid: "s1_p08", votedForPid: "s1_p01" },
-          { vid: "s1_tc07_v02", voterPid: "s1_p07", votedForPid: "s1_p08" },
-          { vid: "s1_tc07_v03", voterPid: "s1_p06", votedForPid: "s1_p08" },
-          { vid: "s1_tc07_v04", voterPid: "s1_p05", votedForPid: "s1_p08" },
-          { vid: "s1_tc07_v05", voterPid: "s1_p04", votedForPid: "s1_p08" },
-          { vid: "s1_tc07_v06", voterPid: "s1_p03", votedForPid: "s1_p08" },
-          { vid: "s1_tc07_v07", voterPid: "s1_p02", votedForPid: "s1_p08" },
-          { vid: "s1_tc07_v08", voterPid: "s1_p01", votedForPid: "s1_p08" },
+          { vid: "s1_tc08_v01", voterPid: "s1_p01", votedForPid: "s1_p08" }, // Jace → Kelsey
+          { vid: "s1_tc08_v02", voterPid: "s1_p02", votedForPid: "s1_p08" }, // Olivia → Kelsey
+          { vid: "s1_tc08_v03", voterPid: "s1_p03", votedForPid: "s1_p08" }, // Meredith → Kelsey
+          { vid: "s1_tc08_v04", voterPid: "s1_p04", votedForPid: "s1_p03" }, // Caroline → Meredith
+          { vid: "s1_tc08_v05", voterPid: "s1_p05", votedForPid: "s1_p03" }, // Abdul → Meredith
+          { vid: "s1_tc08_v06", voterPid: "s1_p06", votedForPid: "s1_p08" }, // Jacob → Kelsey
+          { vid: "s1_tc08_v07", voterPid: "s1_p07", votedForPid: "s1_p08" }, // Madison → Kelsey
+          { vid: "s1_tc08_v08", voterPid: "s1_p08", votedForPid: "s1_p03" }, // Kelsey → Meredith
         ],
         eliminatedPid: "s1_p08",
       },
       {
-        tcid: "s1_tc08", eid: "s1_e08", episode: 8, tid: null, notes: "",
+        tcid: "s1_tc09", eid: "s1_e08", episode: 8, tid: null, notes: "Vote: 2-5 (after idol play). Abdul played a hidden immunity idol — 5 votes against him were nullified. Madison eliminated with 2 votes.",
         votes: [
-          { vid: "s1_tc08_v01", voterPid: "s1_p07", votedForPid: "s1_p01" },
-          { vid: "s1_tc08_v02", voterPid: "s1_p06", votedForPid: "s1_p07" },
-          { vid: "s1_tc08_v03", voterPid: "s1_p05", votedForPid: "s1_p07" },
-          { vid: "s1_tc08_v04", voterPid: "s1_p04", votedForPid: "s1_p07" },
-          { vid: "s1_tc08_v05", voterPid: "s1_p03", votedForPid: "s1_p07" },
-          { vid: "s1_tc08_v06", voterPid: "s1_p02", votedForPid: "s1_p07" },
-          { vid: "s1_tc08_v07", voterPid: "s1_p01", votedForPid: "s1_p07" },
+          { vid: "s1_tc09_v01", voterPid: "s1_p01", votedForPid: "s1_p05" }, // Jace → Abdul (nullified)
+          { vid: "s1_tc09_v02", voterPid: "s1_p02", votedForPid: "s1_p05" }, // Olivia → Abdul (nullified)
+          { vid: "s1_tc09_v03", voterPid: "s1_p03", votedForPid: "s1_p05" }, // Meredith → Abdul (nullified)
+          { vid: "s1_tc09_v04", voterPid: "s1_p04", votedForPid: "s1_p07" }, // Caroline → Madison
+          { vid: "s1_tc09_v05", voterPid: "s1_p05", votedForPid: "s1_p07" }, // Abdul → Madison
+          { vid: "s1_tc09_v06", voterPid: "s1_p06", votedForPid: "s1_p05" }, // Jacob → Abdul (nullified)
+          { vid: "s1_tc09_v07", voterPid: "s1_p07", votedForPid: "s1_p05" }, // Madison → Abdul (nullified)
         ],
         eliminatedPid: "s1_p07",
       },
       {
-        tcid: "s1_tc09", eid: "s1_e09", episode: 9, tid: null, notes: "",
+        tcid: "s1_tc10", eid: "s1_e09", episode: 9, tid: null, notes: "Vote: 2-4 (after idol play). Jace played a hidden immunity idol — 4 votes against him were nullified. Jacob eliminated with 2 votes.",
         votes: [
-          { vid: "s1_tc09_v01", voterPid: "s1_p06", votedForPid: "s1_p01" },
-          { vid: "s1_tc09_v02", voterPid: "s1_p05", votedForPid: "s1_p06" },
-          { vid: "s1_tc09_v03", voterPid: "s1_p04", votedForPid: "s1_p06" },
-          { vid: "s1_tc09_v04", voterPid: "s1_p03", votedForPid: "s1_p06" },
-          { vid: "s1_tc09_v05", voterPid: "s1_p02", votedForPid: "s1_p06" },
-          { vid: "s1_tc09_v06", voterPid: "s1_p01", votedForPid: "s1_p06" },
+          { vid: "s1_tc10_v01", voterPid: "s1_p01", votedForPid: "s1_p06" }, // Jace → Jacob
+          { vid: "s1_tc10_v02", voterPid: "s1_p02", votedForPid: "s1_p01" }, // Olivia → Jace (nullified)
+          { vid: "s1_tc10_v03", voterPid: "s1_p03", votedForPid: "s1_p01" }, // Meredith → Jace (nullified)
+          { vid: "s1_tc10_v04", voterPid: "s1_p04", votedForPid: "s1_p01" }, // Caroline → Jace (nullified)
+          { vid: "s1_tc10_v05", voterPid: "s1_p05", votedForPid: "s1_p06" }, // Abdul → Jacob
+          { vid: "s1_tc10_v06", voterPid: "s1_p06", votedForPid: "s1_p01" }, // Jacob → Jace (nullified)
         ],
         eliminatedPid: "s1_p06",
       },
       {
-        tcid: "s1_tc10", eid: "s1_e10", episode: 10, tid: null, notes: "",
+        tcid: "s1_tc11", eid: "s1_e10", episode: 10, tid: null, notes: "Vote: 3-2. Abdul voted out.",
         votes: [
-          { vid: "s1_tc10_v01", voterPid: "s1_p05", votedForPid: "s1_p02" },
-          { vid: "s1_tc10_v02", voterPid: "s1_p04", votedForPid: "s1_p05" },
-          { vid: "s1_tc10_v03", voterPid: "s1_p03", votedForPid: "s1_p05" },
-          { vid: "s1_tc10_v04", voterPid: "s1_p02", votedForPid: "s1_p05" },
-          { vid: "s1_tc10_v05", voterPid: "s1_p01", votedForPid: "s1_p05" },
+          { vid: "s1_tc11_v01", voterPid: "s1_p01", votedForPid: "s1_p02" }, // Jace → Olivia
+          { vid: "s1_tc11_v02", voterPid: "s1_p02", votedForPid: "s1_p05" }, // Olivia → Abdul
+          { vid: "s1_tc11_v03", voterPid: "s1_p03", votedForPid: "s1_p05" }, // Meredith → Abdul
+          { vid: "s1_tc11_v04", voterPid: "s1_p04", votedForPid: "s1_p05" }, // Caroline → Abdul
+          { vid: "s1_tc11_v05", voterPid: "s1_p05", votedForPid: "s1_p02" }, // Abdul → Olivia
         ],
         eliminatedPid: "s1_p05",
+      },
+      {
+        tcid: "s1_tc12", eid: "s1_e11", episode: 11, tid: null, notes: "Caroline eliminated without a standard vote — removed by twist or advantage.",
+        votes: [],
+        eliminatedPid: "s1_p04",
+      },
+      {
+        tcid: "s1_tc13", eid: "s1_e11", episode: 11, tid: null, notes: "Final Tribal Council jury vote: Jace wins 8-1-0. Jury: Sean, Clara, Dom, Savannah, Kelsey, Madison, Jacob, Abdul, Caroline.",
+        votes: [
+          { vid: "s1_tc13_v01", voterPid: "s1_p12", votedForPid: "s1_p01" }, // Sean → Jace
+          { vid: "s1_tc13_v02", voterPid: "s1_p11", votedForPid: "s1_p01" }, // Clara → Jace
+          { vid: "s1_tc13_v03", voterPid: "s1_p10", votedForPid: "s1_p02" }, // Dom → Olivia
+          { vid: "s1_tc13_v04", voterPid: "s1_p09", votedForPid: "s1_p01" }, // Savannah → Jace
+          { vid: "s1_tc13_v05", voterPid: "s1_p08", votedForPid: "s1_p01" }, // Kelsey → Jace
+          { vid: "s1_tc13_v06", voterPid: "s1_p07", votedForPid: "s1_p01" }, // Madison → Jace
+          { vid: "s1_tc13_v07", voterPid: "s1_p06", votedForPid: "s1_p01" }, // Jacob → Jace
+          { vid: "s1_tc13_v08", voterPid: "s1_p05", votedForPid: "s1_p01" }, // Abdul → Jace
+          { vid: "s1_tc13_v09", voterPid: "s1_p04", votedForPid: "s1_p01" }, // Caroline → Jace
+        ],
+        eliminatedPid: "s1_p01",
       },
     ],
 
     challenges: [
-      { cid: "s1_c01", eid: "s1_e01", episode: 1, type: "Reward",   name: "Opening Relay",         description: "Obstacle course relay race.",                        winnerTid: "s1_t1", winnerPid: null },
-      { cid: "s1_c02", eid: "s1_e01", episode: 1, type: "Immunity",  name: "Puzzle Rush",           description: "Slide puzzle race.",                                 winnerTid: "s1_t1", winnerPid: null },
-      { cid: "s1_c03", eid: "s1_e02", episode: 2, type: "Immunity",  name: "Blindfolded Maze",      description: "Navigate a maze blindfolded with verbal guidance.",   winnerTid: "s1_t2", winnerPid: null },
-      { cid: "s1_c04", eid: "s1_e03", episode: 3, type: "Immunity",  name: "Water Carry",           description: "Carry water through an obstacle course.",            winnerTid: "s1_t1", winnerPid: null },
-      { cid: "s1_c05", eid: "s1_e04", episode: 4, type: "Immunity",  name: "Endurance Hold",        description: "Hold a weighted bar as long as possible.",           winnerTid: "s1_t2", winnerPid: null },
-      { cid: "s1_c06", eid: "s1_e05", episode: 5, type: "Immunity",  name: "Slingshot Targets",     description: "Hit targets with a slingshot.",                      winnerTid: "s1_t1", winnerPid: null },
-      { cid: "s1_c07", eid: "s1_e06", episode: 6, type: "Immunity",  name: "Balance Beam Showdown", description: "Individual balance beam endurance.",                  winnerTid: null,    winnerPid: "s1_p01" },
-      { cid: "s1_c08", eid: "s1_e07", episode: 7, type: "Reward",    name: "Trivia Throwdown",      description: "Survivor trivia questions.",                          winnerTid: null,    winnerPid: "s1_p03" },
-      { cid: "s1_c09", eid: "s1_e07", episode: 7, type: "Immunity",  name: "Rope Climb",            description: "Climb rope obstacles.",                              winnerTid: null,    winnerPid: "s1_p05" },
-      { cid: "s1_c10", eid: "s1_e08", episode: 8, type: "Immunity",  name: "Card Stacking",         description: "Build the tallest card tower.",                      winnerTid: null,    winnerPid: "s1_p01" },
-      { cid: "s1_c11", eid: "s1_e09", episode: 9, type: "Immunity",  name: "Dizzy Bat Race",        description: "Spin around a bat and race to the finish.",          winnerTid: null,    winnerPid: "s1_p01" },
-      { cid: "s1_c12", eid: "s1_e10", episode: 10, type: "Immunity", name: "Final Endurance",       description: "Last one standing wins.",                            winnerTid: null,    winnerPid: "s1_p01" },
+      { cid: "s1_c01", eid: "s1_e01", episode: 1,  type: "Reward",   name: "Opening Relay",         description: "Obstacle course relay race.",                        winnerTid: "s1_t2", winnerPid: null },
+      { cid: "s1_c02", eid: "s1_e01", episode: 1,  type: "Immunity", name: "Puzzle Rush",           description: "Slide puzzle race.",                                 winnerTid: "s1_t2", winnerPid: null },
+      { cid: "s1_c03", eid: "s1_e02", episode: 2,  type: "Immunity", name: "Blindfolded Maze",      description: "Navigate a maze blindfolded with verbal guidance.",   winnerTid: "s1_t2", winnerPid: null },
+      { cid: "s1_c04", eid: "s1_e03", episode: 3,  type: "Immunity", name: "Water Carry",           description: "Carry water through an obstacle course.",            winnerTid: null,    winnerPid: null },
+      { cid: "s1_c05", eid: "s1_e04", episode: 4,  type: "Immunity", name: "Endurance Hold",        description: "Hold a weighted bar as long as possible.",           winnerTid: null,    winnerPid: null },
+      { cid: "s1_c06", eid: "s1_e05", episode: 5,  type: "Immunity", name: "Slingshot Targets",     description: "Hit targets with a slingshot.",                      winnerTid: null,    winnerPid: null },
+      { cid: "s1_c07", eid: "s1_e06", episode: 6,  type: "Immunity", name: "Balance Beam Showdown", description: "Individual balance beam endurance.",                  winnerTid: null,    winnerPid: "s1_p01" },
+      { cid: "s1_c08", eid: "s1_e07", episode: 7,  type: "Reward",   name: "Trivia Throwdown",      description: "Survivor trivia questions.",                         winnerTid: null,    winnerPid: "s1_p03" },
+      { cid: "s1_c09", eid: "s1_e07", episode: 7,  type: "Immunity", name: "Rope Climb",            description: "Climb rope obstacles.",                              winnerTid: null,    winnerPid: "s1_p05" },
+      { cid: "s1_c10", eid: "s1_e08", episode: 8,  type: "Immunity", name: "Card Stacking",         description: "Build the tallest card tower.",                      winnerTid: null,    winnerPid: "s1_p01" },
+      { cid: "s1_c11", eid: "s1_e09", episode: 9,  type: "Immunity", name: "Dizzy Bat Race",        description: "Spin around a bat and race to the finish.",          winnerTid: null,    winnerPid: "s1_p01" },
+      { cid: "s1_c12", eid: "s1_e10", episode: 10, type: "Immunity", name: "Endurance Challenge",   description: "Endurance challenge at final five.",                 winnerTid: null,    winnerPid: "s1_p01" },
+      { cid: "s1_c13", eid: "s1_e11", episode: 11, type: "Immunity", name: "Final Endurance",       description: "Last one standing wins.",                            winnerTid: null,    winnerPid: "s1_p01" },
     ],
   },
 
