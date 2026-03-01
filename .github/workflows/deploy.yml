@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, 'claude/**']
+    branches: [main, 'claude/survivor-season-tracker-Ef03V']
   workflow_dispatch:
 
 permissions:
