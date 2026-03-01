@@ -2,10 +2,28 @@ import { useState } from "react";
 import { SEASONS } from "./data";
 import "./styles.css";
 
-// ─── Utility ────────────────────────────────────────────────
-function getTribeColor(season, tribeName) {
-  const tribe = season.tribes.find((t) => t.name === tribeName);
+// ─── Lookup helpers ─────────────────────────────────────────
+function getPlayer(season, pid) {
+  return season.cast.find((p) => p.pid === pid);
+}
+
+function getTribe(season, tid) {
+  return season.tribes.find((t) => t.tid === tid);
+}
+
+function getTribeColor(season, tid) {
+  const tribe = getTribe(season, tid);
   return tribe ? tribe.color : "#888";
+}
+
+function getTribeName(season, tid) {
+  const tribe = getTribe(season, tid);
+  return tribe ? tribe.name : "Merged";
+}
+
+function getPlayerName(season, pid) {
+  const player = getPlayer(season, pid);
+  return player ? player.name : "Unknown";
 }
 
 function ordinal(n) {
@@ -37,7 +55,7 @@ function Avatar({ name, color, size = 48 }) {
 }
 
 // ─── Navigation ─────────────────────────────────────────────
-function Nav({ page, setPage, seasonId, setSeasonId }) {
+function Nav({ page, setPage, seasonSid, setSeasonSid }) {
   return (
     <header className="nav">
       <div className="nav-inner">
@@ -56,10 +74,10 @@ function Nav({ page, setPage, seasonId, setSeasonId }) {
 
           {SEASONS.map((s) => (
             <button
-              key={s.id}
-              className={page !== "home" && seasonId === s.id ? "active" : ""}
+              key={s.sid}
+              className={page !== "home" && seasonSid === s.sid ? "active" : ""}
               onClick={() => {
-                setSeasonId(s.id);
+                setSeasonSid(s.sid);
                 setPage("overview");
               }}
             >
@@ -73,7 +91,7 @@ function Nav({ page, setPage, seasonId, setSeasonId }) {
 }
 
 // ─── Home ───────────────────────────────────────────────────
-function Home({ setPage, setSeasonId }) {
+function Home({ setPage, setSeasonSid }) {
   return (
     <div className="home">
       <div className="hero">
@@ -86,11 +104,11 @@ function Home({ setPage, setSeasonId }) {
           const comingSoon = s.cast.length === 0;
           return (
             <div
-              key={s.id}
+              key={s.sid}
               className={`season-card ${comingSoon ? "coming-soon" : ""}`}
               onClick={() => {
                 if (!comingSoon) {
-                  setSeasonId(s.id);
+                  setSeasonSid(s.sid);
                   setPage("overview");
                 }
               }}
@@ -104,7 +122,7 @@ function Home({ setPage, setSeasonId }) {
               ) : (
                 <div className="season-card-stats">
                   <span>{s.cast.length} Players</span>
-                  <span>{s.episodes} Episodes</span>
+                  <span>{s.episodes.length} Episodes</span>
                   <span>{s.days} Days</span>
                 </div>
               )}
@@ -112,7 +130,7 @@ function Home({ setPage, setSeasonId }) {
                 <div className="season-card-tribes">
                   {s.tribes.map((t) => (
                     <span
-                      key={t.name}
+                      key={t.tid}
                       className="tribe-badge"
                       style={{ background: t.color }}
                     >
@@ -163,7 +181,7 @@ function Overview({ season }) {
         <div className="overview-meta">
           <span>📍 {season.location}</span>
           <span>📅 {season.filmingDates}</span>
-          <span>📺 {season.episodes} Episodes</span>
+          <span>📺 {season.episodes.length} Episodes</span>
           <span>☀️ {season.days} Days</span>
         </div>
       </div>
@@ -171,16 +189,22 @@ function Overview({ season }) {
       <div className="overview-highlights">
         <div className="highlight-card winner">
           <span className="highlight-label">Sole Survivor</span>
-          <span className="highlight-value">{season.winner}</span>
+          <span className="highlight-value">
+            {getPlayerName(season, season.winnerPid)}
+          </span>
         </div>
         <div className="highlight-card">
           <span className="highlight-label">Runner-Up</span>
-          <span className="highlight-value">{season.runnerUp}</span>
+          <span className="highlight-value">
+            {getPlayerName(season, season.runnerUpPid)}
+          </span>
         </div>
-        {season.fanFavorite && (
+        {season.fanFavoritePid && (
           <div className="highlight-card">
             <span className="highlight-label">Fan Favorite</span>
-            <span className="highlight-value">{season.fanFavorite}</span>
+            <span className="highlight-value">
+              {getPlayerName(season, season.fanFavoritePid)}
+            </span>
           </div>
         )}
       </div>
@@ -188,10 +212,10 @@ function Overview({ season }) {
       <h2>Elimination Order</h2>
       <div className="elimination-order">
         {sorted.map((p) => (
-          <div key={p.name} className="elim-slot">
+          <div key={p.pid} className="elim-slot">
             <Avatar
               name={p.name}
-              color={getTribeColor(season, p.tribe)}
+              color={getTribeColor(season, p.tid)}
               size={40}
             />
             <span className="elim-name">{p.name}</span>
@@ -204,13 +228,13 @@ function Overview({ season }) {
       <h2>Tribes</h2>
       <div className="tribes-section">
         {season.tribes.map((tribe) => {
-          const members = season.cast.filter((p) => p.tribe === tribe.name);
+          const members = season.cast.filter((p) => p.tid === tribe.tid);
           return (
-            <div key={tribe.name} className="tribe-block">
+            <div key={tribe.tid} className="tribe-block">
               <h3 style={{ color: tribe.color }}>{tribe.name}</h3>
               <div className="tribe-members">
                 {members.map((m) => (
-                  <div key={m.name} className="tribe-member">
+                  <div key={m.pid} className="tribe-member">
                     <Avatar name={m.name} color={tribe.color} size={32} />
                     <span>{m.name}</span>
                   </div>
@@ -226,7 +250,8 @@ function Overview({ season }) {
 
 // ─── Cast ───────────────────────────────────────────────────
 function Cast({ season }) {
-  const [selected, setSelected] = useState(null);
+  const [selectedPid, setSelectedPid] = useState(null);
+  const selected = selectedPid ? getPlayer(season, selectedPid) : null;
   const sorted = [...season.cast].sort((a, b) => a.placement - b.placement);
 
   return (
@@ -234,26 +259,24 @@ function Cast({ season }) {
       <h1>Cast — {season.name}</h1>
 
       {selected && (
-        <div className="player-modal-overlay" onClick={() => setSelected(null)}>
+        <div className="player-modal-overlay" onClick={() => setSelectedPid(null)}>
           <div className="player-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setSelected(null)}>
+            <button className="modal-close" onClick={() => setSelectedPid(null)}>
               ✕
             </button>
             <div className="modal-header">
               <Avatar
                 name={selected.name}
-                color={getTribeColor(season, selected.tribe)}
+                color={getTribeColor(season, selected.tid)}
                 size={80}
               />
               <div>
                 <h2>{selected.name}</h2>
                 <span
                   className="tribe-badge"
-                  style={{
-                    background: getTribeColor(season, selected.tribe),
-                  }}
+                  style={{ background: getTribeColor(season, selected.tid) }}
                 >
-                  {selected.tribe}
+                  {getTribeName(season, selected.tid)}
                 </span>
               </div>
             </div>
@@ -295,22 +318,22 @@ function Cast({ season }) {
       <div className="cast-grid">
         {sorted.map((p) => (
           <div
-            key={p.name}
+            key={p.pid}
             className="cast-card"
-            onClick={() => setSelected(p)}
+            onClick={() => setSelectedPid(p.pid)}
           >
             <Avatar
               name={p.name}
-              color={getTribeColor(season, p.tribe)}
+              color={getTribeColor(season, p.tid)}
               size={56}
             />
             <div className="cast-card-info">
               <h3>{p.name}</h3>
               <span
                 className="tribe-badge small"
-                style={{ background: getTribeColor(season, p.tribe) }}
+                style={{ background: getTribeColor(season, p.tid) }}
               >
-                {p.tribe}
+                {getTribeName(season, p.tid)}
               </span>
               <span className="cast-placement">
                 {ordinal(p.placement)} Place
@@ -338,56 +361,63 @@ function VotingHistory({ season }) {
     <div className="voting">
       <h1>Voting History — {season.name}</h1>
 
-      {season.votingHistory.map((tc) => (
-        <div key={tc.episode} className="tribal-card">
-          <div className="tribal-header">
-            <h3>
-              Episode {tc.episode} — {tc.tribal} Tribal Council
-            </h3>
-            {tc.notes && <span className="tribal-note">{tc.notes}</span>}
-          </div>
+      {season.votingHistory.map((tc) => {
+        const tribeName = tc.tid ? getTribeName(season, tc.tid) : "Merged";
+        return (
+          <div key={tc.tcid} className="tribal-card">
+            <div className="tribal-header">
+              <h3>
+                Episode {tc.episode} — {tribeName} Tribal Council
+              </h3>
+              {tc.notes && <span className="tribal-note">{tc.notes}</span>}
+            </div>
 
-          <div className="vote-table-wrapper">
-            <table className="vote-table">
-              <thead>
-                <tr>
-                  <th>Voter</th>
-                  <th>Voted For</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(tc.votes).map(([voter, target]) => (
-                  <tr
-                    key={voter}
-                    className={voter === tc.eliminated ? "eliminated" : ""}
-                  >
-                    <td>
-                      <div className="voter-cell">
-                        <Avatar
-                          name={voter}
-                          color={getTribeColor(
-                            season,
-                            season.cast.find((c) => c.name === voter)?.tribe ||
-                              ""
-                          )}
-                          size={28}
-                        />
-                        {voter}
-                      </div>
-                    </td>
-                    <td className="vote-target">{target}</td>
+            <div className="vote-table-wrapper">
+              <table className="vote-table">
+                <thead>
+                  <tr>
+                    <th>Voter</th>
+                    <th>Voted For</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {tc.votes.map((v) => {
+                    const voter = getPlayer(season, v.voterPid);
+                    const target = getPlayer(season, v.votedForPid);
+                    return (
+                      <tr
+                        key={v.vid}
+                        className={
+                          v.voterPid === tc.eliminatedPid ? "eliminated" : ""
+                        }
+                      >
+                        <td>
+                          <div className="voter-cell">
+                            <Avatar
+                              name={voter?.name || "?"}
+                              color={getTribeColor(season, voter?.tid)}
+                              size={28}
+                            />
+                            {voter?.name || v.voterPid}
+                          </div>
+                        </td>
+                        <td className="vote-target">
+                          {target?.name || v.votedForPid}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
 
-          <div className="tribal-result">
-            <span className="eliminated-label">Eliminated:</span>{" "}
-            <strong>{tc.eliminated}</strong>
+            <div className="tribal-result">
+              <span className="eliminated-label">Eliminated:</span>{" "}
+              <strong>{getPlayerName(season, tc.eliminatedPid)}</strong>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -417,18 +447,25 @@ function Challenges({ season }) {
         <div key={ep} className="challenge-episode">
           <h3>Episode {ep}</h3>
           <div className="challenge-cards">
-            {challenges.map((c, i) => (
-              <div key={i} className="challenge-card">
-                <div className="challenge-type-badge">
-                  {c.type === "Immunity" ? "🛡️" : "🎁"} {c.type}
+            {challenges.map((c) => {
+              const winnerDisplay = c.winnerPid
+                ? getPlayerName(season, c.winnerPid)
+                : c.winnerTid
+                  ? getTribeName(season, c.winnerTid)
+                  : "TBD";
+              return (
+                <div key={c.cid} className="challenge-card">
+                  <div className="challenge-type-badge">
+                    {c.type === "Immunity" ? "🛡️" : "🎁"} {c.type}
+                  </div>
+                  <h4>{c.name}</h4>
+                  <p>{c.description}</p>
+                  <div className="challenge-winner">
+                    <span className="winner-label">Winner:</span> {winnerDisplay}
+                  </div>
                 </div>
-                <h4>{c.name}</h4>
-                <p>{c.description}</p>
-                <div className="challenge-winner">
-                  <span className="winner-label">Winner:</span> {c.winner}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       ))}
@@ -439,22 +476,22 @@ function Challenges({ season }) {
 // ─── App ────────────────────────────────────────────────────
 export default function App() {
   const [page, setPage] = useState("home");
-  const [seasonId, setSeasonId] = useState(1);
+  const [seasonSid, setSeasonSid] = useState("s1");
 
-  const season = SEASONS.find((s) => s.id === seasonId);
+  const season = SEASONS.find((s) => s.sid === seasonSid);
 
   return (
     <div className="app">
       <Nav
         page={page}
         setPage={setPage}
-        seasonId={seasonId}
-        setSeasonId={setSeasonId}
+        seasonSid={seasonSid}
+        setSeasonSid={setSeasonSid}
       />
 
       <main className="main">
         {page === "home" ? (
-          <Home setPage={setPage} setSeasonId={setSeasonId} />
+          <Home setPage={setPage} setSeasonSid={setSeasonSid} />
         ) : (
           <>
             <SeasonNav page={page} setPage={setPage} />
