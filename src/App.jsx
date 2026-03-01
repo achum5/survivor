@@ -1,6 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { SEASONS } from "./data";
 import "./styles.css";
+
+// ─── Hash Router ────────────────────────────────────────────
+function parseHash() {
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  if (!hash) return { page: "home", seasonSid: "s1" };
+  const parts = hash.split("/");
+  if (parts.length >= 2) {
+    return { page: parts[1] || "overview", seasonSid: parts[0] };
+  }
+  return { page: "home", seasonSid: "s1" };
+}
+
+function buildHash(page, seasonSid) {
+  if (page === "home") return "#/";
+  return `#/${seasonSid}/${page}`;
+}
+
+function navigate(page, seasonSid) {
+  window.location.hash = buildHash(page, seasonSid);
+}
+
+function useHashRouter() {
+  const [state, setState] = useState(parseHash);
+
+  useEffect(() => {
+    function onHashChange() {
+      setState(parseHash());
+    }
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  const setPage = useCallback(
+    (page) => navigate(page, state.seasonSid),
+    [state.seasonSid]
+  );
+
+  const setSeasonSid = useCallback(
+    (sid) => navigate(state.page === "home" ? "overview" : state.page, sid),
+    [state.page]
+  );
+
+  const navigateTo = useCallback((page, sid) => navigate(page, sid), []);
+
+  return { page: state.page, seasonSid: state.seasonSid, setPage, setSeasonSid, navigateTo };
+}
 
 // ─── Lookup helpers ─────────────────────────────────────────
 function getPlayer(season, pid) {
@@ -55,34 +101,31 @@ function Avatar({ name, color, size = 48 }) {
 }
 
 // ─── Navigation ─────────────────────────────────────────────
-function Nav({ page, setPage, seasonSid, setSeasonSid }) {
+function Nav({ page, seasonSid, navigateTo }) {
   return (
     <header className="nav">
       <div className="nav-inner">
-        <button className="logo" onClick={() => setPage("home")}>
+        <a className="logo" href="#/">
           <span className="logo-icon">🔥</span>
           <span className="logo-text">Backyard Survivor Wiki</span>
-        </button>
+        </a>
 
         <div className="nav-links">
-          <button
+          <a
             className={page === "home" ? "active" : ""}
-            onClick={() => setPage("home")}
+            href="#/"
           >
             Home
-          </button>
+          </a>
 
           {SEASONS.map((s) => (
-            <button
+            <a
               key={s.sid}
               className={page !== "home" && seasonSid === s.sid ? "active" : ""}
-              onClick={() => {
-                setSeasonSid(s.sid);
-                setPage("overview");
-              }}
+              href={`#/${s.sid}/overview`}
             >
               {s.name}
-            </button>
+            </a>
           ))}
         </div>
       </div>
@@ -91,7 +134,7 @@ function Nav({ page, setPage, seasonSid, setSeasonSid }) {
 }
 
 // ─── Home ───────────────────────────────────────────────────
-function Home({ setPage, setSeasonSid }) {
+function Home() {
   return (
     <div className="home">
       <div className="hero">
@@ -103,15 +146,11 @@ function Home({ setPage, setSeasonSid }) {
         {SEASONS.map((s) => {
           const comingSoon = s.cast.length === 0;
           return (
-            <div
+            <a
               key={s.sid}
               className={`season-card ${comingSoon ? "coming-soon" : ""}`}
-              onClick={() => {
-                if (!comingSoon) {
-                  setSeasonSid(s.sid);
-                  setPage("overview");
-                }
-              }}
+              href={comingSoon ? undefined : `#/${s.sid}/overview`}
+              onClick={comingSoon ? (e) => e.preventDefault() : undefined}
             >
               <div className="season-card-header">
                 <h2>{s.name}</h2>
@@ -139,7 +178,7 @@ function Home({ setPage, setSeasonSid }) {
                   ))}
                 </div>
               )}
-            </div>
+            </a>
           );
         })}
       </div>
@@ -148,7 +187,7 @@ function Home({ setPage, setSeasonSid }) {
 }
 
 // ─── Season Sub-Nav ─────────────────────────────────────────
-function SeasonNav({ page, setPage }) {
+function SeasonNav({ page, seasonSid }) {
   const tabs = [
     { key: "overview", label: "Overview" },
     { key: "cast", label: "Cast" },
@@ -158,13 +197,13 @@ function SeasonNav({ page, setPage }) {
   return (
     <div className="season-nav">
       {tabs.map((t) => (
-        <button
+        <a
           key={t.key}
           className={page === t.key ? "active" : ""}
-          onClick={() => setPage(t.key)}
+          href={`#/${seasonSid}/${t.key}`}
         >
           {t.label}
-        </button>
+        </a>
       ))}
     </div>
   );
@@ -475,8 +514,7 @@ function Challenges({ season }) {
 
 // ─── App ────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage] = useState("home");
-  const [seasonSid, setSeasonSid] = useState("s1");
+  const { page, seasonSid, setPage, setSeasonSid, navigateTo } = useHashRouter();
 
   const season = SEASONS.find((s) => s.sid === seasonSid);
 
@@ -484,17 +522,16 @@ export default function App() {
     <div className="app">
       <Nav
         page={page}
-        setPage={setPage}
         seasonSid={seasonSid}
-        setSeasonSid={setSeasonSid}
+        navigateTo={navigateTo}
       />
 
       <main className="main">
         {page === "home" ? (
-          <Home setPage={setPage} setSeasonSid={setSeasonSid} />
+          <Home />
         ) : (
           <>
-            <SeasonNav page={page} setPage={setPage} />
+            <SeasonNav page={page} seasonSid={seasonSid} />
             {page === "overview" && <Overview season={season} />}
             {page === "cast" && <Cast season={season} />}
             {page === "voting" && <VotingHistory season={season} />}
