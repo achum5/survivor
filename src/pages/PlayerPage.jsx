@@ -99,6 +99,10 @@ function ChallengeHistoryTab({ player, season, sid }) {
     });
   });
 
+  const isWinner   = player.pid === season.winnerPid;
+  const isRunnerUp = player.pid === season.runnerUpPid;
+  const wasEliminated = season.votingHistory.some((tc) => tc.eliminatedPid === player.pid);
+
   if (rows.length === 0) {
     return <p className="empty-state">No challenge data yet.</p>;
   }
@@ -143,6 +147,13 @@ function ChallengeHistoryTab({ player, season, sid }) {
               <td className="pchall-result-cell"><ResultBadge result={row.result} /></td>
             </tr>
           ))}
+          {(wasEliminated || isWinner || isRunnerUp) && (
+            <tr className="pchall-votedout">
+              <td colSpan={6}>
+                {isWinner ? 'Sole Survivor' : isRunnerUp ? 'Runner-Up' : 'Voted Out'}
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
@@ -221,13 +232,6 @@ function VotingHistoryTab({ player, season, sid }) {
   const isWinner   = player.pid === season.winnerPid;
   const isRunnerUp = player.pid === season.runnerUpPid;
   if (isWinner || isRunnerUp) {
-    const votesForPlayer = (season.juryVotes ?? [])
-      .filter((j) => j.votedForPid === player.pid)
-      .map((j) => season.cast.find((p) => p.pid === j.jurorPid))
-      .filter(Boolean);
-    if (votesForPlayer.length > 0) {
-      tableRows.push({ type: 'juryVotesReceived', voters: votesForPlayer });
-    }
     tableRows.push({ type: isWinner ? 'winner' : 'finalist' });
   }
 
@@ -262,7 +266,7 @@ function VotingHistoryTab({ player, season, sid }) {
             if (row.type === 'votedOut') {
               return (
                 <tr key={i} className="pvote-votedout">
-                  <td colSpan={3}>🔦 Voted Out</td>
+                  <td colSpan={3}>Voted Out</td>
                 </tr>
               );
             }
@@ -271,28 +275,11 @@ function VotingHistoryTab({ player, season, sid }) {
             if (row.type === 'juryVote') {
               return (
                 <tr key={i} className="pvote-juryvote">
-                  <td className="pvote-jury-label">Jury Vote</td>
+                  <td className="pvote-jury-label">Voted for<br />Sole Survivor</td>
                   <td colSpan={2} className="pvote-jury-target">
                     {row.target ? (
                       <Link to={`/season/${sid}/cast/${slugify(row.target.name)}`}>{row.target.name}</Link>
                     ) : '—'}
-                  </td>
-                </tr>
-              );
-            }
-
-            // ── Jury votes received (winner / runner-up) ──────────────
-            if (row.type === 'juryVotesReceived') {
-              return (
-                <tr key={i} className="pvote-juryvote pvote-jury-received">
-                  <td className="pvote-jury-label">Jury Votes<br />for {player.name}</td>
-                  <td colSpan={2} className="pvote-jury-target">
-                    {row.voters.map((v, vi) => (
-                      <span key={v.pid}>
-                        {vi > 0 && ', '}
-                        <Link to={`/season/${sid}/cast/${slugify(v.name)}`}>{v.name}</Link>
-                      </span>
-                    ))}
                   </td>
                 </tr>
               );

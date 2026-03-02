@@ -624,6 +624,17 @@ body {
 .pchall-result-mid  { background: #1c1c1c; color: var(--text-muted); }
 .pchall-result-empty { color: var(--text-muted); }
 
+.pchall-votedout td {
+  background: #555;
+  color: #fff;
+  text-align: center;
+  font-style: italic;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-color: #444;
+}
+
 /* ─── Player Voting History ─────────────────────────── */
 
 .pvote-wrap { overflow-x: auto; }
@@ -714,13 +725,14 @@ body {
 .pvote-vote-row:hover td { background: var(--bg-card); }
 
 .pvote-votedout td {
-  background: #1a0808;
-  color: #f87171;
+  background: #555;
+  color: #fff;
   text-align: center;
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-color: #2a0a0a;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-style: italic;
+  padding: 6px 12px;
+  border-color: #444;
 }
 
 /* Jury rows */
