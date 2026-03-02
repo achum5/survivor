@@ -30,7 +30,7 @@ export default function Infobox({ title, headerColor = '#e74c3c', rows = [], log
 
         {/* Rows */}
         {rows.map((row, i) => (
-          <tr key={i} className={i % 2 === 0 ? 'infobox-row even' : 'infobox-row odd'}>
+          <tr key={row.label} className={i % 2 === 0 ? 'infobox-row even' : 'infobox-row odd'}>
             <td className="infobox-label">{row.label}</td>
             <td className="infobox-value">{row.value}</td>
           </tr>
