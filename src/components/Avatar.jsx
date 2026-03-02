@@ -1,6 +1,28 @@
 // src/components/Avatar.jsx
 
-export default function Avatar({ name, color, size = 48 }) {
+export default function Avatar({ name, color, size = 48, photoUrl }) {
+  if (photoUrl) {
+    return (
+      <div
+        className="avatar"
+        style={{
+          width: size,
+          height: size,
+          borderRadius: '50%',
+          overflow: 'hidden',
+          flexShrink: 0,
+          border: `2px solid ${color}`,
+        }}
+      >
+        <img
+          src={photoUrl}
+          alt={name}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        />
+      </div>
+    );
+  }
+
   const initials = (name || '')
     .split(' ')
     .filter(Boolean)
@@ -8,6 +30,7 @@ export default function Avatar({ name, color, size = 48 }) {
     .join('')
     .slice(0, 2)
     .toUpperCase() || '?';
+
   return (
     <div
       className="avatar"

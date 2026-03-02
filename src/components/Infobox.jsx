@@ -1,7 +1,7 @@
 // src/components/Infobox.jsx
 import { Link } from 'react-router-dom';
 
-export default function Infobox({ title, headerColor = '#e74c3c', rows = [], logo, castPhoto, chronology }) {
+export default function Infobox({ title, headerColor = '#e74c3c', rows = [], logo, logoSubHeader, castPhoto, chronology }) {
   return (
     <table className="infobox">
       <thead>
@@ -21,10 +21,10 @@ export default function Infobox({ title, headerColor = '#e74c3c', rows = [], log
           </tr>
         )}
 
-        {/* Season Information sub-header */}
-        {logo && (
+        {/* Section sub-header below logo */}
+        {logo && logoSubHeader && (
           <tr>
-            <td colSpan={2} className="infobox-section-header">Season Information</td>
+            <td colSpan={2} className="infobox-section-header">{logoSubHeader}</td>
           </tr>
         )}
 

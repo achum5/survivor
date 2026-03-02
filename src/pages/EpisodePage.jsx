@@ -46,7 +46,7 @@ function WinnerDisplay({ winnerId, season, sid }) {
     return (
       <Link to={`/season/${sid}/cast/${slugify(player.name)}`}
         style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20} />
+        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20} photoUrl={player.photoUrl} />
         {player.name}
       </Link>
     );

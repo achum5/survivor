@@ -17,15 +17,11 @@ export default function PlayerPage() {
   const tribeName = getTribeName(season, player.tid);
 
   const infoRows = [
-    { label: 'Season', value: <Link to={`/season/${sid}`}>{season.name}</Link> },
-    { label: 'Tribe', value: <span className="tribe-badge" style={{ background: tribeColor }}>{tribeName}</span> },
-    { label: 'Placement', value: ordinal(player.placement) + (player.pid === season.winnerPid ? ' ★ Sole Survivor' : '') },
-    { label: 'Age', value: player.age },
-    { label: 'Hometown', value: player.hometown },
-    { label: 'Days Lasted', value: player.daysLasted },
-    { label: 'Challenge Wins', value: player.challengeWins },
-    { label: 'Votes Against', value: player.votesAgainst },
-    { label: 'Jury Member', value: player.juryMember ? 'Yes' : 'No' },
+    { label: 'Season',       value: <Link to={`/season/${sid}`}>{season.name}</Link> },
+    { label: 'Tribe',        value: <span className="tribe-badge" style={{ background: tribeColor }}>{tribeName}</span> },
+    { label: 'Placement',    value: ordinal(player.placement) + (player.pid === season.winnerPid ? ' ★ Sole Survivor' : '') },
+    { label: 'Votes Against',value: player.votesAgainst },
+    { label: 'Jury Member',  value: player.juryMember ? 'Yes' : 'No' },
   ];
 
   // Votes this player cast
@@ -57,7 +53,7 @@ export default function PlayerPage() {
       <h1>{player.name}</h1>
 
       <div className="player-article clearfix">
-        <Infobox title={player.name} headerColor={tribeColor} rows={infoRows} />
+        <Infobox title={player.name} headerColor={tribeColor} rows={infoRows} logo={player.photoUrl} />
 
         <p className="player-bio">{player.bio}</p>
 

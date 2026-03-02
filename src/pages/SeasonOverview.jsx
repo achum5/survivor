@@ -74,6 +74,7 @@ export default function SeasonOverview() {
           headerColor={season.tribes[0]?.color || '#8b0000'}
           rows={infoRows}
           logo={season.logoPath}
+          logoSubHeader="Season Information"
           castPhoto={season.castPhotoPath}
           chronology={{ prev: prevSeason, next: nextSeason }}
         />
@@ -129,7 +130,7 @@ export default function SeasonOverview() {
               <td>{ordinal(p.placement)}</td>
               <td>
                 <Link to={`/season/${sid}/cast/${slugify(p.name)}`} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={26} />
+                  <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={26} photoUrl={p.photoUrl} />
                   {p.name}
                   {p.pid === season.winnerPid && <span style={{ marginLeft: 6, color: 'var(--accent)', fontSize: '0.8rem' }}>★ Sole Survivor</span>}
                 </Link>
