@@ -37,6 +37,7 @@ export default function Sidebar() {
                 <NavLink to={`/season/${s.sid}/cast`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Cast</NavLink>
                 <NavLink to={`/season/${s.sid}/voting`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Voting History</NavLink>
                 <NavLink to={`/season/${s.sid}/challenges`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Challenges</NavLink>
+                <NavLink to={`/season/${s.sid}/episodes`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Episodes</NavLink>
               </div>
             )}
           </div>

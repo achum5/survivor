@@ -23,7 +23,6 @@ export default function Home() {
           <tr>
             <th>Logo</th>
             <th>Season</th>
-            <th>Subtitle</th>
             <th>Location</th>
             <th>Players</th>
             <th>Episodes</th>
@@ -52,7 +51,6 @@ export default function Home() {
                     <Link to={`/season/${s.sid}`}>{s.name}</Link>
                   )}
                 </td>
-                <td>{s.subtitle}</td>
                 <td>{s.location}</td>
                 <td>{comingSoon ? '—' : s.cast.length}</td>
                 <td>{comingSoon ? '—' : s.episodes.length}</td>

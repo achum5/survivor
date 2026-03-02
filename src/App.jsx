@@ -7,6 +7,8 @@ import CastList from './pages/CastList';
 import PlayerPage from './pages/PlayerPage';
 import VotingHistory from './pages/VotingHistory';
 import Challenges from './pages/Challenges';
+import EpisodeList from './pages/EpisodeList';
+import EpisodePage from './pages/EpisodePage';
 import './styles.css';
 
 export default function App() {
@@ -21,6 +23,8 @@ export default function App() {
           <Route path="/season/:sid/cast/:slug" element={<PlayerPage />} />
           <Route path="/season/:sid/voting" element={<VotingHistory />} />
           <Route path="/season/:sid/challenges" element={<Challenges />} />
+          <Route path="/season/:sid/episodes" element={<EpisodeList />} />
+          <Route path="/season/:sid/episode/:eid" element={<EpisodePage />} />
         </Routes>
         <footer className="wiki-footer">
           14508 Survivor Wiki — Not affiliated with CBS Survivor

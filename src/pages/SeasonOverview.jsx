@@ -1,33 +1,54 @@
 // src/pages/SeasonOverview.jsx
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { getPlayerName, getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers';
+import { getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Infobox from '../components/Infobox';
 import Avatar from '../components/Avatar';
 
 export default function SeasonOverview() {
   const { sid } = useParams();
-  const season = SEASONS.find((s) => s.sid === sid);
+  const seasonIdx = SEASONS.findIndex((s) => s.sid === sid);
+  const season = SEASONS[seasonIdx];
   if (!season) return <div className="article"><p>Season not found.</p></div>;
+
+  const prevSeason = SEASONS[seasonIdx - 1] ?? null;
+  const nextSeason = SEASONS[seasonIdx + 1] ?? null;
 
   const sorted = [...season.cast].sort((a, b) => a.placement - b.placement);
   const winner = season.cast.find((p) => p.pid === season.winnerPid);
   const runnerUp = season.cast.find((p) => p.pid === season.runnerUpPid);
   const fanFav = season.cast.find((p) => p.pid === season.fanFavoritePid);
 
+  // Determine which tribe phase columns to show
+  const hasSwitch = season.cast.some((p) => p.switchedTid);
+  const hasMerge  = season.cast.some((p) => p.merged);
+
   const infoRows = [
-    { label: 'Season', value: season.name },
-    { label: 'Subtitle', value: season.subtitle },
-    { label: 'Location', value: season.location },
-    { label: 'Filmed', value: season.filmingDates },
-    { label: 'Episodes', value: season.episodes.length },
-    { label: 'Days', value: season.days ?? 'TBD' },
-    { label: 'Players', value: season.cast.length },
-    { label: 'Winner', value: winner ? <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link> : '—' },
+    { label: 'Season',    value: season.name },
+    { label: 'Location',  value: season.location },
+    { label: 'Filmed',    value: season.filmingDates },
+    { label: 'Episodes',  value: season.episodes.length || '—' },
+    { label: 'Players',   value: season.cast.length || '—' },
+    { label: 'Winner',    value: winner   ? <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link>   : '—' },
     { label: 'Runner-Up', value: runnerUp ? <Link to={`/season/${sid}/cast/${slugify(runnerUp.name)}`}>{runnerUp.name}</Link> : '—' },
     ...(fanFav ? [{ label: 'Fan Favorite', value: <Link to={`/season/${sid}/cast/${slugify(fanFav.name)}`}>{fanFav.name}</Link> }] : []),
   ];
+
+  function TribeBadge({ tid }) {
+    if (!tid) return <span className="tribe-badge-empty">—</span>;
+    const tribe = season.tribes.find((t) => t.tid === tid);
+    if (!tribe) return null;
+    return <span className="tribe-badge" style={{ background: tribe.color }}>{tribe.name}</span>;
+  }
+
+  function MergeBadge({ merged }) {
+    if (!merged) return <span className="tribe-badge-empty">—</span>;
+    if (season.mergeTribe) {
+      return <span className="tribe-badge" style={{ background: season.mergeTribe.color }}>{season.mergeTribe.name}</span>;
+    }
+    return <span className="tribe-badge tribe-badge-merged">Merged</span>;
+  }
 
   return (
     <div className="article">
@@ -36,7 +57,7 @@ export default function SeasonOverview() {
         { label: season.name },
       ]} />
 
-      <h1>{season.name}: {season.subtitle}</h1>
+      <h1>{season.name}</h1>
 
       {season.logoPath && (
         <div className="season-logo-header">
@@ -52,27 +73,46 @@ export default function SeasonOverview() {
         />
 
         <div className="overview-meta">
-          <span>📍 {season.location}</span>
           <span>📅 {season.filmingDates}</span>
-          <span>🎬 {season.episodes.length} episodes</span>
-          <span>☀️ {season.days ?? 'TBD'} days</span>
         </div>
 
         <p>
-          <strong>{season.name}: {season.subtitle}</strong> is a season of Backyard Survivor
-          filmed at {season.location} during {season.filmingDates}.
+          <strong>{season.name}</strong> is a season of 14508 Survivor
+          filmed on {season.filmingDates}.
           {winner && <> The season was won by <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link>.</>}
         </p>
       </div>
 
-      <h2>Elimination Order</h2>
+      {/* Season Summary */}
+      {season.summary && (
+        <>
+          <h2>Season Summary</h2>
+          <p>{season.summary}</p>
+        </>
+      )}
+
+      {/* Twists & Gameplay */}
+      {season.twists && season.twists.length > 0 && (
+        <>
+          <h2>Twists &amp; Gameplay</h2>
+          <ul className="twists-list">
+            {season.twists.map((twist, i) => (
+              <li key={i}>{twist}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* Castaways */}
+      <h2>Castaways</h2>
       <table className="elim-table">
         <thead>
           <tr>
             <th>Place</th>
             <th>Player</th>
-            <th>Tribe</th>
-            <th>Days</th>
+            <th>Original Tribe</th>
+            {hasSwitch && <th>Switched Tribe</th>}
+            {hasMerge  && <th>Merged Tribe</th>}
             <th>Votes Against</th>
             <th>Jury</th>
           </tr>
@@ -88,12 +128,9 @@ export default function SeasonOverview() {
                   {p.pid === season.winnerPid && <span style={{ marginLeft: 6, color: 'var(--accent)', fontSize: '0.8rem' }}>★ Sole Survivor</span>}
                 </Link>
               </td>
-              <td>
-                <span className="tribe-badge" style={{ background: getTribeColor(season, p.tid) }}>
-                  {getTribeName(season, p.tid)}
-                </span>
-              </td>
-              <td>{p.daysLasted}</td>
+              <td><TribeBadge tid={p.tid} /></td>
+              {hasSwitch && <td><TribeBadge tid={p.switchedTid ?? null} /></td>}
+              {hasMerge  && <td><MergeBadge merged={p.merged} /></td>}
               <td>{p.votesAgainst}</td>
               <td>{p.juryMember ? '✓' : ''}</td>
             </tr>
@@ -101,6 +138,28 @@ export default function SeasonOverview() {
         </tbody>
       </table>
 
+      {/* Episodes */}
+      {season.episodes.length > 0 && (
+        <>
+          <h2>Episodes</h2>
+          <div className="episode-list-grid">
+            {season.episodes.map((ep) => {
+              const tc = season.votingHistory.find((t) => t.episode === ep.number && t.eliminatedPid);
+              const elim = tc ? season.cast.find((p) => p.pid === tc.eliminatedPid) : null;
+              return (
+                <Link key={ep.eid} to={`/season/${sid}/episode/${ep.eid}`} className="episode-list-card">
+                  <span className="episode-list-num">Ep {ep.number}</span>
+                  <span className="episode-list-title">{ep.title}</span>
+                  {elim && <span className="episode-list-elim">🔦 {elim.name}</span>}
+                  {ep.videoUrl && <span className="episode-list-video">▶</span>}
+                </Link>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* Tribes */}
       <h2>Tribes</h2>
       {season.tribes.map((tribe) => {
         const members = season.cast.filter((p) => p.tid === tribe.tid);
@@ -118,6 +177,16 @@ export default function SeasonOverview() {
           </div>
         );
       })}
+
+      {/* Previous / Next season */}
+      <div className="season-nav">
+        {prevSeason ? (
+          <Link to={`/season/${prevSeason.sid}`} className="season-nav-btn">← {prevSeason.name}</Link>
+        ) : <span />}
+        {nextSeason && (
+          <Link to={`/season/${nextSeason.sid}`} className="season-nav-btn">{nextSeason.name} →</Link>
+        )}
+      </div>
     </div>
   );
 }
