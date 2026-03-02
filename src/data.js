@@ -96,8 +96,8 @@ export const SEASONS = [
     tribes: [
       { tid: "s1_t1", name: "Purple", color: "#7c3aed", phase: "original" },
       { tid: "s1_t2", name: "Red",    color: "#dc2626", phase: "original" },
-      { tid: "s1_t3", name: "Yellow", color: "#ca8a04", phase: "switched" },
-      { tid: "s1_t4", name: "Green",  color: "#16a34a", phase: "switched" },
+      { tid: "s1_t3", name: "Blue",   color: "#2563eb", phase: "switched" },
+      { tid: "s1_t4", name: "Yellow", color: "#ca8a04", phase: "switched" },
       { tid: "s1_t5", name: "Orange", color: "#ea580c", phase: "switched" },
     ],
 
@@ -151,7 +151,7 @@ export const SEASONS = [
           { vid: "s1_tc02_v6", voterPid: "s1_p13", votedForPid: "s1_p02" }, // Marissa → Olivia
         ],
       },
-      // ── TC 3a: Tie vote (2-2) — Yellow switched tribe ──────────────
+      // ── TC 3a: Tie vote (2-2) — Blue switched tribe ────────────────
       {
         tcid: "s1_tc03a", eid: "s1_e03", episode: 3, tid: "s1_t3", notes: "Tie vote",
         eliminatedPid: null,
@@ -162,7 +162,7 @@ export const SEASONS = [
           { vid: "s1_tc03a_v4", voterPid: "s1_p12", votedForPid: "s1_p07" }, // Sean → Madison
         ],
       },
-      // ── TC 3b: Revote — Sean eliminated (2-0) ──────────────────────
+      // ── TC 3b: Revote — Sean eliminated (2-0) — Blue switched tribe ─
       {
         tcid: "s1_tc03b", eid: "s1_e03", episode: 3, tid: "s1_t3", notes: "Revote",
         eliminatedPid: "s1_p12",
@@ -171,7 +171,7 @@ export const SEASONS = [
           { vid: "s1_tc03b_v2", voterPid: "s1_p02", votedForPid: "s1_p12" }, // Olivia → Sean
         ],
       },
-      // ── TC 4: Clara eliminated (3-1) — Green switched tribe ────────
+      // ── TC 4: Clara eliminated (3-1) — Yellow switched tribe ───────
       {
         tcid: "s1_tc04", eid: "s1_e04", episode: 4, tid: "s1_t4", notes: "",
         eliminatedPid: "s1_p11",
@@ -182,7 +182,7 @@ export const SEASONS = [
           { vid: "s1_tc04_v4", voterPid: "s1_p11", votedForPid: "s1_p10" }, // Clara → Dom
         ],
       },
-      // ── TC 5: Dom eliminated (2-1) — Green switched tribe ──────────
+      // ── TC 5: Dom eliminated (2-1) — Yellow switched tribe ─────────
       {
         tcid: "s1_tc05", eid: "s1_e05", episode: 5, tid: "s1_t4", notes: "",
         eliminatedPid: "s1_p10",
