@@ -32,7 +32,7 @@ export default function SeasonOverview() {
     { label: 'Winner',    value: winner   ? <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link>   : '—' },
     { label: 'Runner-Up', value: runnerUp ? <Link to={`/season/${sid}/cast/${slugify(runnerUp.name)}`}>{runnerUp.name}</Link> : '—' },
     ...(fanFav ? [{ label: 'Fan Favorite', value: <Link to={`/season/${sid}/cast/${slugify(fanFav.name)}`}>{fanFav.name}</Link> }] : []),
-    {
+    ...(season.tribes.length > 0 ? [{
       label: 'Tribes',
       value: (
         <div className="infobox-tribe-swatches">
@@ -41,7 +41,7 @@ export default function SeasonOverview() {
           ))}
         </div>
       ),
-    },
+    }] : []),
   ];
 
   function TribeBadge({ tid }) {
