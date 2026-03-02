@@ -672,21 +672,42 @@ body {
 .pvote-against-list { display: flex; flex-wrap: wrap; gap: 2px 6px; }
 .pvote-empty { color: var(--text-muted); }
 
-.pvote-immune-row td { background: var(--bg-card) !important; }
-.pvote-immune-cell {
+/* Immune rows — full tribe color background */
+.pvote-immune-row td {
   font-weight: 600;
-  font-size: 0.8rem;
-  font-style: italic;
+  font-size: 0.82rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.pvote-immune-cell { text-align: center; }
+
+/* Switched phase TC rows — subtle tribe tint (set inline via style prop) */
+.pvote-vote-switched td { /* inline bg set per player */ }
+
+/* Merged phase TC rows — blue/purple gradient */
+.pvote-vote-merged td {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.13), rgba(59, 130, 246, 0.10));
+}
+.pvote-vote-merged:hover td {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(59, 130, 246, 0.18));
 }
 
-.pvote-separator td {
-  text-align: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: rgba(255,255,255,0.6);
-  padding: 5px 12px;
-  border-color: #111;
+/* Vote chip for the player's vote in cast cell */
+.pvote-vote-chip {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.18);
+  color: var(--link) !important;
+  border-radius: 4px;
+  padding: 1px 8px;
+  text-decoration: none !important;
+  font-weight: 500;
+}
+.pvote-vote-chip:hover { background: rgba(99, 102, 241, 0.3); }
+
+/* Individual immunity label */
+.pvote-indiv-immune {
+  color: var(--accent);
+  font-style: italic;
+  font-size: 0.8rem;
 }
 
 .pvote-elim-row td { background: rgba(239, 68, 68, 0.08); }
@@ -702,6 +723,7 @@ body {
   border-color: #2a0a0a;
 }
 
+/* Jury rows */
 .pvote-juryvote td {
   background: rgba(180, 140, 50, 0.1);
   color: var(--text-muted);
@@ -713,19 +735,26 @@ body {
   color: var(--text-muted);
   white-space: nowrap;
   font-style: normal !important;
+  text-align: center;
+  line-height: 1.4;
 }
 .pvote-jury-target { font-style: normal !important; color: var(--text) !important; }
 .pvote-jury-target a { color: var(--link); text-decoration: none; }
 
+.pvote-jury-received td {
+  background: rgba(180, 140, 50, 0.14);
+}
+
 .pvote-winner td {
-  background: rgba(245, 166, 35, 0.12);
+  background: rgba(245, 166, 35, 0.15);
   color: var(--accent);
   font-weight: 700;
   text-align: center;
-  font-style: normal !important;
 }
 .pvote-finalist td {
+  background: rgba(148, 163, 184, 0.1);
   text-align: center;
+  color: var(--text-muted);
 }
 
 /* ─── Voting History (Fandom grid) ─────────────────── */

@@ -155,7 +155,6 @@ function ChallengeHistoryTab({ player, season, sid }) {
 function VotingHistoryTab({ player, season, sid }) {
   const switchEp = getSwitchEpisode(season);
   const mergeEp = getMergeEpisode(season);
-  const hasJury = season.juryVotes && season.juryVotes.length > 0;
 
   // Group TCs by episode
   const tcsByEp = {};
@@ -164,13 +163,10 @@ function VotingHistoryTab({ player, season, sid }) {
     tcsByEp[tc.episode].push(tc);
   });
 
-  // Episodes where player participated (their tribe went to TC, or merged TC)
-  // We also need to track if player was eliminated
   const eliminatedEp = season.votingHistory.find((tc) => tc.eliminatedPid === player.pid)?.episode ?? null;
 
-  // Build row entries
+  // Build row entries — no separator rows, phase shown via row background
   const tableRows = [];
-  let lastPhase = null;
 
   season.episodes.forEach((ep) => {
     const epNum = ep.number;
@@ -178,64 +174,62 @@ function VotingHistoryTab({ player, season, sid }) {
     const tribe = tribeId ? season.tribes.find((t) => t.tid === tribeId) : null;
     const isMerged = epNum >= mergeEp;
     const isSwitched = epNum >= switchEp && !isMerged;
-
-    // Phase separator rows
     const phase = isMerged ? 'merged' : isSwitched ? 'switched' : 'original';
-    if (phase !== lastPhase) {
-      if (phase === 'switched') tableRows.push({ type: 'separator', label: 'Tribes Switched', color: '#1e4a1e' });
-      if (phase === 'merged')   tableRows.push({ type: 'separator', label: 'Tribes Merged',   color: '#0a0a0a' });
-      lastPhase = phase;
-    }
+
+    // Individual immunity: player won the immunity challenge this episode
+    const indivImmune = isMerged && ep.immunityChallenge?.winner === player.pid;
 
     const episodeTcs = tcsByEp[epNum] ?? [];
     const playerTcs = isMerged
-      ? episodeTcs  // at merge, all TCs involve player
-      : episodeTcs.filter((tc) => tc.tid === tribeId);  // only their tribe's TC
+      ? episodeTcs
+      : episodeTcs.filter((tc) => tc.tid === tribeId);
 
     if (playerTcs.length === 0) {
-      // Tribe was immune this episode
-      const immuneLabel = tribe ? `${tribe.name} Immune` : 'Immune';
-      tableRows.push({ type: 'immune', epNum, tribe, immuneLabel });
+      const immuneLabel = tribe ? `${tribe.name} Tribe Immune` : 'Tribe Immune';
+      tableRows.push({ type: 'immune', epNum, tribe, immuneLabel, phase });
       return;
     }
 
     playerTcs.forEach((tc) => {
-      // What did this player vote?
       const myVote = tc.votes.find((v) => v.voterPid === player.pid);
       const votedForPlayer = myVote ? season.cast.find((p) => p.pid === myVote.votedForPid) : null;
-
-      // Who voted against this player?
       const votesAgainst = tc.votes.filter((v) => v.votedForPid === player.pid);
+      const isRevote = tc.notes?.toLowerCase().includes('revote');
+      const isTie = tc.notes?.toLowerCase().includes('tie vote');
 
       tableRows.push({
         type: 'vote',
-        epNum,
-        tc,
-        tribe,
-        isMerged,
-        myVote,
-        votedForPlayer,
-        votesAgainst,
+        epNum, tc, tribe, phase, isMerged,
+        myVote, votedForPlayer, votesAgainst,
         isElimHere: tc.eliminatedPid === player.pid,
-        hasRevote: tc.notes?.toLowerCase().includes('revote') || tc.notes?.toLowerCase().includes('tie'),
+        indivImmune,
+        isRevote, isTie,
       });
     });
 
-    // Voted out row
     if (eliminatedEp === epNum) {
       tableRows.push({ type: 'votedOut' });
     }
   });
 
-  // Jury vote row
-  const juryVote = hasJury ? season.juryVotes.find((j) => j.jurorPid === player.pid) : null;
+  // Jury-related footer rows
+  const juryVote = season.juryVotes?.find((j) => j.jurorPid === player.pid);
   if (juryVote) {
     const juryTarget = season.cast.find((p) => p.pid === juryVote.votedForPid);
     tableRows.push({ type: 'juryVote', target: juryTarget });
-  } else if (player.pid === season.winnerPid) {
-    tableRows.push({ type: 'winner' });
-  } else if (player.pid === season.runnerUpPid) {
-    tableRows.push({ type: 'finalist' });
+  }
+
+  const isWinner   = player.pid === season.winnerPid;
+  const isRunnerUp = player.pid === season.runnerUpPid;
+  if (isWinner || isRunnerUp) {
+    const votesForPlayer = (season.juryVotes ?? [])
+      .filter((j) => j.votedForPid === player.pid)
+      .map((j) => season.cast.find((p) => p.pid === j.jurorPid))
+      .filter(Boolean);
+    if (votesForPlayer.length > 0) {
+      tableRows.push({ type: 'juryVotesReceived', voters: votesForPlayer });
+    }
+    tableRows.push({ type: isWinner ? 'winner' : 'finalist' });
   }
 
   return (
@@ -250,28 +244,22 @@ function VotingHistoryTab({ player, season, sid }) {
         </thead>
         <tbody>
           {tableRows.map((row, i) => {
-            if (row.type === 'separator') {
-              return (
-                <tr key={i} className="pvote-separator">
-                  <td colSpan={3} style={{ background: row.color }}>
-                    {row.label}
-                  </td>
-                </tr>
-              );
-            }
-
+            // ── Tribe immune ──────────────────────────────────────────
             if (row.type === 'immune') {
-              const bg = row.tribe ? row.tribe.color + '33' : 'transparent';
+              const bg = row.tribe?.color ?? '#888';
               return (
                 <tr key={i} className="pvote-immune-row">
-                  <td className="pvote-ep-cell">{row.epNum}</td>
-                  <td className="pvote-immune-cell" colSpan={2} style={{ color: row.tribe?.color }}>
-                    {row.immuneLabel}
+                  <td className="pvote-ep-cell" style={{ background: bg, color: '#fff', borderColor: bg }}>
+                    {row.epNum}
+                  </td>
+                  <td className="pvote-immune-cell" colSpan={2} style={{ background: bg, color: '#fff', borderColor: bg }}>
+                    <em>{row.immuneLabel}</em>
                   </td>
                 </tr>
               );
             }
 
+            // ── Voted out ─────────────────────────────────────────────
             if (row.type === 'votedOut') {
               return (
                 <tr key={i} className="pvote-votedout">
@@ -280,25 +268,44 @@ function VotingHistoryTab({ player, season, sid }) {
               );
             }
 
+            // ── Jury vote cast ────────────────────────────────────────
             if (row.type === 'juryVote') {
               return (
                 <tr key={i} className="pvote-juryvote">
-                  <td className="pvote-jury-label" colSpan={1}>Jury Vote</td>
+                  <td className="pvote-jury-label">Jury Vote</td>
                   <td colSpan={2} className="pvote-jury-target">
                     {row.target ? (
-                      <Link to={`/season/${sid}/cast/${slugify(row.target.name)}`}>
-                        {row.target.name}
-                      </Link>
+                      <Link to={`/season/${sid}/cast/${slugify(row.target.name)}`}>{row.target.name}</Link>
                     ) : '—'}
                   </td>
                 </tr>
               );
             }
 
+            // ── Jury votes received (winner / runner-up) ──────────────
+            if (row.type === 'juryVotesReceived') {
+              return (
+                <tr key={i} className="pvote-juryvote pvote-jury-received">
+                  <td className="pvote-jury-label">Jury Votes<br />for {player.name}</td>
+                  <td colSpan={2} className="pvote-jury-target">
+                    {row.voters.map((v, vi) => (
+                      <span key={v.pid}>
+                        {vi > 0 && ', '}
+                        <Link to={`/season/${sid}/cast/${slugify(v.name)}`}>{v.name}</Link>
+                      </span>
+                    ))}
+                  </td>
+                </tr>
+              );
+            }
+
+            // ── Winner / finalist footer ──────────────────────────────
             if (row.type === 'winner') {
               return (
                 <tr key={i} className="pvote-juryvote pvote-winner">
-                  <td colSpan={3}>★ Sole Survivor</td>
+                  <td colSpan={3}>
+                    <em>Sole Survivor{season.days ? `, Day ${season.days}` : ''}</em>
+                  </td>
                 </tr>
               );
             }
@@ -306,28 +313,39 @@ function VotingHistoryTab({ player, season, sid }) {
             if (row.type === 'finalist') {
               return (
                 <tr key={i} className="pvote-juryvote pvote-finalist">
-                  <td colSpan={3}>Runner-Up</td>
+                  <td colSpan={3}>
+                    <em>Runner-Up{season.days ? `, Day ${season.days}` : ''}</em>
+                  </td>
                 </tr>
               );
             }
 
-            // type === 'vote'
-            const { tc, myVote, votedForPlayer, votesAgainst, isElimHere, hasRevote } = row;
-            const tribeColor = row.isMerged
-              ? 'var(--accent)'
-              : row.tribe?.color ?? '#888';
+            // ── Regular vote row ──────────────────────────────────────
+            const { tc, myVote, votedForPlayer, votesAgainst, isElimHere, indivImmune, isRevote, isTie } = row;
+            const tribeColor = row.tribe?.color;
+            const rowStyle = row.phase === 'switched' && tribeColor
+              ? { background: tribeColor + '22' }
+              : {};
 
             return (
-              <tr key={i} className={isElimHere ? 'pvote-elim-row' : 'pvote-vote-row'}>
+              <tr key={i}
+                className={[
+                  isElimHere        ? 'pvote-elim-row'     : 'pvote-vote-row',
+                  row.phase === 'merged'   ? 'pvote-vote-merged'   : '',
+                  row.phase === 'switched' ? 'pvote-vote-switched' : '',
+                ].filter(Boolean).join(' ')}
+                style={rowStyle}
+              >
                 <td className="pvote-ep-cell">
                   {row.epNum}
-                  {hasRevote && <span className="pvote-revote-tag"> {tc.notes}</span>}
+                  {isRevote && <span className="pvote-revote-tag"> Revote</span>}
+                  {isTie    && <span className="pvote-revote-tag"> Tie</span>}
                 </td>
                 <td className="pvote-cast-cell">
                   {myVote ? (
                     votedForPlayer ? (
                       <Link to={`/season/${sid}/cast/${slugify(votedForPlayer.name)}`}
-                        style={{ color: 'var(--link)' }}>
+                        className="pvote-vote-chip">
                         {votedForPlayer.name}
                       </Link>
                     ) : getPlayerName(season, myVote.votedForPid)
@@ -336,7 +354,9 @@ function VotingHistoryTab({ player, season, sid }) {
                   )}
                 </td>
                 <td className="pvote-against-cell">
-                  {votesAgainst.length > 0 ? (
+                  {indivImmune ? (
+                    <em className="pvote-indiv-immune">Individual Immunity</em>
+                  ) : votesAgainst.length > 0 ? (
                     <span className="pvote-against-list">
                       {votesAgainst.map((v, vi) => {
                         const voter = season.cast.find((p) => p.pid === v.voterPid);
