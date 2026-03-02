@@ -25,7 +25,7 @@ export const SEASONS = [
     filmingDates: "September 21, 2024",
     days: 14,
     logoPath: "/survivor/logos/season-1.png",
-    castPhotoPath: null,
+    castPhotoPath: "https://i.imgur.com/ASseu6A.jpeg",
     winnerPid: "s1_p01",
     runnerUpPid: "s1_p02",
     fanFavoritePid: null,
@@ -79,16 +79,20 @@ export const SEASONS = [
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: null, description: null, winner: null } },
       { eid: "s1_e11", number: 11, title: "Finale",     videoUrl: null,
+        images: [
+          { url: "https://i.imgur.com/SVUjVa1.jpeg", caption: "Final votes" },
+          { url: "https://i.imgur.com/rlw6ktU.jpeg", caption: "Jace wins Season 1" },
+        ],
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: null, description: null, winner: null } },
     ],
 
     tribes: [
-      { tid: "s1_t1", name: "Purple", color: "#7c3aed" },
-      { tid: "s1_t2", name: "Blue",   color: "#2563eb" },
-      { tid: "s1_t3", name: "Yellow", color: "#ca8a04" },
-      { tid: "s1_t4", name: "Green",  color: "#16a34a" },
-      { tid: "s1_t5", name: "Orange", color: "#ea580c" },
+      { tid: "s1_t1", name: "Purple", color: "#7c3aed", phase: "original" },
+      { tid: "s1_t2", name: "Blue",   color: "#2563eb", phase: "original" },
+      { tid: "s1_t3", name: "Yellow", color: "#ca8a04", phase: "switched" },
+      { tid: "s1_t4", name: "Green",  color: "#16a34a", phase: "switched" },
+      { tid: "s1_t5", name: "Orange", color: "#ea580c", phase: "switched" },
     ],
 
     cast: [

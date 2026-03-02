@@ -130,6 +130,18 @@ export default function EpisodePage() {
         <div className="episode-no-video">No video added yet.</div>
       )}
 
+      {/* Episode Images */}
+      {episode.images && episode.images.length > 0 && (
+        <div className="episode-images">
+          {episode.images.map((img, i) => (
+            <figure key={i} className="episode-image-figure">
+              <img src={img.url} alt={img.caption || `Episode ${episode.number} image ${i + 1}`} className="episode-image" />
+              {img.caption && <figcaption className="episode-image-caption">{img.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      )}
+
       {/* Challenges */}
       {(hasReward || hasImmunity) && (
         <>
