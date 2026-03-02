@@ -243,6 +243,8 @@ export const SEASONS = [
     winnerPid: "s2_p01",
     runnerUpPid: "s2_p02",
     fanFavoritePid: "s2_p03",
+    logoPath: "/survivor/logos/season-2.png",
+    juryVotes: [],
 
     episodes: [
       { eid: "s2_e01", number: 1, title: "Premiere" },
@@ -328,6 +330,8 @@ export const SEASONS = [
     winnerPid: null,
     runnerUpPid: null,
     fanFavoritePid: null,
+    logoPath: "/survivor/logos/season-3.png",
+    juryVotes: [],
     episodes: [],
     tribes: [],
     cast: [],
