@@ -27,7 +27,6 @@ export default function SeasonOverview() {
 
   const infoRows = [
     { label: 'Season',    value: season.name },
-    { label: 'Location',  value: season.location },
     { label: 'Filmed',    value: season.filmingDates },
     { label: 'Players',   value: season.cast.length || '—' },
     { label: 'Winner',    value: winner   ? <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link>   : '—' },
