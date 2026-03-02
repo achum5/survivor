@@ -28,11 +28,20 @@ export default function SeasonOverview() {
     { label: 'Season',    value: season.name },
     { label: 'Location',  value: season.location },
     { label: 'Filmed',    value: season.filmingDates },
-    { label: 'Episodes',  value: season.episodes.length || '—' },
     { label: 'Players',   value: season.cast.length || '—' },
     { label: 'Winner',    value: winner   ? <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link>   : '—' },
     { label: 'Runner-Up', value: runnerUp ? <Link to={`/season/${sid}/cast/${slugify(runnerUp.name)}`}>{runnerUp.name}</Link> : '—' },
     ...(fanFav ? [{ label: 'Fan Favorite', value: <Link to={`/season/${sid}/cast/${slugify(fanFav.name)}`}>{fanFav.name}</Link> }] : []),
+    {
+      label: 'Tribes',
+      value: (
+        <div className="infobox-tribe-swatches">
+          {season.tribes.map((t) => (
+            <span key={t.tid} className="infobox-tribe-swatch" style={{ background: t.color }} title={t.name} />
+          ))}
+        </div>
+      ),
+    },
   ];
 
   function TribeBadge({ tid }) {
@@ -59,17 +68,14 @@ export default function SeasonOverview() {
 
       <h1>{season.name}</h1>
 
-      {season.logoPath && (
-        <div className="season-logo-header">
-          <img src={season.logoPath} alt={`${season.name} logo`} />
-        </div>
-      )}
-
       <div className="clearfix">
         <Infobox
           title={season.name}
           headerColor={season.tribes[0]?.color || '#8b0000'}
           rows={infoRows}
+          logo={season.logoPath}
+          castPhoto={season.castPhotoPath}
+          chronology={{ prev: prevSeason, next: nextSeason }}
         />
 
         <div className="overview-meta">
@@ -178,15 +184,6 @@ export default function SeasonOverview() {
         );
       })}
 
-      {/* Previous / Next season */}
-      <div className="season-nav">
-        {prevSeason ? (
-          <Link to={`/season/${prevSeason.sid}`} className="season-nav-btn">← {prevSeason.name}</Link>
-        ) : <span />}
-        {nextSeason && (
-          <Link to={`/season/${nextSeason.sid}`} className="season-nav-btn">{nextSeason.name} →</Link>
-        )}
-      </div>
     </div>
   );
 }
