@@ -38,6 +38,12 @@ export default function SeasonOverview() {
 
       <h1>{season.name}: {season.subtitle}</h1>
 
+      {season.logoPath && (
+        <div className="season-logo-header">
+          <img src={season.logoPath} alt={`${season.name} logo`} />
+        </div>
+      )}
+
       <div className="clearfix">
         <Infobox
           title={season.name}

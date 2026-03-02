@@ -564,3 +564,22 @@ body {
   font-weight: 600;
   color: var(--accent);
 }
+
+/* ── Season Logos ────────────────────────────────────────────── */
+.season-logo-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+}
+
+.season-logo-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.season-logo-header img {
+  max-height: 120px;
+  max-width: 100%;
+  object-fit: contain;
+}

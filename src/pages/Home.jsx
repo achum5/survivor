@@ -21,6 +21,7 @@ export default function Home() {
       <table className="season-table">
         <thead>
           <tr>
+            <th>Logo</th>
             <th>Season</th>
             <th>Subtitle</th>
             <th>Location</th>
@@ -35,6 +36,15 @@ export default function Home() {
             const winner = s.cast.find((p) => p.pid === s.winnerPid);
             return (
               <tr key={s.sid}>
+                <td>
+                  {s.logoPath ? (
+                    <img
+                      src={s.logoPath}
+                      alt={`${s.name} logo`}
+                      className="season-logo-thumb"
+                    />
+                  ) : '—'}
+                </td>
                 <td>
                   {comingSoon ? (
                     <span>{s.name}</span>
