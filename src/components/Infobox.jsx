@@ -22,7 +22,7 @@ export default function Infobox({ title, headerColor = '#e74c3c', rows = [], log
         )}
 
         {/* Season Information sub-header */}
-        {logo && rows.length > 0 && (
+        {logo && (
           <tr>
             <td colSpan={2} className="infobox-section-header">Season Information</td>
           </tr>
