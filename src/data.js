@@ -60,16 +60,17 @@ export const SEASONS = [
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: "Nothing But Net", type: "Immunity", description: "A basketball free throw shooting competition. Dom missed the final shot, costing Purple the win.", winner: "s1_t2",
           results: [{ id: "s1_t2", place: 1 }, { id: "s1_t1", place: 2 }], sitOuts: [] } },
-      { eid: "s1_e03", number: 3,  title: "Episode 3",  videoUrl: null,
+      { eid: "s1_e03", number: 3,  title: "Episode 3",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=852",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
+        immunityChallenge: { name: "Word Scramble", type: "Immunity", description: "Each tribe received a sheet of paper and had 3 minutes to write down as many valid words (3+ letters) as they could form from the letters in the word \"CHALLENGE\". Words were scored against a pre-made Scrabble-valid answer key, and teams graded each other's lists. Most valid words won immunity; the two lowest-scoring tribes went to tribal council. One player was caught writing after time was called and received a −1 penalty.", winner: "s1_t2",
+          results: [{ id: "s1_t2", place: 1 }, { id: "s1_t3", place: 2 }, { id: "s1_t4", place: 3 }], sitOuts: [] } },
       { eid: "s1_e04", number: 4,  title: "Episode 4",  videoUrl: null,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e05", number: 5,  title: "Episode 5",  videoUrl: null,
+      { eid: "s1_e05", number: 5,  title: "The Merge",  videoUrl: null,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e06", number: 6,  title: "The Merge",  videoUrl: null,
+      { eid: "s1_e06", number: 6,  title: "Episode 6",  videoUrl: null,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: null, description: null, winner: null } },
       { eid: "s1_e07", number: 7,  title: "Episode 7",  videoUrl: null,
@@ -151,9 +152,13 @@ export const SEASONS = [
           { vid: "s1_tc02_v6", voterPid: "s1_p13", votedForPid: "s1_p02" }, // Marissa → Olivia
         ],
       },
-      // ── TC 3a: Tie vote (2-2) — Blue switched tribe ────────────────
+      // ── TC 3a: Tie vote (2-2) — Blue switched tribe — Ep3 tribal 1 ─
+      // Olivia played a hidden immunity idol on herself (no votes cast against her).
+      // Boys voted Madison; Girls voted Sean → 2-2 tie.
+      // Video: https://youtu.be/qPJoYyABYHE?t=1504
       {
-        tcid: "s1_tc03a", eid: "s1_e03", episode: 3, tid: "s1_t3", notes: "Tie vote",
+        tcid: "s1_tc03a", eid: "s1_e03", episode: 3, tid: "s1_t3",
+        notes: "Tie vote (2-2). Olivia played a hidden immunity idol on herself; no votes were cast against her so none were nullified. Boys voted Madison; Girls voted Sean.",
         eliminatedPid: null,
         votes: [
           { vid: "s1_tc03a_v1", voterPid: "s1_p01", votedForPid: "s1_p07" }, // Jace → Madison
@@ -162,109 +167,113 @@ export const SEASONS = [
           { vid: "s1_tc03a_v4", voterPid: "s1_p12", votedForPid: "s1_p07" }, // Sean → Madison
         ],
       },
-      // ── TC 3b: Revote — Sean eliminated (2-0) — Blue switched tribe ─
+      // ── TC 3b: Revote — Sean eliminated (2-0) — Blue, Ep3 tribal 1 ─
+      // Madison and Sean were immune on the revote. With Olivia idol-protected,
+      // Jace was the only eligible rocks candidate — forcing his vote to Sean.
       {
-        tcid: "s1_tc03b", eid: "s1_e03", episode: 3, tid: "s1_t3", notes: "Revote",
+        tcid: "s1_tc03b", eid: "s1_e03", episode: 3, tid: "s1_t3",
+        notes: "Revote. Madison and Sean were immune as the tied players. Olivia was idol-protected, making Jace the sole eligible rocks candidate — forcing him to flip and vote Sean.",
         eliminatedPid: "s1_p12",
         votes: [
           { vid: "s1_tc03b_v1", voterPid: "s1_p01", votedForPid: "s1_p12" }, // Jace → Sean
           { vid: "s1_tc03b_v2", voterPid: "s1_p02", votedForPid: "s1_p12" }, // Olivia → Sean
         ],
       },
-      // ── TC 4: Clara eliminated (3-1) — Yellow switched tribe ───────
+      // ── TC 3c: Clara eliminated (3-1) — Yellow switched tribe — Ep3 tribal 2 ─
+      // Video: https://youtu.be/qPJoYyABYHE?t=2319
       {
-        tcid: "s1_tc04", eid: "s1_e04", episode: 4, tid: "s1_t4", notes: "",
+        tcid: "s1_tc03c", eid: "s1_e03", episode: 3, tid: "s1_t4", notes: "",
         eliminatedPid: "s1_p11",
         votes: [
-          { vid: "s1_tc04_v1", voterPid: "s1_p04", votedForPid: "s1_p11" }, // Caroline → Clara
-          { vid: "s1_tc04_v2", voterPid: "s1_p05", votedForPid: "s1_p11" }, // Abdul → Clara
-          { vid: "s1_tc04_v3", voterPid: "s1_p10", votedForPid: "s1_p11" }, // Dom → Clara
-          { vid: "s1_tc04_v4", voterPid: "s1_p11", votedForPid: "s1_p10" }, // Clara → Dom
+          { vid: "s1_tc03c_v1", voterPid: "s1_p04", votedForPid: "s1_p11" }, // Caroline → Clara
+          { vid: "s1_tc03c_v2", voterPid: "s1_p05", votedForPid: "s1_p11" }, // Abdul → Clara
+          { vid: "s1_tc03c_v3", voterPid: "s1_p10", votedForPid: "s1_p11" }, // Dom → Clara
+          { vid: "s1_tc03c_v4", voterPid: "s1_p11", votedForPid: "s1_p10" }, // Clara → Dom
         ],
       },
-      // ── TC 5: Dom eliminated (2-1) — Yellow switched tribe ─────────
+      // ── TC 4: Dom eliminated (2-1) — Yellow switched tribe ─────────
       {
-        tcid: "s1_tc05", eid: "s1_e05", episode: 5, tid: "s1_t4", notes: "",
+        tcid: "s1_tc04", eid: "s1_e04", episode: 4, tid: "s1_t4", notes: "",
         eliminatedPid: "s1_p10",
         votes: [
-          { vid: "s1_tc05_v1", voterPid: "s1_p04", votedForPid: "s1_p10" }, // Caroline → Dom
-          { vid: "s1_tc05_v2", voterPid: "s1_p05", votedForPid: "s1_p10" }, // Abdul → Dom
-          { vid: "s1_tc05_v3", voterPid: "s1_p10", votedForPid: "s1_p04" }, // Dom → Caroline
+          { vid: "s1_tc04_v1", voterPid: "s1_p04", votedForPid: "s1_p10" }, // Caroline → Dom
+          { vid: "s1_tc04_v2", voterPid: "s1_p05", votedForPid: "s1_p10" }, // Abdul → Dom
+          { vid: "s1_tc04_v3", voterPid: "s1_p10", votedForPid: "s1_p04" }, // Dom → Caroline
         ],
       },
-      // ── TC 6: Savannah eliminated (8-1) — Merge ────────────────────
+      // ── TC 5: Savannah eliminated (8-1) — Merge ────────────────────
       {
-        tcid: "s1_tc06", eid: "s1_e06", episode: 6, tid: null, notes: "",
+        tcid: "s1_tc05", eid: "s1_e05", episode: 5, tid: null, notes: "",
         eliminatedPid: "s1_p09",
         votes: [
-          { vid: "s1_tc06_v1", voterPid: "s1_p01", votedForPid: "s1_p09" }, // Jace → Savannah
-          { vid: "s1_tc06_v2", voterPid: "s1_p02", votedForPid: "s1_p09" }, // Olivia → Savannah
-          { vid: "s1_tc06_v3", voterPid: "s1_p03", votedForPid: "s1_p09" }, // Meredith → Savannah
-          { vid: "s1_tc06_v4", voterPid: "s1_p04", votedForPid: "s1_p09" }, // Caroline → Savannah
-          { vid: "s1_tc06_v5", voterPid: "s1_p05", votedForPid: "s1_p09" }, // Abdul → Savannah
-          { vid: "s1_tc06_v6", voterPid: "s1_p06", votedForPid: "s1_p09" }, // Jacob → Savannah
-          { vid: "s1_tc06_v7", voterPid: "s1_p07", votedForPid: "s1_p09" }, // Madison → Savannah
-          { vid: "s1_tc06_v8", voterPid: "s1_p08", votedForPid: "s1_p09" }, // Kelsey → Savannah
-          { vid: "s1_tc06_v9", voterPid: "s1_p09", votedForPid: "s1_p03" }, // Savannah → Meredith
+          { vid: "s1_tc05_v1", voterPid: "s1_p01", votedForPid: "s1_p09" }, // Jace → Savannah
+          { vid: "s1_tc05_v2", voterPid: "s1_p02", votedForPid: "s1_p09" }, // Olivia → Savannah
+          { vid: "s1_tc05_v3", voterPid: "s1_p03", votedForPid: "s1_p09" }, // Meredith → Savannah
+          { vid: "s1_tc05_v4", voterPid: "s1_p04", votedForPid: "s1_p09" }, // Caroline → Savannah
+          { vid: "s1_tc05_v5", voterPid: "s1_p05", votedForPid: "s1_p09" }, // Abdul → Savannah
+          { vid: "s1_tc05_v6", voterPid: "s1_p06", votedForPid: "s1_p09" }, // Jacob → Savannah
+          { vid: "s1_tc05_v7", voterPid: "s1_p07", votedForPid: "s1_p09" }, // Madison → Savannah
+          { vid: "s1_tc05_v8", voterPid: "s1_p08", votedForPid: "s1_p09" }, // Kelsey → Savannah
+          { vid: "s1_tc05_v9", voterPid: "s1_p09", votedForPid: "s1_p03" }, // Savannah → Meredith
         ],
       },
-      // ── TC 7: Kelsey eliminated (5-3) — Merge ──────────────────────
+      // ── TC 6: Kelsey eliminated (5-3) — Merge ──────────────────────
       {
-        tcid: "s1_tc07", eid: "s1_e07", episode: 7, tid: null, notes: "",
+        tcid: "s1_tc06", eid: "s1_e06", episode: 6, tid: null, notes: "",
         eliminatedPid: "s1_p08",
         votes: [
-          { vid: "s1_tc07_v1", voterPid: "s1_p01", votedForPid: "s1_p08" }, // Jace → Kelsey
-          { vid: "s1_tc07_v2", voterPid: "s1_p02", votedForPid: "s1_p08" }, // Olivia → Kelsey
-          { vid: "s1_tc07_v3", voterPid: "s1_p03", votedForPid: "s1_p08" }, // Meredith → Kelsey
-          { vid: "s1_tc07_v4", voterPid: "s1_p06", votedForPid: "s1_p08" }, // Jacob → Kelsey
-          { vid: "s1_tc07_v5", voterPid: "s1_p07", votedForPid: "s1_p08" }, // Madison → Kelsey
-          { vid: "s1_tc07_v6", voterPid: "s1_p04", votedForPid: "s1_p03" }, // Caroline → Meredith
-          { vid: "s1_tc07_v7", voterPid: "s1_p05", votedForPid: "s1_p03" }, // Abdul → Meredith
-          { vid: "s1_tc07_v8", voterPid: "s1_p08", votedForPid: "s1_p03" }, // Kelsey → Meredith
+          { vid: "s1_tc06_v1", voterPid: "s1_p01", votedForPid: "s1_p08" }, // Jace → Kelsey
+          { vid: "s1_tc06_v2", voterPid: "s1_p02", votedForPid: "s1_p08" }, // Olivia → Kelsey
+          { vid: "s1_tc06_v3", voterPid: "s1_p03", votedForPid: "s1_p08" }, // Meredith → Kelsey
+          { vid: "s1_tc06_v4", voterPid: "s1_p06", votedForPid: "s1_p08" }, // Jacob → Kelsey
+          { vid: "s1_tc06_v5", voterPid: "s1_p07", votedForPid: "s1_p08" }, // Madison → Kelsey
+          { vid: "s1_tc06_v6", voterPid: "s1_p04", votedForPid: "s1_p03" }, // Caroline → Meredith
+          { vid: "s1_tc06_v7", voterPid: "s1_p05", votedForPid: "s1_p03" }, // Abdul → Meredith
+          { vid: "s1_tc06_v8", voterPid: "s1_p08", votedForPid: "s1_p03" }, // Kelsey → Meredith
         ],
       },
-      // ── TC 8: Madison eliminated (5-2) — Merge ─────────────────────
+      // ── TC 7: Madison eliminated (5-2) — Merge ─────────────────────
       {
-        tcid: "s1_tc08", eid: "s1_e08", episode: 8, tid: null, notes: "",
+        tcid: "s1_tc07", eid: "s1_e07", episode: 7, tid: null, notes: "",
         eliminatedPid: "s1_p07",
         votes: [
-          { vid: "s1_tc08_v1", voterPid: "s1_p02", votedForPid: "s1_p07" }, // Olivia → Madison
-          { vid: "s1_tc08_v2", voterPid: "s1_p03", votedForPid: "s1_p07" }, // Meredith → Madison
-          { vid: "s1_tc08_v3", voterPid: "s1_p04", votedForPid: "s1_p07" }, // Caroline → Madison
-          { vid: "s1_tc08_v4", voterPid: "s1_p05", votedForPid: "s1_p07" }, // Abdul → Madison
-          { vid: "s1_tc08_v5", voterPid: "s1_p06", votedForPid: "s1_p07" }, // Jacob → Madison
-          { vid: "s1_tc08_v6", voterPid: "s1_p01", votedForPid: "s1_p05" }, // Jace → Abdul
-          { vid: "s1_tc08_v7", voterPid: "s1_p07", votedForPid: "s1_p05" }, // Madison → Abdul
+          { vid: "s1_tc07_v1", voterPid: "s1_p02", votedForPid: "s1_p07" }, // Olivia → Madison
+          { vid: "s1_tc07_v2", voterPid: "s1_p03", votedForPid: "s1_p07" }, // Meredith → Madison
+          { vid: "s1_tc07_v3", voterPid: "s1_p04", votedForPid: "s1_p07" }, // Caroline → Madison
+          { vid: "s1_tc07_v4", voterPid: "s1_p05", votedForPid: "s1_p07" }, // Abdul → Madison
+          { vid: "s1_tc07_v5", voterPid: "s1_p06", votedForPid: "s1_p07" }, // Jacob → Madison
+          { vid: "s1_tc07_v6", voterPid: "s1_p01", votedForPid: "s1_p05" }, // Jace → Abdul
+          { vid: "s1_tc07_v7", voterPid: "s1_p07", votedForPid: "s1_p05" }, // Madison → Abdul
         ],
       },
-      // ── TC 9: Jacob eliminated (4-2) — Merge ───────────────────────
+      // ── TC 8: Jacob eliminated (4-2) — Merge ───────────────────────
       {
-        tcid: "s1_tc09", eid: "s1_e09", episode: 9, tid: null, notes: "",
+        tcid: "s1_tc08", eid: "s1_e08", episode: 8, tid: null, notes: "",
         eliminatedPid: "s1_p06",
         votes: [
-          { vid: "s1_tc09_v1", voterPid: "s1_p01", votedForPid: "s1_p06" }, // Jace → Jacob
-          { vid: "s1_tc09_v2", voterPid: "s1_p02", votedForPid: "s1_p06" }, // Olivia → Jacob
-          { vid: "s1_tc09_v3", voterPid: "s1_p03", votedForPid: "s1_p06" }, // Meredith → Jacob
-          { vid: "s1_tc09_v4", voterPid: "s1_p05", votedForPid: "s1_p06" }, // Abdul → Jacob
-          { vid: "s1_tc09_v5", voterPid: "s1_p04", votedForPid: "s1_p01" }, // Caroline → Jace
-          { vid: "s1_tc09_v6", voterPid: "s1_p06", votedForPid: "s1_p01" }, // Jacob → Jace
+          { vid: "s1_tc08_v1", voterPid: "s1_p01", votedForPid: "s1_p06" }, // Jace → Jacob
+          { vid: "s1_tc08_v2", voterPid: "s1_p02", votedForPid: "s1_p06" }, // Olivia → Jacob
+          { vid: "s1_tc08_v3", voterPid: "s1_p03", votedForPid: "s1_p06" }, // Meredith → Jacob
+          { vid: "s1_tc08_v4", voterPid: "s1_p05", votedForPid: "s1_p06" }, // Abdul → Jacob
+          { vid: "s1_tc08_v5", voterPid: "s1_p04", votedForPid: "s1_p01" }, // Caroline → Jace
+          { vid: "s1_tc08_v6", voterPid: "s1_p06", votedForPid: "s1_p01" }, // Jacob → Jace
         ],
       },
-      // ── TC 10: Abdul eliminated (3-2) — Merge ──────────────────────
+      // ── TC 9: Abdul eliminated (3-2) — Merge ──────────────────────
       {
-        tcid: "s1_tc10", eid: "s1_e10", episode: 10, tid: null, notes: "",
+        tcid: "s1_tc09", eid: "s1_e09", episode: 9, tid: null, notes: "",
         eliminatedPid: "s1_p05",
         votes: [
-          { vid: "s1_tc10_v1", voterPid: "s1_p02", votedForPid: "s1_p05" }, // Olivia → Abdul
-          { vid: "s1_tc10_v2", voterPid: "s1_p03", votedForPid: "s1_p05" }, // Meredith → Abdul
-          { vid: "s1_tc10_v3", voterPid: "s1_p04", votedForPid: "s1_p05" }, // Caroline → Abdul
-          { vid: "s1_tc10_v4", voterPid: "s1_p01", votedForPid: "s1_p02" }, // Jace → Olivia
-          { vid: "s1_tc10_v5", voterPid: "s1_p05", votedForPid: "s1_p02" }, // Abdul → Olivia
+          { vid: "s1_tc09_v1", voterPid: "s1_p02", votedForPid: "s1_p05" }, // Olivia → Abdul
+          { vid: "s1_tc09_v2", voterPid: "s1_p03", votedForPid: "s1_p05" }, // Meredith → Abdul
+          { vid: "s1_tc09_v3", voterPid: "s1_p04", votedForPid: "s1_p05" }, // Caroline → Abdul
+          { vid: "s1_tc09_v4", voterPid: "s1_p01", votedForPid: "s1_p02" }, // Jace → Olivia
+          { vid: "s1_tc09_v5", voterPid: "s1_p05", votedForPid: "s1_p02" }, // Abdul → Olivia
         ],
       },
-      // ── TC 11: Caroline — eliminated, no vote ──────────────────────
+      // ── TC 10: Caroline eliminated — no vote ───────────────────────
       {
-        tcid: "s1_tc11", eid: "s1_e11", episode: 11, tid: null, notes: "No vote — eliminated",
+        tcid: "s1_tc10", eid: "s1_e10", episode: 10, tid: null, notes: "No vote — eliminated",
         eliminatedPid: "s1_p04",
         votes: [],
       },
