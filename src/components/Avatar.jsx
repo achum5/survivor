@@ -1,7 +1,7 @@
 // src/components/Avatar.jsx
 import { usePhotoEditor } from '../context/PhotoEditorContext';
 
-export default function Avatar({ name, color, size = 48, photoUrl, imgStyle, pid }) {
+export default function Avatar({ name, color, size = 48, photoUrl, imgStyle, pid, noBorder = false }) {
   const ctx = usePhotoEditor();
   const editMode = ctx?.editMode ?? false;
   const setEditing = ctx?.setEditing;
@@ -22,7 +22,7 @@ export default function Avatar({ name, color, size = 48, photoUrl, imgStyle, pid
           borderRadius: '50%',
           overflow: 'hidden',
           flexShrink: 0,
-          border: `2px solid ${color}`,
+          border: noBorder ? 'none' : `2px solid ${color}`,
           position: 'relative',
         }}
       >
