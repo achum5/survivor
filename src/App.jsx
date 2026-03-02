@@ -23,7 +23,7 @@ export default function App() {
           <Route path="/season/:sid/challenges" element={<Challenges />} />
         </Routes>
         <footer className="wiki-footer">
-          Backyard Survivor Wiki — Not affiliated with CBS Survivor
+          14508 Survivor Wiki — Not affiliated with CBS Survivor
         </footer>
       </div>
     </div>

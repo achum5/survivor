@@ -10,7 +10,7 @@ export default function Sidebar() {
       <div className="sidebar-logo">
         <NavLink to="/" className="sidebar-brand">
           <span className="sidebar-brand-icon">🔥</span>
-          <span className="sidebar-brand-text">Backyard Survivor Wiki</span>
+          <span className="sidebar-brand-text">14508 Survivor Wiki</span>
         </NavLink>
       </div>
 

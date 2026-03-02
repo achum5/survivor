@@ -10,7 +10,7 @@ export default function Home() {
       <Breadcrumbs crumbs={[{ label: 'Main Page' }]} />
 
       <div className="home-hero">
-        <h1>Backyard Survivor Wiki</h1>
+        <h1>14508 Survivor Wiki</h1>
         <p>
           The definitive source for every season, castaway, and tribal council
           of Backyard Survivor.
