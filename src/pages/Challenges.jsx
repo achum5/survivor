@@ -45,9 +45,10 @@ export default function Challenges() {
         </thead>
         <tbody>
           {season.challenges.map((c) => {
-            const winnerDisplay = c.winnerPid ? (
-              <Link to={`/season/${sid}/cast/${slugify(getPlayerName(season, c.winnerPid))}`}>
-                {getPlayerName(season, c.winnerPid)}
+            const winnerName = c.winnerPid ? getPlayerName(season, c.winnerPid) : null;
+            const winnerDisplay = winnerName ? (
+              <Link to={`/season/${sid}/cast/${slugify(winnerName)}`}>
+                {winnerName}
               </Link>
             ) : c.winnerTid ? (
               getTribeName(season, c.winnerTid)

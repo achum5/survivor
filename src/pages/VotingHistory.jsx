@@ -1,7 +1,7 @@
 // src/pages/VotingHistory.jsx
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { getPlayerName, getTribeColor, slugify } from '../utils/helpers';
+import { getPlayerName, getTribeColor, getTribeName, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function VotingHistory() {
@@ -71,7 +71,7 @@ export default function VotingHistory() {
                 <tr key={tc.tcid}>
                   <td className="ep-label">Ep. {tc.episode}</td>
                   <td className="ep-label" style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>
-                    {tc.notes || (tc.tid ? season.tribes.find(t => t.tid === tc.tid)?.name : 'Merge')}
+                    {tc.notes || (tc.tid ? getTribeName(season, tc.tid) : 'Merged')}
                   </td>
                   {columns.map((p) => {
                     const didVote = voterPids.has(p.pid);

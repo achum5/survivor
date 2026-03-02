@@ -81,8 +81,8 @@ export default function PlayerPage() {
               </tr>
             </thead>
             <tbody>
-              {votesCast.map((v, i) => (
-                <tr key={i}>
+              {votesCast.map((v) => (
+                <tr key={v.tcid}>
                   <td>Episode {v.episode}</td>
                   <td>{v.target}</td>
                 </tr>
@@ -103,8 +103,8 @@ export default function PlayerPage() {
               </tr>
             </thead>
             <tbody>
-              {votesReceived.map((v, i) => (
-                <tr key={i}>
+              {votesReceived.map((v) => (
+                <tr key={v.tcid}>
                   <td>Episode {v.episode}</td>
                   <td>{v.voter}</td>
                 </tr>

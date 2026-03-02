@@ -41,7 +41,7 @@ export default function SeasonOverview() {
       <div className="clearfix">
         <Infobox
           title={season.name}
-          headerColor="#8b0000"
+          headerColor={season.tribes[0]?.color || '#8b0000'}
           rows={infoRows}
         />
 

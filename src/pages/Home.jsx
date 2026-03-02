@@ -1,6 +1,7 @@
 // src/pages/Home.jsx
 import { Link } from 'react-router-dom';
 import { SEASONS } from '../data';
+import { slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function Home() {
@@ -49,7 +50,7 @@ export default function Home() {
                   {comingSoon ? (
                     <span className="coming-soon-badge">Coming Soon</span>
                   ) : winner ? (
-                    <Link to={`/season/${s.sid}/cast/${winner.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link to={`/season/${s.sid}/cast/${slugify(winner.name)}`}>
                       {winner.name}
                     </Link>
                   ) : '—'}
