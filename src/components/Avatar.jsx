@@ -1,12 +1,13 @@
 // src/components/Avatar.jsx
 
 export default function Avatar({ name, color, size = 48 }) {
-  const initials = name
+  const initials = (name || '')
     .split(' ')
+    .filter(Boolean)
     .map((w) => w[0])
     .join('')
     .slice(0, 2)
-    .toUpperCase();
+    .toUpperCase() || '?';
   return (
     <div
       className="avatar"

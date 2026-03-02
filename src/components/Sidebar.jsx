@@ -27,9 +27,7 @@ export default function Sidebar() {
           <div key={s.sid}>
             <NavLink
               to={`/season/${s.sid}`}
-              className={({ isActive }) =>
-                sid === s.sid ? 'sidebar-link active' : 'sidebar-link'
-              }
+              className={() => sid === s.sid ? 'sidebar-link active' : 'sidebar-link'}
             >
               {s.name}
             </NavLink>

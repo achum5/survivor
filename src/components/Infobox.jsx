@@ -1,6 +1,6 @@
 // src/components/Infobox.jsx
 
-export default function Infobox({ title, headerColor = '#e74c3c', rows, image }) {
+export default function Infobox({ title, headerColor = '#e74c3c', rows }) {
   // rows: [{ label, value }]
   return (
     <table className="infobox">
