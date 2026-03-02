@@ -46,14 +46,20 @@ export const SEASONS = [
       { jurorPid: "s1_p04", votedForPid: "s1_p01" }, // Caroline → Jace
     ],
 
-    // winner field: use a pid (e.g. "s1_p01") for individual winner, tid (e.g. "s1_t1") for tribe winner
+    // Challenge fields:
+    //   type: "Reward" | "Immunity" | "Reward/Immunity"
+    //   winner: pid or tid
+    //   results: [{ id: tid_or_pid, place: 1 }, ...] — 1 = best
+    //   sitOuts: [pid, ...] — players who sat out
     episodes: [
-      { eid: "s1_e01", number: 1,  title: "Episode 1",  videoUrl: null,
+      { eid: "s1_e01", number: 1,  title: "Episode 1",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=6", videoEndTime: 92,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e02", number: 2,  title: "Episode 2",  videoUrl: null,
+        immunityChallenge: { name: null, type: "Immunity", description: "Challenge name not recorded.", winner: "s1_t2",
+          results: [{ id: "s1_t2", place: 1 }, { id: "s1_t1", place: 2 }], sitOuts: [] } },
+      { eid: "s1_e02", number: 2,  title: "Episode 2",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=143", videoEndTime: 508,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
+        immunityChallenge: { name: "Nothing But Net", type: "Immunity", description: "A basketball free throw shooting competition. Dom missed the final shot, costing Purple the win.", winner: "s1_t2",
+          results: [{ id: "s1_t2", place: 1 }, { id: "s1_t1", place: 2 }], sitOuts: [] } },
       { eid: "s1_e03", number: 3,  title: "Episode 3",  videoUrl: null,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: null, description: null, winner: null } },
@@ -89,7 +95,7 @@ export const SEASONS = [
 
     tribes: [
       { tid: "s1_t1", name: "Purple", color: "#7c3aed", phase: "original" },
-      { tid: "s1_t2", name: "Blue",   color: "#2563eb", phase: "original" },
+      { tid: "s1_t2", name: "Red",    color: "#dc2626", phase: "original" },
       { tid: "s1_t3", name: "Yellow", color: "#ca8a04", phase: "switched" },
       { tid: "s1_t4", name: "Green",  color: "#16a34a", phase: "switched" },
       { tid: "s1_t5", name: "Orange", color: "#ea580c", phase: "switched" },
@@ -101,20 +107,20 @@ export const SEASONS = [
       // photoStyle: optional CSS overrides for photo crop/position. Examples:
       //   photoStyle: { objectPosition: "center 20%" }           ← shift crop up/down
       //   photoStyle: { objectPosition: "50% 10%", scale: 1.3 }  ← zoom in + shift
-      { pid: "s1_p01", name: "Jace",     photoUrl: "https://i.imgur.com/ZOAlfmU.png", tid: "s1_t2", placement: 1,  juryMember: false, votesAgainst: 2,  switchedTid: "s1_t3", merged: true  },
-      { pid: "s1_p02", name: "Olivia",   photoUrl: "https://i.imgur.com/v15gL2S.png", tid: "s1_t1", placement: 2,  juryMember: false, votesAgainst: 3,  switchedTid: "s1_t3", merged: true  },
-      { pid: "s1_p03", name: "Meredith", photoUrl: "https://i.imgur.com/47WJZvC.png", tid: "s1_t1", placement: 3,  juryMember: false, votesAgainst: 5,  switchedTid: "s1_t5", merged: true  },
-      { pid: "s1_p04", name: "Caroline", photoUrl: "https://i.imgur.com/Pq42UDY.png", tid: "s1_t2", placement: 4,  juryMember: true,  votesAgainst: 1,  switchedTid: "s1_t4", merged: true  },
-      { pid: "s1_p05", name: "Abdul",    photoUrl: "https://i.imgur.com/O18he6C.png", tid: "s1_t2", placement: 5,  juryMember: true,  votesAgainst: 5,  switchedTid: "s1_t4", merged: true  },
-      { pid: "s1_p06", name: "Jacob",    photoUrl: "https://i.imgur.com/IKBqmSa.png", tid: "s1_t1", placement: 6,  juryMember: true,  votesAgainst: 4,  switchedTid: "s1_t5", merged: true  },
-      { pid: "s1_p07", name: "Madison",  photoUrl: "https://i.imgur.com/VBmfwXj.png", tid: "s1_t2", placement: 7,  juryMember: true,  votesAgainst: 7,  switchedTid: "s1_t3", merged: true  },
-      { pid: "s1_p08", name: "Kelsey",   photoUrl: "https://i.imgur.com/vb5oY6d.png", tid: "s1_t2", placement: 8,  juryMember: true,  votesAgainst: 5,  switchedTid: "s1_t5", merged: true  },
-      { pid: "s1_p09", name: "Savannah", photoUrl: "https://i.imgur.com/s9JnOdy.png", tid: "s1_t2", placement: 9,  juryMember: true,  votesAgainst: 8,  switchedTid: "s1_t5", merged: true  },
-      { pid: "s1_p10", name: "Dom",      photoUrl: "https://i.imgur.com/SahJ0Ot.png", tid: "s1_t1", placement: 10, juryMember: true,  votesAgainst: 3,  switchedTid: "s1_t4", merged: false },
-      { pid: "s1_p11", name: "Clara",    photoUrl: "https://i.imgur.com/J7GuBMh.png", tid: "s1_t2", placement: 11, juryMember: true,  votesAgainst: 3,  switchedTid: "s1_t4", merged: false },
-      { pid: "s1_p12", name: "Sean",     photoUrl: "https://i.imgur.com/VjBqAOH.png", tid: "s1_t2", placement: 12, juryMember: true,  votesAgainst: 4,  switchedTid: "s1_t3", merged: false },
-      { pid: "s1_p13", name: "Marissa",  photoUrl: "https://i.imgur.com/m4L09S2.png", tid: "s1_t1", placement: 13, juryMember: false, votesAgainst: 5,  switchedTid: null,    merged: false },
-      { pid: "s1_p14", name: "Sam R.",   photoUrl: "https://i.imgur.com/HfnY3vo.jpeg",tid: "s1_t1", placement: 14, juryMember: false, votesAgainst: 6,  switchedTid: null,    merged: false },
+      { pid: "s1_p01", name: "Jace",     photoUrl: "https://i.imgur.com/ZOAlfmU.png", photoStyle: { objectPosition: "67% 5%", transform: "scale(1.05)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "280px", objectPosition: "50% 0%" }, tid: "s1_t2", placement: 1,  juryMember: false, votesAgainst: 2,  switchedTid: "s1_t3", merged: true  },
+      { pid: "s1_p02", name: "Olivia",   photoUrl: "https://i.imgur.com/v15gL2S.png", portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t1", placement: 2,  juryMember: false, votesAgainst: 3,  switchedTid: "s1_t3", merged: true  },
+      { pid: "s1_p03", name: "Meredith", photoUrl: "https://i.imgur.com/47WJZvC.png", photoStyle: { objectPosition: "50% -63%", transform: "scale(1.55)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%", transformOrigin: "47% 50%", transform: "scale(1.15)" }, tid: "s1_t1", placement: 3,  juryMember: false, votesAgainst: 5,  switchedTid: "s1_t5", merged: true  },
+      { pid: "s1_p04", name: "Caroline", photoUrl: "https://i.imgur.com/Pq42UDY.png", photoStyle: { objectPosition: "50% -183%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t2", placement: 4,  juryMember: true,  votesAgainst: 1,  switchedTid: "s1_t4", merged: true  },
+      { pid: "s1_p05", name: "Abdul",    photoUrl: "https://i.imgur.com/O18he6C.png", photoStyle: { objectPosition: "50% -91%", transformOrigin: "66% 50%", transform: "scale(1.65)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t2", placement: 5,  juryMember: true,  votesAgainst: 5,  switchedTid: "s1_t4", merged: true  },
+      { pid: "s1_p06", name: "Jacob",    photoUrl: "https://i.imgur.com/IKBqmSa.png", photoStyle: { objectPosition: "50% -162%", transformOrigin: "49% 50%", transform: "scale(1.70)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t1", placement: 6,  juryMember: true,  votesAgainst: 4,  switchedTid: "s1_t5", merged: true  },
+      { pid: "s1_p07", name: "Madison",  photoUrl: "https://i.imgur.com/VBmfwXj.png", photoStyle: { objectPosition: "50% -73%", transform: "scale(1.65)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t1", placement: 7,  juryMember: true,  votesAgainst: 7,  switchedTid: "s1_t3", merged: true  },
+      { pid: "s1_p08", name: "Kelsey",   photoUrl: "https://i.imgur.com/vb5oY6d.png", photoStyle: { objectPosition: "50% -11%", transform: "scale(1.05)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t2", placement: 8,  juryMember: true,  votesAgainst: 5,  switchedTid: "s1_t5", merged: true  },
+      { pid: "s1_p09", name: "Savannah", photoUrl: "https://i.imgur.com/s9JnOdy.png", photoStyle: { objectPosition: "50% -22%", transformOrigin: "22% 50%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t2", placement: 9,  juryMember: true,  votesAgainst: 8,  switchedTid: "s1_t5", merged: true  },
+      { pid: "s1_p10", name: "Dom",      photoUrl: "https://i.imgur.com/SahJ0Ot.png", photoStyle: { objectPosition: "50% -24%", transformOrigin: "75% 50%", transform: "scale(1.40)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t1", placement: 10, juryMember: true,  votesAgainst: 3,  switchedTid: "s1_t4", merged: false },
+      { pid: "s1_p11", name: "Clara",    photoUrl: "https://i.imgur.com/J7GuBMh.png", photoStyle: { objectPosition: "50% -4%", transformOrigin: "72% 50%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t2", placement: 11, juryMember: true,  votesAgainst: 3,  switchedTid: "s1_t4", merged: false },
+      { pid: "s1_p12", name: "Sean",     photoUrl: "https://i.imgur.com/VjBqAOH.png", photoStyle: { objectPosition: "50% 15%" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 15%" }, tid: "s1_t2", placement: 12, juryMember: true,  votesAgainst: 4,  switchedTid: "s1_t3", merged: false },
+      { pid: "s1_p13", name: "Marissa",  photoUrl: "https://i.imgur.com/m4L09S2.png", photoStyle: { objectPosition: "50% -4%", transformOrigin: "17% 50%", transform: "scale(1.15)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 6%" }, tid: "s1_t1", placement: 13, juryMember: false, votesAgainst: 5,  switchedTid: null,    merged: false },
+      { pid: "s1_p14", name: "Sam R.",   photoUrl: "https://i.imgur.com/HfnY3vo.jpeg",photoStyle: { objectPosition: "50% -10%", transform: "scale(1.20)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s1_t1", placement: 14, juryMember: false, votesAgainst: 6,  switchedTid: null,    merged: false },
     ],
 
     votingHistory: [

@@ -187,22 +187,25 @@ export default function VotingHistory() {
                     }
 
                     const voteMap = {};
-                    tc.votes.forEach((v) => { voteMap[v.voterPid] = v.votedForPid; });
-                    const votedForPid = voteMap[p.pid];
+                    tc.votes.forEach((v) => { voteMap[v.voterPid] = v; });
+                    const vote = voteMap[p.pid];
                     const didVote = Object.prototype.hasOwnProperty.call(voteMap, p.pid);
 
                     if (!didVote) {
                       return <td key={tc.tcid} className="vhist-cell-absent">—</td>;
                     }
 
-                    const votedForName = votedForPid
-                      ? season.cast.find((pl) => pl.pid === votedForPid)?.name ?? '?'
+                    const votedForName = vote?.votedForPid
+                      ? season.cast.find((pl) => pl.pid === vote.votedForPid)?.name ?? '?'
                       : '?';
 
                     return (
                       <td key={tc.tcid} className="vhist-cell-vote"
                         style={{ background: hexToRgba(tcColor, 0.2) }}>
-                        {votedForName}
+                        <span style={vote.idolNullified ? { textDecoration: 'line-through', opacity: 0.6 } : undefined}>
+                          {votedForName}
+                        </span>
+                        {vote.idolNullified && <span title="Votes nullified by idol"> 🛡️</span>}
                       </td>
                     );
                   })}
@@ -235,7 +238,7 @@ export default function VotingHistory() {
       </div>
 
       <p style={{ marginTop: 12, fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-        🔦 voted out &nbsp;|&nbsp; — did not attend tribal council
+        🔦 voted out &nbsp;|&nbsp; — did not attend tribal council &nbsp;|&nbsp; 🛡️ vote nullified by idol
       </p>
     </div>
   );

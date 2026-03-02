@@ -28,7 +28,7 @@ export default function CastList() {
       <div className="cast-grid">
         {sorted.map((p) => (
           <Link key={p.pid} to={`/season/${sid}/cast/${slugify(p.name)}`} className="cast-card">
-            <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={52} photoUrl={p.photoUrl} imgStyle={p.photoStyle} />
+            <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={52} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} />
             <h3>{p.name}</h3>
             <span className="tribe-badge" style={{ background: getTribeColor(season, p.tid) }}>
               {getTribeName(season, p.tid)}

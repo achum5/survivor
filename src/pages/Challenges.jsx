@@ -1,7 +1,7 @@
 // src/pages/Challenges.jsx
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { getPlayerName, getTribeName, slugify } from '../utils/helpers';
+import { getTribeName, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function Challenges() {
@@ -9,7 +9,20 @@ export default function Challenges() {
   const season = SEASONS.find((s) => s.sid === sid);
   if (!season) return <div className="article"><p>Season not found.</p></div>;
 
-  if (season.challenges.length === 0) {
+  // Aggregate all challenges from episode objects
+  const rows = [];
+  season.episodes.forEach((ep) => {
+    const pairs = [
+      { ch: ep.rewardChallenge,   ctype: 'reward',   label: 'Reward' },
+      { ch: ep.immunityChallenge, ctype: 'immunity',  label: 'Immunity' },
+    ];
+    pairs.forEach(({ ch, ctype, label }) => {
+      if (!ch || (!ch.name && !ch.winner)) return;
+      rows.push({ ep, ch, ctype, label });
+    });
+  });
+
+  if (rows.length === 0) {
     return (
       <div className="article">
         <Breadcrumbs crumbs={[
@@ -21,6 +34,15 @@ export default function Challenges() {
         <p className="empty-state">No challenge data yet.</p>
       </div>
     );
+  }
+
+  function WinnerCell({ winnerId }) {
+    if (!winnerId) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
+    const tribe = season.tribes.find((t) => t.tid === winnerId);
+    if (tribe) return <span className="tribe-badge" style={{ background: tribe.color }}>{tribe.name}</span>;
+    const player = season.cast.find((p) => p.pid === winnerId);
+    if (player) return <Link to={`/season/${sid}/cast/${slugify(player.name)}`}>{player.name}</Link>;
+    return <span>{winnerId}</span>;
   }
 
   return (
@@ -38,37 +60,29 @@ export default function Challenges() {
           <tr>
             <th>Episode</th>
             <th>Type</th>
-            <th>Name</th>
-            <th>Description</th>
+            <th>Challenge</th>
             <th>Winner</th>
           </tr>
         </thead>
         <tbody>
-          {season.challenges.map((c) => {
-            const winnerName = c.winnerPid ? getPlayerName(season, c.winnerPid) : null;
-            const winnerDisplay = winnerName ? (
-              <Link to={`/season/${sid}/cast/${slugify(winnerName)}`}>
-                {winnerName}
-              </Link>
-            ) : c.winnerTid ? (
-              getTribeName(season, c.winnerTid)
-            ) : (
-              'TBD'
-            );
-            return (
-              <tr key={c.cid}>
-                <td>Ep. {c.episode}</td>
-                <td>
-                  <span className={c.type === 'Immunity' ? 'challenge-type-immunity' : 'challenge-type-reward'}>
-                    {c.type === 'Immunity' ? '🛡️ ' : '🎁 '}{c.type}
-                  </span>
-                </td>
-                <td style={{ fontWeight: 500 }}>{c.name}</td>
-                <td style={{ color: 'var(--text-muted)' }}>{c.description}</td>
-                <td>{winnerDisplay}</td>
-              </tr>
-            );
-          })}
+          {rows.map(({ ep, ch, ctype, label }) => (
+            <tr key={`${ep.eid}-${ctype}`}>
+              <td>
+                <Link to={`/season/${sid}/episode/${ep.eid}`}>Ep. {ep.number}</Link>
+              </td>
+              <td>
+                <span className={ctype === 'immunity' ? 'challenge-type-immunity' : 'challenge-type-reward'}>
+                  {ctype === 'immunity' ? '🛡️ ' : '🎁 '}{label}
+                </span>
+              </td>
+              <td>
+                <Link to={`/season/${sid}/episode/${ep.eid}/challenge/${ctype}`}>
+                  {ch.name ?? <em style={{ color: 'var(--text-muted)' }}>Unknown</em>}
+                </Link>
+              </td>
+              <td><WinnerCell winnerId={ch.winner} /></td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

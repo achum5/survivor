@@ -9,9 +9,14 @@ import VotingHistory from './pages/VotingHistory';
 import Challenges from './pages/Challenges';
 import EpisodeList from './pages/EpisodeList';
 import EpisodePage from './pages/EpisodePage';
+import ChallengePage from './pages/ChallengePage';
+import { PhotoEditorProvider, usePhotoEditor } from './context/PhotoEditorContext';
+import PhotoEditorPanel from './components/PhotoEditorPanel';
 import './styles.css';
 
-export default function App() {
+function AppInner() {
+  const { editMode, setEditMode, editing, setEditing } = usePhotoEditor();
+
   return (
     <div className="layout">
       <Sidebar />
@@ -25,11 +30,30 @@ export default function App() {
           <Route path="/season/:sid/challenges" element={<Challenges />} />
           <Route path="/season/:sid/episodes" element={<EpisodeList />} />
           <Route path="/season/:sid/episode/:eid" element={<EpisodePage />} />
+          <Route path="/season/:sid/episode/:eid/challenge/:ctype" element={<ChallengePage />} />
         </Routes>
         <footer className="wiki-footer">
           14508 Survivor Wiki — Not affiliated with CBS Survivor
         </footer>
       </div>
+
+      <button
+        className={`photo-edit-toggle${editMode ? ' active' : ''}`}
+        onClick={() => { setEditMode((v) => !v); setEditing(null); }}
+        title="Toggle photo edit mode (press E)"
+      >
+        ✏️ {editMode ? 'Editing On' : 'Edit Photos'}
+      </button>
+
+      {editing && <PhotoEditorPanel editing={editing} onClose={() => setEditing(null)} />}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <PhotoEditorProvider>
+      <AppInner />
+    </PhotoEditorProvider>
   );
 }

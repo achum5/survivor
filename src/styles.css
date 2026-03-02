@@ -238,6 +238,7 @@ body {
   text-align: center;
   padding: 12px 8px 8px;
   background: #111;
+  overflow: hidden;
 }
 
 .infobox-logo-img {
@@ -538,6 +539,195 @@ body {
   font-weight: 600;
 }
 
+/* ─── Player Page Tabs ──────────────────────────────── */
+
+.player-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  margin-top: 28px;
+  margin-bottom: 0;
+}
+
+.player-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  padding: 9px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.player-tab-btn:hover { color: var(--text); }
+.player-tab-btn.active {
+  color: var(--link);
+  border-bottom-color: var(--link);
+}
+
+.player-tab-content {
+  padding-top: 18px;
+}
+
+/* ─── Player Challenge History ──────────────────────── */
+
+.pchall-wrap { overflow-x: auto; }
+
+.pchall-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+
+.pchall-table th {
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+
+.pchall-table td {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.pchall-ep-cell {
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.pchall-tribe-cell { text-align: center; white-space: nowrap; }
+.pchall-name-cell  { color: var(--text); }
+.pchall-type-cell  { color: var(--text-muted); font-size: 0.78rem; white-space: nowrap; }
+.pchall-sitout-cell { text-align: center; color: var(--text-muted); font-size: 0.78rem; }
+.pchall-result-cell { text-align: center; }
+
+.pchall-result {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.pchall-result-win  { background: #14532d; color: #4ade80; }
+.pchall-result-loss { background: #450a0a; color: #f87171; }
+.pchall-result-mid  { background: #1c1c1c; color: var(--text-muted); }
+.pchall-result-empty { color: var(--text-muted); }
+
+/* ─── Player Voting History ─────────────────────────── */
+
+.pvote-wrap { overflow-x: auto; }
+
+.pvote-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+
+.pvote-table th {
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+.pvote-ep-header { width: 80px; text-align: center; }
+
+.pvote-table td {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.pvote-ep-cell {
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.pvote-revote-tag {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.pvote-cast-cell  { color: var(--text); }
+.pvote-against-cell { color: var(--text); }
+.pvote-against-list { display: flex; flex-wrap: wrap; gap: 2px 6px; }
+.pvote-empty { color: var(--text-muted); }
+
+.pvote-immune-row td { background: var(--bg-card) !important; }
+.pvote-immune-cell {
+  font-weight: 600;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.pvote-separator td {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.6);
+  padding: 5px 12px;
+  border-color: #111;
+}
+
+.pvote-elim-row td { background: rgba(239, 68, 68, 0.08); }
+.pvote-vote-row:hover td { background: var(--bg-card); }
+
+.pvote-votedout td {
+  background: #1a0808;
+  color: #f87171;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-color: #2a0a0a;
+}
+
+.pvote-juryvote td {
+  background: rgba(180, 140, 50, 0.1);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+.pvote-jury-label {
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-style: normal !important;
+}
+.pvote-jury-target { font-style: normal !important; color: var(--text) !important; }
+.pvote-jury-target a { color: var(--link); text-decoration: none; }
+
+.pvote-winner td {
+  background: rgba(245, 166, 35, 0.12);
+  color: var(--accent);
+  font-weight: 700;
+  text-align: center;
+  font-style: normal !important;
+}
+.pvote-finalist td {
+  text-align: center;
+}
+
 /* ─── Voting History (Fandom grid) ─────────────────── */
 
 .voting-grid-wrapper {
@@ -663,6 +853,37 @@ body {
 
 .challenge-type-immunity { color: #7daacc; font-weight: 600; font-size: 0.8rem; }
 .challenge-type-reward   { color: #ccaa7d; font-weight: 600; font-size: 0.8rem; }
+
+/* ─── Challenge Page ────────────────────────────────── */
+
+.challenge-page-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 6px 0 20px;
+  font-size: 0.85rem;
+}
+
+.challenge-type-tag {
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--bg-card);
+  font-size: 0.8rem;
+}
+
+.challenge-page-episode a { color: var(--link); text-decoration: none; }
+.challenge-page-episode a:hover { text-decoration: underline; }
+
+.challenge-place-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.place-first { background: #14532d; color: #4ade80; }
+.place-last  { background: #450a0a; color: #f87171; }
+.place-mid   { background: #1c1c1c; color: var(--text-muted); }
 
 /* ─── Clearfix ─────────────────────────────────────── */
 .clearfix::after { content: ''; display: table; clear: both; }
@@ -938,3 +1159,252 @@ body {
   margin-top: 5px;
   font-style: italic;
 }
+
+/* ── Photo Editor ────────────────────────────────────────────── */
+
+.photo-edit-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.photo-edit-toggle:hover { background: #2f2f2f; border-color: var(--accent); }
+
+.photo-edit-toggle.active {
+  background: #2c1f08;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.photo-editor-panel {
+  position: fixed;
+  bottom: 76px;
+  right: 24px;
+  width: 340px;
+  max-height: calc(100vh - 110px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  z-index: 1001;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.photo-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-infobox);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.photo-editor-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.photo-editor-close:hover { background: #333; color: var(--text); }
+
+.photo-editor-body {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.photo-editor-body--portrait {
+  flex-direction: column;
+  align-items: center;
+}
+
+.photo-editor-body--portrait .photo-editor-controls {
+  width: 100%;
+}
+
+/* Portrait crop tool */
+.photo-editor-portrait-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.photo-editor-portrait-controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.photo-editor-crop-wrap {
+  position: relative;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.photo-editor-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+.photo-editor-cropbox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.4);
+}
+
+.photo-editor-cropbox-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.photo-editor-cropbox-grip {
+  width: 28px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 1px;
+}
+
+.photo-editor-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 4px 0 0;
+  text-align: center;
+}
+
+.photo-editor-preview-wrap {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+}
+
+.photo-editor-controls {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.photo-editor-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.photo-editor-slider {
+  width: 100%;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.photo-editor-footer {
+  border-top: 1px solid var(--border);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.photo-editor-code {
+  flex: 1;
+  font-size: 0.7rem;
+  color: var(--accent);
+  word-break: break-all;
+  font-family: monospace;
+}
+
+.photo-editor-copy {
+  background: var(--accent);
+  border: none;
+  color: #000;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.photo-editor-copy:hover { background: var(--accent-dim); }
+
+/* Avatar edit button overlay */
+.avatar-edit-btn {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.avatar:hover .avatar-edit-btn { opacity: 1; }
+
+/* Infobox logo editable overlay */
+.infobox-logo-editable {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.infobox-logo-edit-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  text-align: center;
+  padding: 7px;
+  font-size: 0.82rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.infobox-logo-editable:hover .infobox-logo-edit-overlay { opacity: 1; }

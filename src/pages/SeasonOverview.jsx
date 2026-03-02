@@ -130,7 +130,7 @@ export default function SeasonOverview() {
               <td>{ordinal(p.placement)}</td>
               <td>
                 <Link to={`/season/${sid}/cast/${slugify(p.name)}`} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={26} photoUrl={p.photoUrl} imgStyle={p.photoStyle} />
+                  <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={26} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} />
                   {p.name}
                   {p.pid === season.winnerPid && <span style={{ marginLeft: 6, color: 'var(--accent)', fontSize: '0.8rem' }}>★ Sole Survivor</span>}
                 </Link>
@@ -138,7 +138,7 @@ export default function SeasonOverview() {
               <td><TribeBadge tid={p.tid} /></td>
               {hasSwitch && <td><TribeBadge tid={p.switchedTid ?? null} /></td>}
               {hasMerge  && <td><MergeBadge merged={p.merged} /></td>}
-              <td>{p.votesAgainst}</td>
+              <td>{season.votingHistory.reduce((sum, tc) => sum + tc.votes.filter((v) => v.votedForPid === p.pid).length, 0)}</td>
               <td>{p.juryMember ? '✓' : ''}</td>
             </tr>
           ))}

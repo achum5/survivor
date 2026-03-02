@@ -1,30 +1,9 @@
 // src/pages/EpisodePage.jsx
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { getTribeColor, getTribeName, slugify } from '../utils/helpers';
+import { getTribeColor, getTribeName, slugify, getYouTubeEmbedUrl } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
-
-function getYouTubeEmbedUrl(url) {
-  if (!url) return null;
-  try {
-    const u = new URL(url);
-    let videoId, startSeconds;
-    if (u.hostname === 'youtu.be') {
-      videoId = u.pathname.slice(1);
-      startSeconds = u.searchParams.get('t');
-    } else {
-      videoId = u.searchParams.get('v');
-      startSeconds = u.searchParams.get('t');
-    }
-    if (!videoId) return null;
-    let embed = `https://www.youtube.com/embed/${videoId}`;
-    if (startSeconds) embed += `?start=${parseInt(startSeconds)}`;
-    return embed;
-  } catch {
-    return null;
-  }
-}
 
 // Resolve a winner id to a display name + link (pid = player, tid = tribe)
 function WinnerDisplay({ winnerId, season, sid }) {
@@ -46,7 +25,7 @@ function WinnerDisplay({ winnerId, season, sid }) {
     return (
       <Link to={`/season/${sid}/cast/${slugify(player.name)}`}
         style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20} photoUrl={player.photoUrl} imgStyle={player.photoStyle} />
+        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20} photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} />
         {player.name}
       </Link>
     );
@@ -55,18 +34,30 @@ function WinnerDisplay({ winnerId, season, sid }) {
   return <span>{winnerId}</span>;
 }
 
-function ChallengeSection({ label, challenge, season, sid }) {
+function ChallengeSection({ label, challenge, season, sid, eid, ctype }) {
   if (!challenge) return null;
   const hasContent = challenge.name || challenge.winner;
   if (!hasContent) return null;
 
   return (
     <div className="episode-challenge-block">
-      <h3>{label}</h3>
+      <h3>
+        <Link to={`/season/${sid}/episode/${eid}/challenge/${ctype}`}
+          style={{ color: 'inherit', textDecoration: 'none' }}>
+          {label}
+        </Link>
+      </h3>
       <table className="challenge-table episode-challenge-table">
         <tbody>
           {challenge.name && (
-            <tr><th>Challenge</th><td>{challenge.name}</td></tr>
+            <tr>
+              <th>Challenge</th>
+              <td>
+                <Link to={`/season/${sid}/episode/${eid}/challenge/${ctype}`}>
+                  {challenge.name}
+                </Link>
+              </td>
+            </tr>
           )}
           {challenge.description && (
             <tr><th>Description</th><td>{challenge.description}</td></tr>
@@ -95,7 +86,7 @@ export default function EpisodePage() {
   if (!episode) return <div className="article"><p>Episode not found.</p></div>;
 
   const tcs = season.votingHistory.filter((tc) => tc.episode === episode.number);
-  const embedUrl = getYouTubeEmbedUrl(episode.videoUrl);
+  const embedUrl = getYouTubeEmbedUrl(episode.videoUrl, episode.videoEndTime);
 
   const idx = season.episodes.findIndex((e) => e.eid === eid);
   const prev = season.episodes[idx - 1];
@@ -146,8 +137,8 @@ export default function EpisodePage() {
       {(hasReward || hasImmunity) && (
         <>
           <h2>Challenges</h2>
-          <ChallengeSection label="Reward Challenge" challenge={episode.rewardChallenge} season={season} sid={sid} />
-          <ChallengeSection label="Immunity Challenge" challenge={episode.immunityChallenge} season={season} sid={sid} />
+          <ChallengeSection label="Reward Challenge"   challenge={episode.rewardChallenge}   season={season} sid={sid} eid={eid} ctype="reward" />
+          <ChallengeSection label="Immunity Challenge" challenge={episode.immunityChallenge} season={season} sid={sid} eid={eid} ctype="immunity" />
         </>
       )}
 
@@ -181,7 +172,7 @@ export default function EpisodePage() {
                         const voter = season.cast.find((p) => p.pid === v.voterPid);
                         const target = season.cast.find((p) => p.pid === v.votedForPid);
                         return (
-                          <tr key={v.vid}>
+                          <tr key={v.vid} style={v.idolNullified ? { opacity: 0.55 } : undefined}>
                             <td>
                               {voter && (
                                 <Link to={`/season/${sid}/cast/${slugify(voter.name)}`}
@@ -194,10 +185,14 @@ export default function EpisodePage() {
                             <td>
                               {target && (
                                 <Link to={`/season/${sid}/cast/${slugify(target.name)}`}
-                                  style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                  style={{ display: 'flex', alignItems: 'center', gap: 6,
+                                    textDecoration: v.idolNullified ? 'line-through' : 'none' }}>
                                   <Avatar name={target.name} color={getTribeColor(season, target.tid)} size={20} />
                                   {target.name}
                                 </Link>
+                              )}
+                              {v.idolNullified && (
+                                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginLeft: 4 }}>🛡️ nullified</span>
                               )}
                             </td>
                           </tr>

@@ -1,6 +1,17 @@
 // src/components/Avatar.jsx
+import { usePhotoEditor } from '../context/PhotoEditorContext';
 
-export default function Avatar({ name, color, size = 48, photoUrl, imgStyle }) {
+export default function Avatar({ name, color, size = 48, photoUrl, imgStyle, pid }) {
+  const ctx = usePhotoEditor();
+  const editMode = ctx?.editMode ?? false;
+  const setEditing = ctx?.setEditing;
+
+  function handleEditClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    setEditing({ pid, name, photoUrl, currentStyle: imgStyle ?? {} });
+  }
+
   if (photoUrl) {
     return (
       <div
@@ -12,6 +23,7 @@ export default function Avatar({ name, color, size = 48, photoUrl, imgStyle }) {
           overflow: 'hidden',
           flexShrink: 0,
           border: `2px solid ${color}`,
+          position: 'relative',
         }}
       >
         <img
@@ -19,6 +31,11 @@ export default function Avatar({ name, color, size = 48, photoUrl, imgStyle }) {
           alt={name}
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', objectPosition: 'center', ...imgStyle }}
         />
+        {editMode && pid && (
+          <button className="avatar-edit-btn" onClick={handleEditClick} title={`Edit ${name}'s photo`}>
+            ✏️
+          </button>
+        )}
       </div>
     );
   }

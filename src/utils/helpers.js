@@ -36,3 +36,27 @@ export function getPlayerName(season, pid) {
   const player = getPlayer(season, pid);
   return player ? player.name : 'Unknown';
 }
+
+export function getYouTubeEmbedUrl(url, endTime) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    let videoId, startSeconds;
+    if (u.hostname === 'youtu.be') {
+      videoId = u.pathname.slice(1);
+      startSeconds = u.searchParams.get('t');
+    } else {
+      videoId = u.searchParams.get('v');
+      startSeconds = u.searchParams.get('t');
+    }
+    if (!videoId) return null;
+    const params = [];
+    if (startSeconds) params.push(`start=${parseInt(startSeconds)}`);
+    if (endTime)       params.push(`end=${parseInt(endTime)}`);
+    let embed = `https://www.youtube.com/embed/${videoId}`;
+    if (params.length) embed += `?${params.join('&')}`;
+    return embed;
+  } catch {
+    return null;
+  }
+}
