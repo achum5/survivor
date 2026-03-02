@@ -53,7 +53,13 @@ export default function PlayerPage() {
       <h1>{player.name}</h1>
 
       <div className="player-article clearfix">
-        <Infobox title={player.name} headerColor={tribeColor} rows={infoRows} logo={player.photoUrl} />
+        <Infobox
+          title={player.name}
+          headerColor={tribeColor}
+          rows={infoRows}
+          logo={player.photoUrl}
+          logoStyle={{ objectFit: 'cover', maxHeight: 'none', height: '200px', objectPosition: 'center top', ...player.photoStyle }}
+        />
 
         <p className="player-bio">{player.bio}</p>
 

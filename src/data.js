@@ -98,6 +98,9 @@ export const SEASONS = [
     cast: [
       // tid = original tribe | switchedTid = switched tribe (null if voted out before switch)
       // merged = true if they made the merged phase
+      // photoStyle: optional CSS overrides for photo crop/position. Examples:
+      //   photoStyle: { objectPosition: "center 20%" }           ← shift crop up/down
+      //   photoStyle: { objectPosition: "50% 10%", scale: 1.3 }  ← zoom in + shift
       { pid: "s1_p01", name: "Jace",     photoUrl: "https://i.imgur.com/ZOAlfmU.png", tid: "s1_t2", placement: 1,  juryMember: false, votesAgainst: 2,  switchedTid: "s1_t3", merged: true  },
       { pid: "s1_p02", name: "Olivia",   photoUrl: "https://i.imgur.com/v15gL2S.png", tid: "s1_t1", placement: 2,  juryMember: false, votesAgainst: 3,  switchedTid: "s1_t3", merged: true  },
       { pid: "s1_p03", name: "Meredith", photoUrl: "https://i.imgur.com/47WJZvC.png", tid: "s1_t1", placement: 3,  juryMember: false, votesAgainst: 5,  switchedTid: "s1_t5", merged: true  },

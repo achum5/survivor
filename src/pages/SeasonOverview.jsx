@@ -130,7 +130,7 @@ export default function SeasonOverview() {
               <td>{ordinal(p.placement)}</td>
               <td>
                 <Link to={`/season/${sid}/cast/${slugify(p.name)}`} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={26} photoUrl={p.photoUrl} />
+                  <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={26} photoUrl={p.photoUrl} imgStyle={p.photoStyle} />
                   {p.name}
                   {p.pid === season.winnerPid && <span style={{ marginLeft: 6, color: 'var(--accent)', fontSize: '0.8rem' }}>★ Sole Survivor</span>}
                 </Link>

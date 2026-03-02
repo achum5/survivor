@@ -1,6 +1,6 @@
 // src/components/Avatar.jsx
 
-export default function Avatar({ name, color, size = 48, photoUrl }) {
+export default function Avatar({ name, color, size = 48, photoUrl, imgStyle }) {
   if (photoUrl) {
     return (
       <div
@@ -17,7 +17,7 @@ export default function Avatar({ name, color, size = 48, photoUrl }) {
         <img
           src={photoUrl}
           alt={name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', objectPosition: 'center', ...imgStyle }}
         />
       </div>
     );

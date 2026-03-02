@@ -1,7 +1,7 @@
 // src/components/Infobox.jsx
 import { Link } from 'react-router-dom';
 
-export default function Infobox({ title, headerColor = '#e74c3c', rows = [], logo, logoSubHeader, castPhoto, chronology }) {
+export default function Infobox({ title, headerColor = '#e74c3c', rows = [], logo, logoSubHeader, logoStyle, castPhoto, chronology }) {
   return (
     <table className="infobox">
       <thead>
@@ -16,7 +16,7 @@ export default function Infobox({ title, headerColor = '#e74c3c', rows = [], log
         {logo && (
           <tr>
             <td colSpan={2} className="infobox-logo-cell">
-              <img src={logo} alt={`${title} logo`} className="infobox-logo-img" />
+              <img src={logo} alt={`${title} logo`} className="infobox-logo-img" style={logoStyle} />
             </td>
           </tr>
         )}
