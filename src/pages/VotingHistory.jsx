@@ -102,6 +102,36 @@ export default function VotingHistory() {
       <p style={{ marginTop: 16, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
         🔦 = eliminated at this tribal council &nbsp;|&nbsp; — = did not attend
       </p>
+
+      {season.juryVotes && season.juryVotes.length > 0 && (
+        <>
+          <h2 style={{ marginTop: 32 }}>Final Jury Vote</h2>
+          <table className="challenge-table jury-vote-table">
+            <thead>
+              <tr>
+                <th>Juror</th>
+                <th>Voted For</th>
+              </tr>
+            </thead>
+            <tbody>
+              {season.juryVotes.map((jv) => (
+                <tr key={jv.jurorPid}>
+                  <td>
+                    <Link to={`/season/${sid}/cast/${slugify(getPlayerName(season, jv.jurorPid))}`}>
+                      {getPlayerName(season, jv.jurorPid)}
+                    </Link>
+                  </td>
+                  <td>
+                    <Link to={`/season/${sid}/cast/${slugify(getPlayerName(season, jv.votedForPid))}`}>
+                      {getPlayerName(season, jv.votedForPid)}
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 }

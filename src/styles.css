@@ -558,3 +558,9 @@ body {
   font-size: 0.78rem;
   color: var(--text-muted);
 }
+
+/* ── Jury Vote Table ─────────────────────────────────────────── */
+.jury-vote-table td:last-child {
+  font-weight: 600;
+  color: var(--accent);
+}
