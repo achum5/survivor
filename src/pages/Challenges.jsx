@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getTribeName, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
+import TribeBadge from '../components/TribeBadge';
 
 export default function Challenges() {
   const { sid } = useParams();
@@ -39,7 +40,7 @@ export default function Challenges() {
   function WinnerCell({ winnerId }) {
     if (!winnerId) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
     const tribe = season.tribes.find((t) => t.tid === winnerId);
-    if (tribe) return <span className="tribe-badge" style={{ background: tribe.color }}>{tribe.name}</span>;
+    if (tribe) return <TribeBadge tribe={tribe} sid={sid} />;
     const player = season.cast.find((p) => p.pid === winnerId);
     if (player) return <Link to={`/season/${sid}/cast/${slugify(player.name)}`}>{player.name}</Link>;
     return <span>{winnerId}</span>;

@@ -4,6 +4,7 @@ import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
+import TribeBadge from '../components/TribeBadge';
 
 export default function CastList() {
   const { sid } = useParams();
@@ -30,9 +31,7 @@ export default function CastList() {
           <Link key={p.pid} to={`/season/${sid}/cast/${slugify(p.name)}`} className="cast-card">
             <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={52} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} />
             <h3>{p.name}</h3>
-            <span className="tribe-badge" style={{ background: getTribeColor(season, p.tid) }}>
-              {getTribeName(season, p.tid)}
-            </span>
+            <TribeBadge tribe={season.tribes.find((t) => t.tid === p.tid)} sid={sid} noLink />
             <span className="placement">{ordinal(p.placement)} place</span>
           </Link>
         ))}

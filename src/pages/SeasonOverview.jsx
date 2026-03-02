@@ -5,6 +5,7 @@ import { getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers'
 import Breadcrumbs from '../components/Breadcrumbs';
 import Infobox from '../components/Infobox';
 import Avatar from '../components/Avatar';
+import TribeBadgeComp from '../components/TribeBadge';
 
 export default function SeasonOverview() {
   const { sid } = useParams();
@@ -48,13 +49,13 @@ export default function SeasonOverview() {
     if (!tid) return <span className="tribe-badge-empty">—</span>;
     const tribe = season.tribes.find((t) => t.tid === tid);
     if (!tribe) return null;
-    return <span className="tribe-badge" style={{ background: tribe.color }}>{tribe.name}</span>;
+    return <TribeBadgeComp tribe={tribe} sid={sid} />;
   }
 
   function MergeBadge({ merged }) {
     if (!merged) return <span className="tribe-badge-empty">—</span>;
     if (season.mergeTribe) {
-      return <span className="tribe-badge" style={{ background: season.mergeTribe.color }}>{season.mergeTribe.name}</span>;
+      return <TribeBadgeComp tribe={season.mergeTribe} sid={sid} />;
     }
     return <span className="tribe-badge tribe-badge-merged">Merged</span>;
   }
@@ -172,7 +173,11 @@ export default function SeasonOverview() {
         const members = season.cast.filter((p) => p.tid === tribe.tid);
         return (
           <div key={tribe.tid} className="tribe-block">
-            <h3 style={{ color: tribe.color }}>{tribe.name}</h3>
+            <h3>
+              <Link to={`/season/${sid}/tribe/${tribe.tid}`} style={{ color: tribe.color, textDecoration: 'none' }}>
+                {tribe.name}
+              </Link>
+            </h3>
             <div className="tribe-members-list">
               {members.map((m) => (
                 <Link key={m.pid} to={`/season/${sid}/cast/${slugify(m.name)}`} className="tribe-member-chip">

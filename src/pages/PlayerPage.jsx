@@ -6,6 +6,7 @@ import { getPlayerBySlug, getTribeColor, getTribeName, getPlayerName, ordinal, s
 import Breadcrumbs from '../components/Breadcrumbs';
 import Infobox from '../components/Infobox';
 import { usePhotoEditor } from '../context/PhotoEditorContext';
+import TribeBadge from '../components/TribeBadge';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -124,9 +125,7 @@ function ChallengeHistoryTab({ player, season, sid }) {
               {row.epRowIndex === 0 && (
                 <td rowSpan={row.epRowSpan} className="pchall-tribe-cell">
                   {row.tribe ? (
-                    <span className="tribe-badge" style={{ background: row.tribe.color }}>
-                      {row.tribe.name}
-                    </span>
+                    <TribeBadge tribe={row.tribe} sid={sid} />
                   ) : (
                     <span className="tribe-badge tribe-badge-merged">Merged</span>
                   )}
@@ -403,6 +402,7 @@ export default function PlayerPage() {
   const { editMode, setEditing } = usePhotoEditor();
   const tribeColor = getTribeColor(season, player.tid);
   const tribeName = getTribeName(season, player.tid);
+  const origTribe = season.tribes.find((t) => t.tid === player.tid);
 
   const [activeTab, setActiveTab] = useState('votingHistory');
 
@@ -412,7 +412,7 @@ export default function PlayerPage() {
 
   const infoRows = [
     { label: 'Season',        value: <Link to={`/season/${sid}`}>{season.name}</Link> },
-    { label: 'Tribe',         value: <span className="tribe-badge" style={{ background: tribeColor }}>{tribeName}</span> },
+    { label: 'Tribe',         value: <TribeBadge tribe={origTribe} sid={sid} /> },
     { label: 'Placement',     value: ordinal(player.placement) + (player.pid === season.winnerPid ? ' ★ Sole Survivor' : '') },
     { label: 'Votes Against', value: votesAgainstCount },
     { label: 'Jury Member',   value: player.juryMember ? 'Yes' : 'No' },
@@ -446,7 +446,7 @@ export default function PlayerPage() {
         <p>
           <strong>{player.name}</strong> competed in{' '}
           <Link to={`/season/${sid}`}>{season.name}</Link> as a member of the{' '}
-          <span className="tribe-badge" style={{ background: tribeColor }}>{tribeName}</span> tribe.
+          <TribeBadge tribe={origTribe} sid={sid} /> tribe.
           {player.pid === season.winnerPid && <> They won the season as the Sole Survivor.</>}
           {player.pid === season.fanFavoritePid && <> They were voted Fan Favorite by viewers.</>}
         </p>

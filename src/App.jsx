@@ -10,6 +10,7 @@ import Challenges from './pages/Challenges';
 import EpisodeList from './pages/EpisodeList';
 import EpisodePage from './pages/EpisodePage';
 import ChallengePage from './pages/ChallengePage';
+import TribePage from './pages/TribePage';
 import { PhotoEditorProvider, usePhotoEditor } from './context/PhotoEditorContext';
 import PhotoEditorPanel from './components/PhotoEditorPanel';
 import './styles.css';
@@ -31,6 +32,7 @@ function AppInner() {
           <Route path="/season/:sid/episodes" element={<EpisodeList />} />
           <Route path="/season/:sid/episode/:eid" element={<EpisodePage />} />
           <Route path="/season/:sid/episode/:eid/challenge/:ctype" element={<ChallengePage />} />
+          <Route path="/season/:sid/tribe/:tid" element={<TribePage />} />
         </Routes>
         <footer className="wiki-footer">
           14508 Survivor Wiki — Not affiliated with CBS Survivor

@@ -4,6 +4,7 @@ import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, slugify, getYouTubeEmbedUrl } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
+import TribeBadge from '../components/TribeBadge';
 
 // Resolve a winner id to a display name + link (pid = player, tid = tribe)
 function WinnerDisplay({ winnerId, season, sid }) {
@@ -12,11 +13,7 @@ function WinnerDisplay({ winnerId, season, sid }) {
   // Check if it's a tribe id
   const tribe = season.tribes.find((t) => t.tid === winnerId);
   if (tribe) {
-    return (
-      <span className="tribe-badge" style={{ background: tribe.color }}>
-        {tribe.name}
-      </span>
-    );
+    return <TribeBadge tribe={tribe} sid={sid} />;
   }
 
   // Otherwise treat as player pid
@@ -150,15 +147,14 @@ export default function EpisodePage() {
             const eliminated = tc.eliminatedPid
               ? season.cast.find((p) => p.pid === tc.eliminatedPid)
               : null;
-            const tribeName = tc.tid ? getTribeName(season, tc.tid) : 'Merged Tribe';
-            const tribeColor = tc.tid ? getTribeColor(season, tc.tid) : 'var(--accent)';
+            const tcTribe = tc.tid ? season.tribes.find((t) => t.tid === tc.tid) : null;
 
             return (
               <div key={tc.tcid} className="episode-tc-block">
                 <h3>
-                  <span className="tribe-badge" style={{ background: tribeColor }}>
-                    {tribeName}
-                  </span>
+                  {tcTribe
+                    ? <TribeBadge tribe={tcTribe} sid={sid} />
+                    : <span className="tribe-badge tribe-badge-merged">Merged</span>}
                   {tc.notes && <span className="tc-note"> — {tc.notes}</span>}
                 </h3>
 

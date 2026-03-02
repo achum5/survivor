@@ -1124,6 +1124,133 @@ body {
   font-style: italic;
 }
 
+.tribe-badge-link {
+  text-decoration: none;
+}
+.tribe-badge-link:hover .tribe-badge {
+  opacity: 0.82;
+}
+
+/* ── Tribe Page ──────────────────────────────────────────────── */
+.tribe-page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tribe-page-color-dot {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tribe-page-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 16px 0 24px;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.tribe-page-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tribe-page-stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tribe-page-stat-value {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.tribe-page-record { display: flex; gap: 4px; align-items: center; }
+.record-wins  { color: #16a34a; }
+.record-losses { color: #dc2626; }
+
+.tribe-page-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 12px 0 28px;
+}
+.tribe-page-member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  background: var(--bg-card);
+  border: 2px solid var(--tribe-color, var(--border));
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  width: 120px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.tribe-page-member-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+}
+.tribe-page-member-photo-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--tribe-color, var(--border));
+}
+.tribe-page-member-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tribe-page-member-info { text-align: center; }
+.tribe-page-member-name { font-weight: 600; font-size: 0.9rem; }
+.tribe-page-member-placement { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.tribe-page-member-orig { margin-top: 4px; font-size: 0.7rem; padding: 1px 6px; }
+
+.tribe-page-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 24px;
+  font-size: 0.9rem;
+}
+.tribe-page-table th,
+.tribe-page-table td {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+.tribe-page-table th { background: var(--bg-card); font-weight: 600; }
+.tribe-page-tc-ep { text-align: center; white-space: nowrap; }
+
+.tribe-page-eliminated {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.tribe-page-eliminated:hover { text-decoration: underline; }
+
+.tribe-page-result-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.result-win  { background: #16a34a; color: #fff; }
+.result-loss { background: #dc2626; color: #fff; }
+
+.tribe-page-breakdown { font-size: 0.85rem; }
+.tribe-page-breakdown-entry { white-space: nowrap; }
+.breakdown-sep   { color: var(--text-muted); }
+.breakdown-count { color: var(--text-muted); font-size: 0.8em; }
+
 /* ── Twists List ─────────────────────────────────────────────── */
 .twists-list {
   padding-left: 20px;

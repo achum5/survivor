@@ -4,6 +4,7 @@ import { SEASONS } from '../data';
 import { getTribe, getTribeColor, getTribeName, getPlayer, getPlayerName, slugify, getYouTubeEmbedUrl } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
+import TribeBadge from '../components/TribeBadge';
 
 function PlaceBadge({ place, total }) {
   if (!place) return null;
@@ -22,7 +23,7 @@ function WinnerDisplay({ winnerId, season, sid }) {
   if (!winnerId) return <span className="empty-state">—</span>;
   const tribe = season.tribes.find((t) => t.tid === winnerId);
   if (tribe) {
-    return <span className="tribe-badge" style={{ background: tribe.color }}>{tribe.name}</span>;
+    return <TribeBadge tribe={tribe} sid={sid} />;
   }
   const player = season.cast.find((p) => p.pid === winnerId);
   if (player) {
@@ -152,7 +153,7 @@ export default function ChallengePage() {
                     </td>
                     <td>
                       {tribe ? (
-                        <span className="tribe-badge" style={{ background: tribe.color }}>{tribe.name}</span>
+                        <TribeBadge tribe={tribe} sid={sid} />
                       ) : player ? (
                         <Link to={`/season/${sid}/cast/${slugify(player.name)}`}
                           style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
