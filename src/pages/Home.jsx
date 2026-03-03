@@ -61,7 +61,7 @@ export default function Home() {
                   ) : winner ? (
                     <Link to={`/season/${s.sid}/cast/${slugify(winner.name)}`}
                       style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                      <Avatar name={winner.name} color={getTribeColor(s, winner.tid)} size={24} photoUrl={winner.photoUrl} imgStyle={winner.photoStyle} pid={winner.pid} noBorder />
+                      <Avatar name={winner.name} color={getTribeColor(s, winner.tid)} size={30} photoUrl={winner.photoUrl} imgStyle={winner.photoStyle} pid={winner.pid} noBorder />
                       {winner.name}
                     </Link>
                   ) : '—'}

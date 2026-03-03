@@ -130,7 +130,7 @@ export default function SeasonOverview() {
               <td>{ordinal(p.placement)}</td>
               <td>
                 <Link to={`/season/${sid}/cast/${slugify(p.name)}`} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={32} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
+                  <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={38} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
                   {p.name}
                   {p.pid === season.winnerPid && <span style={{ marginLeft: 6, color: 'var(--accent)', fontSize: '0.8rem' }}>★ Sole Survivor</span>}
                 </Link>
@@ -180,7 +180,7 @@ export default function SeasonOverview() {
             <div className="tribe-members-list">
               {members.map((m) => (
                 <Link key={m.pid} to={`/season/${sid}/cast/${slugify(m.name)}`} className="tribe-member-chip">
-                  <Avatar name={m.name} color={tribe.color} size={30} photoUrl={m.photoUrl} imgStyle={m.photoStyle} pid={m.pid} noBorder />
+                  <Avatar name={m.name} color={tribe.color} size={36} photoUrl={m.photoUrl} imgStyle={m.photoStyle} pid={m.pid} noBorder />
                   {m.name}
                 </Link>
               ))}

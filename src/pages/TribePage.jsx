@@ -110,7 +110,7 @@ export default function TribePage() {
                     style={p.photoStyle}
                   />
                 ) : (
-                  <Avatar name={p.name} color={tribe.color} size={72} />
+                  <Avatar name={p.name} color={tribe.color} size={80} />
                 )}
               </div>
               <div className="tribe-page-member-info">
@@ -168,7 +168,7 @@ export default function TribePage() {
                             {si > 0 && ', '}
                             <Link to={`/season/${sid}/cast/${slugify(p.name)}`}
                               style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                              <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={22} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
+                              <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={28} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
                               {p.name}
                             </Link>
                           </span>
@@ -225,7 +225,7 @@ export default function TribePage() {
                         <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`}
                           className="tribe-page-eliminated"
                           style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                          <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)} size={24} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle} pid={eliminated.pid} noBorder />
+                          <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)} size={30} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle} pid={eliminated.pid} noBorder />
                           {eliminated.name}
                         </Link>
                       ) : <span className="text-muted">—</span>}
@@ -238,7 +238,7 @@ export default function TribePage() {
                             {bi > 0 && <span className="breakdown-sep"> · </span>}
                             <Link to={`/season/${sid}/cast/${slugify(b.name)}`}
                               style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                              {target && <Avatar name={target.name} color={getTribeColor(season, target.tid)} size={22} photoUrl={target.photoUrl} imgStyle={target.photoStyle} pid={target.pid} noBorder />}
+                              {target && <Avatar name={target.name} color={getTribeColor(season, target.tid)} size={28} photoUrl={target.photoUrl} imgStyle={target.photoStyle} pid={target.pid} noBorder />}
                               {b.name}
                             </Link>
                             <span className="breakdown-count"> ({b.count})</span>
