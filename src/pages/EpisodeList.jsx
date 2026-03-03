@@ -58,7 +58,7 @@ export default function EpisodeList() {
                   {elim ? (
                     <Link to={`/season/${sid}/cast/${slugify(elim.name)}`}
                       style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                      <Avatar name={elim.name} color={getTribeColor(season, elim.tid)} size={24} photoUrl={elim.photoUrl} imgStyle={elim.photoStyle} pid={elim.pid} noBorder />
+                      <Avatar name={elim.name} color={getTribeColor(season, elim.tid)} size={30} photoUrl={elim.photoUrl} imgStyle={elim.photoStyle} pid={elim.pid} noBorder />
                       {elim.name}
                     </Link>
                   ) : '—'}

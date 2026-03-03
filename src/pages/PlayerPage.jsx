@@ -281,7 +281,7 @@ function VotingHistoryTab({ player, season, sid }) {
                     {row.target ? (
                       <Link to={`/season/${sid}/cast/${slugify(row.target.name)}`}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Avatar name={row.target.name} color={getTribeColor(season, row.target.tid)} size={24} photoUrl={row.target.photoUrl} imgStyle={row.target.photoStyle} pid={row.target.pid} noBorder />
+                        <Avatar name={row.target.name} color={getTribeColor(season, row.target.tid)} size={30} photoUrl={row.target.photoUrl} imgStyle={row.target.photoStyle} pid={row.target.pid} noBorder />
                         {row.target.name}
                       </Link>
                     ) : '—'}
@@ -338,7 +338,7 @@ function VotingHistoryTab({ player, season, sid }) {
                       <Link to={`/season/${sid}/cast/${slugify(votedForPlayer.name)}`}
                         className="pvote-vote-chip"
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Avatar name={votedForPlayer.name} color={getTribeColor(season, votedForPlayer.tid)} size={24} photoUrl={votedForPlayer.photoUrl} imgStyle={votedForPlayer.photoStyle} pid={votedForPlayer.pid} noBorder />
+                        <Avatar name={votedForPlayer.name} color={getTribeColor(season, votedForPlayer.tid)} size={30} photoUrl={votedForPlayer.photoUrl} imgStyle={votedForPlayer.photoStyle} pid={votedForPlayer.pid} noBorder />
                         {votedForPlayer.name}
                       </Link>
                     ) : getPlayerName(season, myVote.votedForPid)
@@ -363,7 +363,7 @@ function VotingHistoryTab({ player, season, sid }) {
                                   color: v.idolNullified ? 'var(--text-muted)' : 'var(--link)',
                                   textDecoration: v.idolNullified ? 'line-through' : 'none',
                                 }}>
-                                <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={18} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} />
+                                <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={28} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />
                                 {voter.name}
                               </Link>
                             ) : getPlayerName(season, v.voterPid)}

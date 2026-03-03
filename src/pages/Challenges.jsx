@@ -46,7 +46,7 @@ export default function Challenges() {
     if (player) return (
       <Link to={`/season/${sid}/cast/${slugify(player.name)}`}
         style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20} photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} />
+        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={30} photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} noBorder />
         {player.name}
       </Link>
     );
