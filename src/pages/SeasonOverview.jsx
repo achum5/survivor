@@ -156,7 +156,6 @@ export default function SeasonOverview() {
               return (
                 <Link key={ep.eid} to={`/season/${sid}/episode/${ep.eid}`} className="episode-list-card">
                   <span className="episode-list-num">Ep {ep.number}</span>
-                  <span className="episode-list-title">{ep.title}</span>
                   {elim && <span className="episode-list-elim">🔦 {elim.name}</span>}
                   {ep.videoUrl && <span className="episode-list-video">▶</span>}
                 </Link>

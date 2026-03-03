@@ -52,7 +52,7 @@ export default function EpisodeList() {
               <tr key={ep.eid}>
                 <td>{ep.number}</td>
                 <td>
-                  <Link to={`/season/${sid}/episode/${ep.eid}`}>{ep.title}</Link>
+                  <Link to={`/season/${sid}/episode/${ep.eid}`}>Episode {ep.number}</Link>
                 </td>
                 <td>
                   {elim ? (

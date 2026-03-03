@@ -71,7 +71,7 @@ export default function ChallengePage() {
           {ctype === 'immunity' ? '🛡️ Immunity Challenge' : '🎁 Reward Challenge'}
         </span>
         <span className="challenge-page-episode">
-          <Link to={`/season/${sid}/episode/${eid}`}>Episode {episode.number}: {episode.title}</Link>
+          <Link to={`/season/${sid}/episode/${eid}`}>Episode {episode.number}</Link>
         </span>
       </div>
 

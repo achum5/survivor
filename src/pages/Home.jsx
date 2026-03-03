@@ -12,10 +12,6 @@ export default function Home() {
 
       <div className="home-hero">
         <h1>14508 Survivor Wiki</h1>
-        <p>
-          The definitive source for every season, castaway, and tribal council
-          of Backyard Survivor.
-        </p>
       </div>
 
       <h2>Seasons</h2>

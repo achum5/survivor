@@ -694,13 +694,7 @@ body {
 /* Switched phase TC rows — subtle tribe tint (set inline via style prop) */
 .pvote-vote-switched td { /* inline bg set per player */ }
 
-/* Merged phase TC rows — blue/purple gradient */
-.pvote-vote-merged td {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.13), rgba(59, 130, 246, 0.10));
-}
-.pvote-vote-merged:hover td {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(59, 130, 246, 0.18));
-}
+/* Merged phase TC rows — color set inline via tr style prop, no td override needed */
 
 /* Vote chip for the player's vote in cast cell */
 .pvote-vote-chip {
@@ -989,6 +983,58 @@ body {
   border: none;
 }
 
+.episode-thumb-wrapper {
+  position: relative;
+  width: 280px;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #000;
+  margin-bottom: 28px;
+}
+
+.episode-thumb-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.82;
+  transition: opacity 0.2s;
+}
+
+.episode-thumb-wrapper:hover img {
+  opacity: 0.65;
+}
+
+.episode-thumb-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.episode-thumb-play-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: #fff;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 3px;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.episode-thumb-wrapper:hover .episode-thumb-play-btn {
+  transform: scale(1.12);
+  background: rgba(0, 0, 0, 0.85);
+}
+
 .episode-no-video {
   padding: 20px;
   background: var(--bg-card);
@@ -999,30 +1045,231 @@ body {
   margin-bottom: 28px;
 }
 
-.episode-tc-block {
-  margin-bottom: 28px;
+/* ─── Tribal Council Card ─────────────────────────────────────── */
+.tc-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #888;
+  color: #fff;
+  margin-bottom: 20px;
+  max-width: 520px;
 }
 
-.episode-tc-block h3 {
+.tc-card-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
-  font-size: 1rem;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.28);
+  font-weight: 700;
+  font-size: 0.88rem;
 }
 
-.tc-note {
-  color: var(--text-muted);
+.tc-card-note {
   font-weight: 400;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.episode-votes-table {
-  margin-bottom: 12px;
+.tc-cols-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.episode-eliminated {
-  margin-top: 8px;
-  font-size: 0.95rem;
+.tc-col-label {
+  padding: 7px 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tc-col-label:first-child {
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.tc-vote-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tc-target-cell {
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.tc-target-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.tc-vote-count {
+  font-weight: 400;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.tc-voters-cell {
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.tc-voter-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.tc-voter-names {
+  font-size: 0.78rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+}
+
+.tc-voted-out-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.28);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.tc-voted-out-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.tc-voted-out-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.tc-play-btn {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.75rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.tc-play-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ─── Video Modal ─────────────────────────────────────────────── */
+.video-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-modal-content {
+  width: 90vw;
+  max-width: 1100px;
+}
+
+.video-modal-content iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 8px;
+}
+
+.video-modal-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.15s;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.video-modal-close:hover {
+  opacity: 1;
+}
+
+.video-modal-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  min-height: 30px;
+}
+
+.video-modal-title {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+
+.tc-no-votes {
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.tc-revote-divider {
+  padding: 9px 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+}
+
+.tc-section-notes {
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .episode-nav {
@@ -1033,13 +1280,36 @@ body {
   border-top: 1px solid var(--border);
 }
 
+.episode-nav-top {
+  margin-top: 0;
+  margin-bottom: 12px;
+  padding-top: 0;
+  border-top: none;
+  border-bottom: none;
+}
+
+.episode-nav-btn-sm {
+  padding: 4px 10px;
+  font-size: 0.78rem;
+}
+
 .episode-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
   color: var(--link);
   text-decoration: none;
   font-size: 0.9rem;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .episode-nav-btn:hover {
+  background: var(--bg-hover, var(--border));
+  border-color: var(--link);
   color: var(--link-hover);
 }
 

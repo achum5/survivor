@@ -145,6 +145,8 @@ function ChallengeHistoryTab({ player, season, sid }) {
                 <td rowSpan={row.tribeGroupSpan} className="pchall-tribe-cell">
                   {row.tribe ? (
                     <TribeBadge tribe={row.tribe} sid={sid} />
+                  ) : season.mergeTribe ? (
+                    <TribeBadge tribe={season.mergeTribe} sid={sid} noLink />
                   ) : (
                     <span className="tribe-badge tribe-badge-merged">Merged</span>
                   )}
@@ -267,7 +269,7 @@ function VotingHistoryTab({ player, season, sid }) {
           {tableRows.map((row, i) => {
             // ── Tribe immune ──────────────────────────────────────────
             if (row.type === 'immune') {
-              const bg = row.tribe?.color ?? '#888';
+              const bg = row.tribe?.color ?? season.mergeTribe?.color ?? '#888';
               return (
                 <tr key={i} className="pvote-immune-row">
                   <td className="pvote-ep-cell" style={{ background: bg, color: '#fff', borderColor: bg }}>
@@ -330,10 +332,8 @@ function VotingHistoryTab({ player, season, sid }) {
 
             // ── Regular vote row ──────────────────────────────────────
             const { tc, myVote, votedForPlayer, votesAgainst, isElimHere, indivImmune, isRevote, isTie } = row;
-            const tribeColor = row.tribe?.color;
-            const rowStyle = !row.isMerged && tribeColor
-              ? { background: tribeColor + '4d' }
-              : {};
+            const tribeColor = row.isMerged ? season.mergeTribe?.color : row.tribe?.color;
+            const rowStyle = tribeColor ? { background: tribeColor + '4d' } : {};
 
             return (
               <tr key={i}
@@ -372,7 +372,6 @@ function VotingHistoryTab({ player, season, sid }) {
                         const voter = season.cast.find((p) => p.pid === v.voterPid);
                         return (
                           <span key={v.vid}>
-                            {vi > 0 && ', '}
                             {voter ? (
                               <Link to={`/season/${sid}/cast/${slugify(voter.name)}`}
                                 style={{

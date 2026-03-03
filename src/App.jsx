@@ -43,7 +43,7 @@ function AppInner() {
           <Route path="/season/:sid/tribe/:tid" element={<TribePage />} />
         </Routes>
         <footer className="wiki-footer">
-          14508 Survivor Wiki — Not affiliated with CBS Survivor
+          14508 Survivor Wiki
         </footer>
       </div>
 

@@ -31,8 +31,7 @@ export const SEASONS = [
     fanFavoritePid: null,
     summary: null,
     twists: [],
-    // fill in when merge tribe name/color is known: { name: "TribeName", color: "#hex" }
-    mergeTribe: null,
+    mergeTribe: { tid: "s1_merged", name: "Merged", color: "#4caf50" },
 
     juryVotes: [
       { jurorPid: "s1_p12", votedForPid: "s1_p01" }, // Sean → Jace
@@ -64,24 +63,25 @@ export const SEASONS = [
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: "Word Scramble", type: "Immunity", description: "Each tribe received a sheet of paper and had 3 minutes to write down as many valid words (3+ letters) as they could form from the letters in the word \"CHALLENGE\". Words were scored against a pre-made Scrabble-valid answer key, and teams graded each other's lists. Most valid words won immunity; the two lowest-scoring tribes went to tribal council. One player was caught writing after time was called and received a −1 penalty.", winner: "s1_t2",
           results: [{ id: "s1_t2", place: 1 }, { id: "s1_t3", place: 2 }, { id: "s1_t4", place: 3 }], sitOuts: [] } },
-      { eid: "s1_e04", number: 4,  title: "Episode 4",  videoUrl: null,
+      { eid: "s1_e04", number: 4,  title: "Episode 4",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=2361",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e05", number: 5,  title: "The Merge",  videoUrl: null,
+        immunityChallenge: { name: "Puzzle", type: "Immunity", description: null, winner: "s1_t3", videoTimestamp: 2361,
+          results: [{ id: "s1_t3", place: 1 }, { id: "s1_t5", place: 2 }, { id: "s1_t4", place: 3 }], sitOuts: [] } },
+      { eid: "s1_e05", number: 5,  title: "The Merge",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=2850",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e06", number: 6,  title: "Episode 6",  videoUrl: null,
+        immunityChallenge: { name: "Block Count", type: "Immunity", description: "Castaways guessed the number of blocks in a tub. Madison and Jace both guessed the exact same distance away, forcing a tiebreaker rock draw — Jace won immunity.", winner: "s1_p01", videoTimestamp: 2958 } },
+      { eid: "s1_e06", number: 6,  title: "Episode 6",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=3650",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e07", number: 7,  title: "Episode 7",  videoUrl: null,
+        immunityChallenge: { name: "Paper Airplane Toss", type: "Immunity", description: "Challenge was not recorded. Abdul won immunity.", winner: "s1_p05" } },
+      { eid: "s1_e07", number: 7,  title: "Episode 7",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=3987",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e08", number: 8,  title: "Episode 8",  videoUrl: null,
+        immunityChallenge: { name: "Spelling Bee", type: "Immunity", description: "Castaways competed in a spelling bee. Jace won immunity by correctly spelling \"emphasize\".", winner: "s1_p01", videoTimestamp: 3987 } },
+      { eid: "s1_e08", number: 8,  title: "Episode 8",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=4957",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e09", number: 9,  title: "Episode 9",  videoUrl: null,
+        immunityChallenge: { name: "Block Balance", type: "Immunity", description: "Castaways stood on one foot while holding blocks pinched between their index fingers. At set intervals, more blocks were added to increase difficulty. Abdul won immunity in a long final showdown against Meredith.", winner: "s1_p05", videoTimestamp: 4957 } },
+      { eid: "s1_e09", number: 9,  title: "Episode 9",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=6031",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
+        immunityChallenge: { name: null, description: null, winner: null, videoTimestamp: 6031 } },
       { eid: "s1_e10", number: 10, title: "Episode 10", videoUrl: null,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: null, description: null, winner: null } },
@@ -141,7 +141,7 @@ export const SEASONS = [
       },
       // ── TC 2: Marissa eliminated (5-1) — Purple tribe ──────────────
       {
-        tcid: "s1_tc02", eid: "s1_e02", episode: 2, tid: "s1_t1", notes: "",
+        tcid: "s1_tc02", eid: "s1_e02", episode: 2, tid: "s1_t1", notes: "", videoTimestamp: 509,
         eliminatedPid: "s1_p13",
         votes: [
           { vid: "s1_tc02_v1", voterPid: "s1_p02", votedForPid: "s1_p13" }, // Olivia → Marissa
@@ -157,7 +157,7 @@ export const SEASONS = [
       // Boys voted Madison; Girls voted Sean → 2-2 tie.
       // Video: https://youtu.be/qPJoYyABYHE?t=1504
       {
-        tcid: "s1_tc03a", eid: "s1_e03", episode: 3, tid: "s1_t3",
+        tcid: "s1_tc03a", eid: "s1_e03", episode: 3, tid: "s1_t3", videoTimestamp: 1504,
         notes: "Tie vote (2-2). Olivia played a hidden immunity idol on herself; no votes were cast against her so none were nullified. Boys voted Madison; Girls voted Sean.",
         eliminatedPid: null,
         votes: [
@@ -182,7 +182,7 @@ export const SEASONS = [
       // ── TC 3c: Clara eliminated (3-1) — Yellow switched tribe — Ep3 tribal 2 ─
       // Video: https://youtu.be/qPJoYyABYHE?t=2319
       {
-        tcid: "s1_tc03c", eid: "s1_e03", episode: 3, tid: "s1_t4", notes: "",
+        tcid: "s1_tc03c", eid: "s1_e03", episode: 3, tid: "s1_t4", videoTimestamp: 2319, notes: "",
         eliminatedPid: "s1_p11",
         votes: [
           { vid: "s1_tc03c_v1", voterPid: "s1_p04", votedForPid: "s1_p11" }, // Caroline → Clara
@@ -193,7 +193,7 @@ export const SEASONS = [
       },
       // ── TC 4: Dom eliminated (2-1) — Yellow switched tribe ─────────
       {
-        tcid: "s1_tc04", eid: "s1_e04", episode: 4, tid: "s1_t4", notes: "",
+        tcid: "s1_tc04", eid: "s1_e04", episode: 4, tid: "s1_t4", videoTimestamp: 2776, notes: "",
         eliminatedPid: "s1_p10",
         votes: [
           { vid: "s1_tc04_v1", voterPid: "s1_p04", votedForPid: "s1_p10" }, // Caroline → Dom
@@ -203,7 +203,7 @@ export const SEASONS = [
       },
       // ── TC 5: Savannah eliminated (8-1) — Merge ────────────────────
       {
-        tcid: "s1_tc05", eid: "s1_e05", episode: 5, tid: null, notes: "",
+        tcid: "s1_tc05", eid: "s1_e05", episode: 5, tid: null, videoTimestamp: 3553, notes: "",
         eliminatedPid: "s1_p09",
         votes: [
           { vid: "s1_tc05_v1", voterPid: "s1_p01", votedForPid: "s1_p09" }, // Jace → Savannah
@@ -219,7 +219,7 @@ export const SEASONS = [
       },
       // ── TC 6: Kelsey eliminated (5-3) — Merge ──────────────────────
       {
-        tcid: "s1_tc06", eid: "s1_e06", episode: 6, tid: null, notes: "",
+        tcid: "s1_tc06", eid: "s1_e06", episode: 6, tid: null, videoTimestamp: 3663, notes: "",
         eliminatedPid: "s1_p08",
         votes: [
           { vid: "s1_tc06_v1", voterPid: "s1_p01", votedForPid: "s1_p08" }, // Jace → Kelsey
@@ -234,7 +234,7 @@ export const SEASONS = [
       },
       // ── TC 7: Madison eliminated (5-2) — Merge ─────────────────────
       {
-        tcid: "s1_tc07", eid: "s1_e07", episode: 7, tid: null, notes: "",
+        tcid: "s1_tc07", eid: "s1_e07", episode: 7, tid: null, videoTimestamp: 4815, notes: "",
         eliminatedPid: "s1_p07",
         votes: [
           { vid: "s1_tc07_v1", voterPid: "s1_p02", votedForPid: "s1_p07" }, // Olivia → Madison
@@ -248,7 +248,7 @@ export const SEASONS = [
       },
       // ── TC 8: Jacob eliminated (4-2) — Merge ───────────────────────
       {
-        tcid: "s1_tc08", eid: "s1_e08", episode: 8, tid: null, notes: "",
+        tcid: "s1_tc08", eid: "s1_e08", episode: 8, tid: null, videoTimestamp: 5929, notes: "",
         eliminatedPid: "s1_p06",
         votes: [
           { vid: "s1_tc08_v1", voterPid: "s1_p01", votedForPid: "s1_p06" }, // Jace → Jacob
@@ -261,7 +261,7 @@ export const SEASONS = [
       },
       // ── TC 9: Abdul eliminated (3-2) — Merge ──────────────────────
       {
-        tcid: "s1_tc09", eid: "s1_e09", episode: 9, tid: null, notes: "",
+        tcid: "s1_tc09", eid: "s1_e09", episode: 9, tid: null, videoTimestamp: 6680, notes: "",
         eliminatedPid: "s1_p05",
         votes: [
           { vid: "s1_tc09_v1", voterPid: "s1_p02", votedForPid: "s1_p05" }, // Olivia → Abdul
