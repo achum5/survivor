@@ -28,6 +28,7 @@ export const SEASONS = [
     castPhotoPath: "https://i.imgur.com/ASseu6A.jpeg",
     winnerPid: "s1_p01",
     runnerUpPid: "s1_p02",
+    secondRunnerUpPid: "s1_p03",
     fanFavoritePid: null,
     summary: null,
     twists: [],
@@ -53,7 +54,7 @@ export const SEASONS = [
     episodes: [
       { eid: "s1_e01", number: 1,  title: "Episode 1",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=6", videoEndTime: 92,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, type: "Immunity", description: "Challenge name not recorded.", winner: "s1_t2",
+        immunityChallenge: { name: null, type: "Immunity", description: "Alex forgot to record the challenge. He now cannot remember what the challenge was. What a dummy.", winner: "s1_t2",
           results: [{ id: "s1_t2", place: 1 }, { id: "s1_t1", place: 2 }], sitOuts: [] } },
       { eid: "s1_e02", number: 2,  title: "Episode 2",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=143", videoEndTime: 508,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
@@ -81,11 +82,11 @@ export const SEASONS = [
         immunityChallenge: { name: "Block Balance", type: "Immunity", description: "Castaways stood on one foot while holding blocks pinched between their index fingers. At set intervals, more blocks were added to increase difficulty. Abdul won immunity in a long final showdown against Meredith.", winner: "s1_p05", videoTimestamp: 4957 } },
       { eid: "s1_e09", number: 9,  title: "Episode 9",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=6031",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null, videoTimestamp: 6031 } },
-      { eid: "s1_e10", number: 10, title: "Episode 10", videoUrl: null,
+        immunityChallenge: { name: "Kentucky Derby", type: "Immunity", description: "Three-stage challenge. Stage 1: Golf Ball Relay — players ran back and forth collecting golf balls one at a time into a bag (10 trips). Stage 2: Knot Untying — untie all knots from a rope to free a ball (11th ball). Stage 3: Word Scramble — unscramble letters to form two words. The only clue: \"It's two words, something we all celebrate, has nothing to do with Survivor.\" The answer was Kentucky Derby. Meredith solved it first, guaranteeing her a spot in the final four.", winner: "s1_p03", videoTimestamp: 6031 } },
+      { eid: "s1_e10", number: 10, title: "Episode 10", videoUrl: "https://youtu.be/qPJoYyABYHE?t=6797",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: null, description: null, winner: null } },
-      { eid: "s1_e11", number: 11, title: "Finale",     videoUrl: null,
+        immunityChallenge: { name: "Images Under Cups", description: "Memory game — players called out numbered cups to be turned over, trying to find matching pairs of images underneath.", winner: "s1_p02", videoTimestamp: 6797 } },
+      { eid: "s1_e11", number: 11, title: "Finale",     videoUrl: "https://youtu.be/qPJoYyABYHE?t=8206",
         images: [
           { url: "https://i.imgur.com/SVUjVa1.jpeg", caption: "Final votes" },
           { url: "https://i.imgur.com/rlw6ktU.jpeg", caption: "Jace wins Season 1" },
@@ -98,7 +99,7 @@ export const SEASONS = [
       { tid: "s1_t1", name: "Purple", color: "#7c3aed", phase: "original" },
       { tid: "s1_t2", name: "Red",    color: "#dc2626", phase: "original" },
       { tid: "s1_t3", name: "Blue",   color: "#2563eb", phase: "switched" },
-      { tid: "s1_t4", name: "Yellow", color: "#ca8a04", phase: "switched" },
+      { tid: "s1_t4", name: "Yellow", color: "#facc15", phase: "switched" },
       { tid: "s1_t5", name: "Orange", color: "#ea580c", phase: "switched" },
     ],
 
@@ -127,7 +128,8 @@ export const SEASONS = [
     votingHistory: [
       // ── TC 1: Sam eliminated (6-1) — Purple tribe ──────────────────
       {
-        tcid: "s1_tc01", eid: "s1_e01", episode: 1, tid: "s1_t1", notes: "",
+        tcid: "s1_tc01", eid: "s1_e01", episode: 1, tid: "s1_t1", notes: "", confessionalTimestamp: 65,
+        confessionalQuote: "Pretty rough, yeah. First one eliminated, kind of tough, but it happened. Kind of broke off into groups, four and three. I knew as soon as I went into group three I was going to be one of the people talked about. Knew right away they had the majority, didn't really have a shot. Then we switched up and I only got to talk to like four out of the three, so I just knew it wasn't meant to be.",
         eliminatedPid: "s1_p14",
         votes: [
           { vid: "s1_tc01_v1", voterPid: "s1_p02", votedForPid: "s1_p14" }, // Olivia → Sam
@@ -171,7 +173,8 @@ export const SEASONS = [
       // Madison and Sean were immune on the revote. With Olivia idol-protected,
       // Jace was the only eligible rocks candidate — forcing his vote to Sean.
       {
-        tcid: "s1_tc03b", eid: "s1_e03", episode: 3, tid: "s1_t3",
+        tcid: "s1_tc03b", eid: "s1_e03", episode: 3, tid: "s1_t3", confessionalTimestamp: 2298,
+        confessionalQuote: "Feeling good. I mean, we threw votes on Olivia at first and we had to switch because we found out she was playing an idol. But got voted out, so... Jace didn't have to go home, so feeling good. Hopefully he can pull it out and we're ready to go. Yeah, tough way to go. It sucks but get to go home, get to get my phone, watch cats play.",
         notes: "Revote. Madison and Sean were immune as the tied players. Olivia was idol-protected, making Jace the sole eligible rocks candidate — forcing him to flip and vote Sean.",
         eliminatedPid: "s1_p12",
         votes: [
@@ -193,7 +196,8 @@ export const SEASONS = [
       },
       // ── TC 4: Dom eliminated (2-1) — Yellow switched tribe ─────────
       {
-        tcid: "s1_tc04", eid: "s1_e04", episode: 4, tid: "s1_t4", videoTimestamp: 2776, notes: "",
+        tcid: "s1_tc04", eid: "s1_e04", episode: 4, tid: "s1_t4", videoTimestamp: 2776, confessionalTimestamp: 2839, notes: "",
+        confessionalQuote: "Feeling all right. I thought I had a chance. Tried very last second to get one of them to switch but they told me it was going to be me. And this is my fourth Council and it was a good time, a lot of fun.",
         eliminatedPid: "s1_p10",
         votes: [
           { vid: "s1_tc04_v1", voterPid: "s1_p04", votedForPid: "s1_p10" }, // Caroline → Dom
@@ -219,7 +223,8 @@ export const SEASONS = [
       },
       // ── TC 6: Kelsey eliminated (5-3) — Merge ──────────────────────
       {
-        tcid: "s1_tc06", eid: "s1_e06", episode: 6, tid: null, videoTimestamp: 3663, notes: "",
+        tcid: "s1_tc06", eid: "s1_e06", episode: 6, tid: null, videoTimestamp: 3663, confessionalTimestamp: 3788, notes: "",
+        confessionalQuote: "Betrayed. I was definitely lied to. I think that maybe Jacob lied to me, Meredith definitely lied to me, Madison lied to me. Yeah, never get too comfortable because I thought I had a pretty good alliance and it did not work. So that's kind of all I have to say.",
         eliminatedPid: "s1_p08",
         votes: [
           { vid: "s1_tc06_v1", voterPid: "s1_p01", votedForPid: "s1_p08" }, // Jace → Kelsey
@@ -232,36 +237,43 @@ export const SEASONS = [
           { vid: "s1_tc06_v8", voterPid: "s1_p08", votedForPid: "s1_p03" }, // Kelsey → Meredith
         ],
       },
-      // ── TC 7: Madison eliminated (5-2) — Merge ─────────────────────
+      // ── TC 7: Madison eliminated (2-0, 5 nullified) — Merge ──────────
       {
-        tcid: "s1_tc07", eid: "s1_e07", episode: 7, tid: null, videoTimestamp: 4815, notes: "",
+        tcid: "s1_tc07", eid: "s1_e07", episode: 7, tid: null, videoTimestamp: 4815, confessionalTimestamp: 4938,
+        confessionalQuote: "I feel so lucky to be voted off on an idol play. Abdul, that was pretty good. I kind of hate you but I kind of appreciate it, so I'm not mad. I know you're butt hurt but I'm not mad.",
+        notes: "Abdul played a hidden immunity idol on himself, nullifying 5 votes.",
+        idols: [{ playerPid: "s1_p05", playedOn: "s1_p05" }],
         eliminatedPid: "s1_p07",
         votes: [
-          { vid: "s1_tc07_v1", voterPid: "s1_p02", votedForPid: "s1_p07" }, // Olivia → Madison
-          { vid: "s1_tc07_v2", voterPid: "s1_p03", votedForPid: "s1_p07" }, // Meredith → Madison
-          { vid: "s1_tc07_v3", voterPid: "s1_p04", votedForPid: "s1_p07" }, // Caroline → Madison
-          { vid: "s1_tc07_v4", voterPid: "s1_p05", votedForPid: "s1_p07" }, // Abdul → Madison
-          { vid: "s1_tc07_v5", voterPid: "s1_p06", votedForPid: "s1_p07" }, // Jacob → Madison
-          { vid: "s1_tc07_v6", voterPid: "s1_p01", votedForPid: "s1_p05" }, // Jace → Abdul
-          { vid: "s1_tc07_v7", voterPid: "s1_p07", votedForPid: "s1_p05" }, // Madison → Abdul
+          { vid: "s1_tc07_v1", voterPid: "s1_p01", votedForPid: "s1_p05", idolNullified: true }, // Jace → Abdul ✗
+          { vid: "s1_tc07_v2", voterPid: "s1_p02", votedForPid: "s1_p05", idolNullified: true }, // Olivia → Abdul ✗
+          { vid: "s1_tc07_v3", voterPid: "s1_p03", votedForPid: "s1_p05", idolNullified: true }, // Meredith → Abdul ✗
+          { vid: "s1_tc07_v4", voterPid: "s1_p06", votedForPid: "s1_p05", idolNullified: true }, // Jacob → Abdul ✗
+          { vid: "s1_tc07_v5", voterPid: "s1_p07", votedForPid: "s1_p05", idolNullified: true }, // Madison → Abdul ✗
+          { vid: "s1_tc07_v6", voterPid: "s1_p04", votedForPid: "s1_p07" }, // Caroline → Madison
+          { vid: "s1_tc07_v7", voterPid: "s1_p05", votedForPid: "s1_p07" }, // Abdul → Madison
         ],
       },
-      // ── TC 8: Jacob eliminated (4-2) — Merge ───────────────────────
+      // ── TC 8: Jacob eliminated (2-0, 4 nullified) — Merge ────────────
       {
-        tcid: "s1_tc08", eid: "s1_e08", episode: 8, tid: null, videoTimestamp: 5929, notes: "",
+        tcid: "s1_tc08", eid: "s1_e08", episode: 8, tid: null, videoTimestamp: 5929, confessionalTimestamp: 6006,
+        confessionalQuote: "I kind of knew that one was coming at the end there. I tried to convince Jace at the end to flip but I didn't know he had an idol. I think I played a good game because I was on the right side of I think every single vote that I was in. I pulled the Abdul numbers, I was the vote swap for Kelsey, and I pulled the Jace numbers there. And I even convinced Caroline to flip on him, but they had idols both times, so that got me at the end.",
+        notes: "Jace played a hidden immunity idol on himself, nullifying 4 votes.",
+        idols: [{ playerPid: "s1_p01", playedOn: "s1_p01" }],
         eliminatedPid: "s1_p06",
         votes: [
-          { vid: "s1_tc08_v1", voterPid: "s1_p01", votedForPid: "s1_p06" }, // Jace → Jacob
-          { vid: "s1_tc08_v2", voterPid: "s1_p02", votedForPid: "s1_p06" }, // Olivia → Jacob
-          { vid: "s1_tc08_v3", voterPid: "s1_p03", votedForPid: "s1_p06" }, // Meredith → Jacob
-          { vid: "s1_tc08_v4", voterPid: "s1_p05", votedForPid: "s1_p06" }, // Abdul → Jacob
-          { vid: "s1_tc08_v5", voterPid: "s1_p04", votedForPid: "s1_p01" }, // Caroline → Jace
-          { vid: "s1_tc08_v6", voterPid: "s1_p06", votedForPid: "s1_p01" }, // Jacob → Jace
+          { vid: "s1_tc08_v1", voterPid: "s1_p02", votedForPid: "s1_p01", idolNullified: true }, // Olivia → Jace ✗
+          { vid: "s1_tc08_v2", voterPid: "s1_p03", votedForPid: "s1_p01", idolNullified: true }, // Meredith → Jace ✗
+          { vid: "s1_tc08_v3", voterPid: "s1_p04", votedForPid: "s1_p01", idolNullified: true }, // Caroline → Jace ✗
+          { vid: "s1_tc08_v4", voterPid: "s1_p06", votedForPid: "s1_p01", idolNullified: true }, // Jacob → Jace ✗
+          { vid: "s1_tc08_v5", voterPid: "s1_p05", votedForPid: "s1_p06" }, // Abdul → Jacob
+          { vid: "s1_tc08_v6", voterPid: "s1_p01", votedForPid: "s1_p06" }, // Jace → Jacob
         ],
       },
       // ── TC 9: Abdul eliminated (3-2) — Merge ──────────────────────
       {
-        tcid: "s1_tc09", eid: "s1_e09", episode: 9, tid: null, videoTimestamp: 6680, notes: "",
+        tcid: "s1_tc09", eid: "s1_e09", episode: 9, tid: null, videoTimestamp: 6680, confessionalTimestamp: 6768, notes: "",
+        confessionalQuote: "I played a good game, you know. I got a lot farther than I expected. I swayed a lot of people, a lot of people followed my footsteps which I did not expect. Called out a whole bunch of things. At the end of the day I just got snaked. Caroline, you'll get what's coming to you. Jace, thanks for sticking with me through. And then everybody else — some snakes.",
         eliminatedPid: "s1_p05",
         votes: [
           { vid: "s1_tc09_v1", voterPid: "s1_p02", votedForPid: "s1_p05" }, // Olivia → Abdul
@@ -273,8 +285,11 @@ export const SEASONS = [
       },
       // ── TC 10: Caroline eliminated — no vote ───────────────────────
       {
-        tcid: "s1_tc10", eid: "s1_e10", episode: 10, tid: null, notes: "No vote — eliminated",
+        tcid: "s1_tc10", eid: "s1_e10", episode: 10, tid: null, videoTimestamp: 7613, confessionalTimestamp: 8167,
+        confessionalQuote: "I'm a little sad but it was a lot of fun playing. I was really close to making it to the final three. Came down to that campfire marshmallow thing and Jace's Plan B got me, you know, that's fair. I was really upset. I felt like I had a really good kind of speech I was going to give to the jury. Feel like I made some blindsides. I know that doesn't always help you win, but I took out my main alliance and then my other alliance too, because I knew my original alliance was going to beat me if it was him and I in the end. And maybe that's what led to my downfall, but I had a lot of fun.",
+        notes: "Olivia won immunity and chose Meredith for the final 3. Jace and Caroline competed in a Marshmallow & Stick Tower challenge (fire-making equivalent). Players had 5 minutes to build the tallest freestanding tower using only marshmallows and sticks. Jace won with his 'Plan B' structure, eliminating Caroline.",
         eliminatedPid: "s1_p04",
+        firemaking: { winner: "s1_p01", loser: "s1_p04", challenge: "Marshmallow & Stick Tower", description: "5 minutes to build the tallest freestanding tower using only marshmallows and sticks. Tower had to stay standing for 15 seconds after time was called.", videoTimestamp: 7787 },
         votes: [],
       },
     ],

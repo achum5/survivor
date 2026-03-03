@@ -50,9 +50,13 @@ function ChallengeHistoryTab({ player, season, sid }) {
   const switchEp = getSwitchEpisode(season);
   const mergeEp = getMergeEpisode(season);
 
+  // Find the episode where this player was eliminated
+  const eliminatedEp = season.votingHistory.find((tc) => tc.eliminatedPid === player.pid)?.episode ?? Infinity;
+
   // Build a flat list of challenge rows: one row per challenge entry per episode
   const rows = [];
   season.episodes.forEach((ep) => {
+    if (ep.number > eliminatedEp) return;
     const challenges = [];
     if (ep.rewardChallenge?.name || ep.rewardChallenge?.winner) {
       challenges.push({ ch: ep.rewardChallenge, label: 'rewardChallenge' });
@@ -146,7 +150,7 @@ function ChallengeHistoryTab({ player, season, sid }) {
                   {row.tribe ? (
                     <TribeBadge tribe={row.tribe} sid={sid} />
                   ) : season.mergeTribe ? (
-                    <TribeBadge tribe={season.mergeTribe} sid={sid} noLink />
+                    <TribeBadge tribe={season.mergeTribe} sid={sid} />
                   ) : (
                     <span className="tribe-badge tribe-badge-merged">Merged</span>
                   )}

@@ -7,6 +7,12 @@ export default function Sidebar() {
   const { sid } = useParams();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [expanded, setExpanded] = useState({});
+
+  // Auto-expand the current season
+  useEffect(() => {
+    if (sid) setExpanded((prev) => ({ ...prev, [sid]: true }));
+  }, [sid]);
 
   // Close sidebar on navigation
   useEffect(() => {
@@ -22,6 +28,10 @@ export default function Sidebar() {
     }
     return () => document.body.classList.remove('sidebar-open');
   }, [mobileOpen]);
+
+  const toggleSeason = (seasonSid) => {
+    setExpanded((prev) => ({ ...prev, [seasonSid]: !prev[seasonSid] }));
+  };
 
   return (
     <>
@@ -48,31 +58,61 @@ export default function Sidebar() {
         <div className="sidebar-section">
           <div className="sidebar-section-title">Navigation</div>
           <NavLink to="/" className={({ isActive }) => isActive ? 'sidebar-link active' : 'sidebar-link'} end>
-            Main Page
+            Home
           </NavLink>
         </div>
 
         <div className="sidebar-section">
           <div className="sidebar-section-title">Seasons</div>
-          {SEASONS.map((s) => (
-            <div key={s.sid}>
-              <NavLink
-                to={`/season/${s.sid}`}
-                className={() => sid === s.sid ? 'sidebar-link active' : 'sidebar-link'}
-              >
-                {s.name}
-              </NavLink>
-              {sid === s.sid && s.cast.length > 0 && (
-                <div className="sidebar-sub">
-                  <NavLink to={`/season/${s.sid}`} end className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Overview</NavLink>
-                  <NavLink to={`/season/${s.sid}/cast`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Cast</NavLink>
-                  <NavLink to={`/season/${s.sid}/voting`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Voting History</NavLink>
-                  <NavLink to={`/season/${s.sid}/challenges`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Challenges</NavLink>
-                  <NavLink to={`/season/${s.sid}/episodes`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Episodes</NavLink>
+          {SEASONS.map((s) => {
+            const isExpanded = expanded[s.sid];
+            const isCurrent = sid === s.sid;
+            const hasCast = s.cast.length > 0;
+
+            return (
+              <div key={s.sid}>
+                <div className="sidebar-season-header">
+                  <NavLink
+                    to={`/season/${s.sid}`}
+                    className={() => isCurrent ? 'sidebar-link active' : 'sidebar-link'}
+                  >
+                    {s.name}
+                  </NavLink>
+                  {hasCast && (
+                    <button
+                      className="sidebar-toggle"
+                      onClick={() => toggleSeason(s.sid)}
+                      aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                    >
+                      {isExpanded ? '▾' : '▸'}
+                    </button>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
+                {isExpanded && hasCast && (
+                  <div className="sidebar-sub">
+                    <NavLink to={`/season/${s.sid}`} end className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Overview</NavLink>
+                    <NavLink to={`/season/${s.sid}/cast`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Cast</NavLink>
+                    <NavLink to={`/season/${s.sid}/episodes`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Episodes</NavLink>
+                    {s.episodes.length > 0 && (
+                      <div className="sidebar-episodes">
+                        {s.episodes.map((ep) => (
+                          <NavLink
+                            key={ep.eid}
+                            to={`/season/${s.sid}/episode/${ep.eid}`}
+                            className={({ isActive }) => `sidebar-ep-link${isActive ? ' active' : ''}`}
+                          >
+                            {ep.number}
+                          </NavLink>
+                        ))}
+                      </div>
+                    )}
+                    <NavLink to={`/season/${s.sid}/voting`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Voting History</NavLink>
+                    <NavLink to={`/season/${s.sid}/challenges`} className={({ isActive }) => isActive ? 'sidebar-sublink active' : 'sidebar-sublink'}>Challenges</NavLink>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </nav>
     </>

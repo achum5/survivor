@@ -18,8 +18,8 @@
   --text-muted:  #888;
   --text-heading:#f0f0f0;
   --border:      #333;
-  --link:        #8ec3e6;
-  --link-hover:  #b8d8f0;
+  --link:        #ffffff;
+  --link-hover:  #cccccc;
   --sidebar-link:#c8c8c8;
   --sidebar-active: #f5a623;
 }
@@ -127,6 +127,62 @@ body {
   border-left-color: var(--sidebar-active);
 }
 
+.sidebar-season-header {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-season-header .sidebar-link {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.sidebar-toggle:hover {
+  color: #fff;
+}
+
+.sidebar-episodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px 14px 6px 26px;
+}
+
+.sidebar-ep-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-ep-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.sidebar-ep-link.active {
+  background: var(--sidebar-active);
+  color: #000;
+  font-weight: 700;
+}
+
 /* ─── Main Content ─────────────────────────────────── */
 
 .main-content {
@@ -137,6 +193,7 @@ body {
 
 .article {
   max-width: 960px;
+  margin: 0 auto;
   padding: 28px 36px 60px;
 }
 
@@ -193,17 +250,46 @@ body {
 .article a { color: var(--link); text-decoration: none; }
 .article a:hover { text-decoration: underline; color: var(--link-hover); }
 
+/* ─── Season Top Layout ────────────────────────────── */
+
+.season-top-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.season-top-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.season-top-aside {
+  flex-shrink: 0;
+  width: 260px;
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+}
+
+.elim-table-wrap {
+  overflow-x: auto;
+}
+
 /* ─── Infobox ──────────────────────────────────────── */
 
 .infobox {
-  float: right;
-  clear: right;
-  margin: 0 0 20px 24px;
   width: 260px;
   border-collapse: collapse;
   border: 1px solid var(--border);
   font-size: 0.82rem;
   background: var(--bg-infobox);
+}
+
+/* Float infobox on player page (still uses clearfix wrapper) */
+.player-article .infobox {
+  float: right;
+  clear: right;
+  margin: 0 0 20px 24px;
 }
 
 .infobox-header {
@@ -326,6 +412,10 @@ body {
   height: 20px;
   border-radius: 3px;
   border: 1px solid rgba(255,255,255,0.15);
+  transition: transform 0.15s;
+}
+a.infobox-tribe-swatch:hover {
+  transform: scale(1.2);
 }
 
 /* ─── Tribe Badge ──────────────────────────────────── */
@@ -447,30 +537,360 @@ body {
 
 .elim-table .winner-row td { background: rgba(245,166,35,0.06); }
 
-.tribe-block { margin-bottom: 24px; }
+/* ─── Cast Table (Season Overview) ─────────────────── */
 
-.tribe-members-list {
+.cast-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.cast-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.cast-table th,
+.cast-table td {
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.cast-table th {
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  padding: 6px 8px;
+}
+
+.cast-th-contestant { text-align: left !important; }
+
+.cast-cell-photo {
+  width: 50px;
+  padding: 4px 2px 4px 4px;
+}
+
+.cast-photo-frame {
+  width: 46px;
+  height: 56px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.cast-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cast-cell-info {
+  text-align: left !important;
+  padding: 4px 8px 4px 4px;
+}
+
+.cast-player-name {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--link);
+  text-decoration: none;
+}
+
+.cast-player-name:hover {
+  text-decoration: underline;
+  color: var(--link-hover);
+}
+
+.cast-cell-tribe {
+  min-width: 70px;
+}
+
+.cast-tribe-label {
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  text-decoration: none;
+}
+a.cast-tribe-label:hover {
+  text-decoration: underline;
+}
+
+.cast-cell-finish {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.cast-finish-link {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.cast-finish-link:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+.cast-cell-votes {
+  font-weight: 600;
+}
+
+.cast-row-winner td {
+  background: rgba(245,166,35,0.08);
+}
+
+.cast-row-winner .cast-cell-finish {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.cast-row-runnerup .cast-cell-finish {
+  color: #ccc;
+  font-weight: 600;
+}
+
+/* ── Voting History Table (Season Overview) ─────────────────── */
+.vh-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.vh-table {
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  min-width: 100%;
+}
+
+.vh-table th,
+.vh-table td {
+  border: 1px solid var(--border);
+  padding: 4px 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Corner cell — top-left, spans 3 header rows */
+.vh-corner {
+  background: var(--bg-card);
+  min-width: 90px;
+}
+
+/* Episode number header */
+.vh-ep-header {
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  padding: 6px 8px;
+}
+
+.vh-ep-header a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.vh-ep-header a:hover {
+  color: var(--link-hover);
+}
+
+/* Voted Out header — photo + name */
+.vh-elim-header {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 6px 4px;
+  vertical-align: middle;
+  min-width: 60px;
+}
+
+.vh-elim-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-decoration: none;
+}
+
+.vh-elim-name {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.vh-elim-link:hover .vh-elim-name {
+  color: var(--link-hover);
+}
+
+.vh-no-elim {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Vote count row */
+.vh-vote-count {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.15);
+  padding: 3px 6px;
+  font-weight: 600;
+}
+
+/* Jury column header accent */
+.vh-jury-col {
+  background: rgba(180, 140, 50, 0.25) !important;
+  color: #e8c86a;
+}
+
+/* Tribe indicator column */
+.vh-tribe-pips {
+  padding: 0 !important;
+  border-right: none !important;
+  white-space: nowrap;
+  width: 20px;
+  min-width: 20px;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+}
+.vh-tribe-pips-link {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.vh-tribe-arrow {
+  font-size: 0.85rem;
+  line-height: 1;
+  display: inline-block;
+  margin: 0 -1px;
+  filter: drop-shadow(1px 0 1px rgba(0,0,0,0.4));
+  vertical-align: middle;
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+}
+
+/* Player name cell */
+.vh-player-cell {
+  text-align: left !important;
+  padding: 5px 8px 5px 4px !important;
+  background: var(--bg-card);
+  white-space: nowrap;
+  min-width: 80px;
+  border-left: none !important;
+}
+
+.vh-player-link {
+  color: var(--link);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.78rem;
+}
+
+.vh-player-link:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* Vote cells */
+.vh-cell {
+  min-width: 56px;
+  font-size: 0.72rem;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+}
+
+.vh-cell-absent {
+  background: transparent !important;
+  color: #444;
+  text-shadow: none;
+  font-weight: normal;
+}
+
+.vh-cell-dead {
+  background: #141414 !important;
+  border-color: #1a1a1a !important;
+}
+
+.vh-nullified {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Jury vote cell */
+.vh-cell-jury {
+  background: rgba(180, 140, 50, 0.2) !important;
+  color: #e8c86a !important;
+  text-shadow: none;
+  font-weight: 600;
+}
+
+/* Winner / Finalist cells */
+.vh-cell-winner {
+  background: rgba(245, 166, 35, 0.15) !important;
+  color: var(--accent) !important;
+  text-shadow: none;
+  font-weight: 700;
+  font-size: 0.65rem;
+}
+
+.vh-cell-finalist {
+  background: rgba(200, 200, 200, 0.08) !important;
+  color: #aaa !important;
+  text-shadow: none;
+  font-size: 0.65rem;
+}
+
+/* Winner row highlight */
+.vh-row-winner .vh-player-cell {
+  background: rgba(245, 166, 35, 0.08);
+}
+
+/* Legend */
+.vh-legend {
+  font-size: 0.72rem;
+  color: var(--text-muted);
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 8px;
+  gap: 4px 16px;
+  margin-bottom: 8px;
 }
-
-.tribe-member-chip {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: 0.85rem;
-  text-decoration: none;
-  color: var(--text);
-  transition: background 0.15s;
+.vh-footnote {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  vertical-align: super;
+  margin-left: 1px;
 }
-
-.tribe-member-chip:hover { background: #2f2f2f; color: var(--text); }
+.vh-footnote-text {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+.vh-footnote-text sup {
+  font-size: 0.6rem;
+  margin-right: 2px;
+}
+.vh-cell-fire-elim {
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 0.68rem;
+}
+.vh-cell-no-vote {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
 
 /* ─── Cast List ────────────────────────────────────── */
 
@@ -1075,14 +1495,14 @@ body {
 
 .tc-cols-header {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 190px 1fr;
   background: rgba(255, 255, 255, 0.12);
   border-top: 1px solid rgba(255, 255, 255, 0.18);
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .tc-col-label {
-  padding: 7px 14px;
+  padding: 6px 12px;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1096,74 +1516,215 @@ body {
 
 .tc-vote-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 190px 1fr;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+}
+
+.tc-vote-row-eliminated {
+  border-left: 4px solid rgba(255, 255, 255, 0.5);
 }
 
 .tc-target-cell {
-  padding: 16px 12px;
+  padding: 10px 12px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
   border-right: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .tc-target-name {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  text-align: center;
+  text-align: left;
+  line-height: 1.3;
 }
 
 .tc-vote-count {
-  font-weight: 400;
-  font-size: 0.8rem;
-  opacity: 0.85;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 22px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.tc-idol-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 1px 7px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.tc-vote-row-nullified {
+  opacity: 0.7;
+}
+
+.tc-votes-not-counted {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.8);
+  margin-top: -4px;
 }
 
 .tc-voters-cell {
-  padding: 16px 12px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
 }
 
 .tc-voter-photos {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
+  gap: 5px;
+  justify-content: flex-start;
 }
 
 .tc-voter-names {
-  font-size: 0.78rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.5;
+  font-size: 0.74rem;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
 }
 
 .tc-voted-out-footer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 10px 14px;
   background: rgba(0, 0, 0, 0.28);
   border-top: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .tc-voted-out-label {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .tc-voted-out-name {
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
+}
+
+.tc-confessional-btn {
+  margin-top: 6px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.tc-confessional-btn:hover {
+  background: rgba(255,255,255,0.28);
+}
+
+.tc-confessional-none {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+}
+
+/* Final Words quote block */
+.tc-final-words {
+  background: rgba(0,0,0,0.15);
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding: 14px 18px;
+}
+
+.tc-final-words-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.tc-final-words-play {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.tc-final-words-play:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.tc-final-words-body {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.tc-final-words-avatar {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.tc-final-words-who {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+.tc-final-words-quote {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.88);
+  font-style: italic;
+  position: relative;
+}
+
+.tc-quote-mark {
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  vertical-align: text-top;
+  line-height: 1;
+}
+
+.tc-quote-open {
+  margin-right: 2px;
+}
+
+.tc-quote-close {
+  margin-left: 2px;
 }
 
 .tc-play-btn {
@@ -1272,6 +1833,44 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* ── Final Tribal Council Results Footer ── */
+.ftc-result-footer {
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.28);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ftc-winner-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ftc-winner-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.ftc-winner-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.ftc-winner-icon {
+  font-size: 1rem;
+  margin-left: auto;
+}
+
+.ftc-runners-up {
+  margin-top: 6px;
+  padding-left: 46px;
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
 .episode-nav {
   display: flex;
   justify-content: space-between;
@@ -1313,59 +1912,121 @@ body {
   color: var(--link-hover);
 }
 
-/* ── Season Overview Episode Grid ────────────────────────────── */
-.episode-list-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 10px;
-  margin-bottom: 28px;
+/* ── Season Overview Episode Table ──────────────────────────── */
+.episode-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 12px;
 }
 
-.episode-list-card {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 12px;
-  background: var(--bg-card);
+.episode-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.episode-table th,
+.episode-table td {
   border: 1px solid var(--border);
-  border-radius: 4px;
-  text-decoration: none;
-  color: var(--text);
-  transition: border-color 0.15s;
+  padding: 6px 8px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
-.episode-list-card:hover {
-  border-color: var(--accent);
-  color: var(--text);
-}
-
-.episode-list-num {
+.episode-table th {
+  background: rgba(255, 255, 255, 0.06);
   font-size: 0.72rem;
-  color: var(--text-muted);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  color: var(--text-muted);
+  padding: 6px 8px;
 }
 
-.episode-list-title {
-  font-size: 0.9rem;
+.episode-table thead th:first-child {
+  text-align: left;
+}
+
+.ep-tbl-ep {
+  text-align: left !important;
+}
+
+.ep-tbl-ep a {
   color: var(--link);
+  text-decoration: none;
   font-weight: 500;
 }
 
-.episode-list-card:hover .episode-list-title {
+.ep-tbl-ep a:hover {
   color: var(--link-hover);
+  text-decoration: underline;
 }
 
-.episode-list-elim {
-  font-size: 0.78rem;
+.ep-tbl-challenge {
+}
+
+.ep-tbl-colored {
+  color: #fff;
+}
+
+.ep-tbl-chal-name {
+  font-size: 0.72rem;
   color: var(--text-muted);
 }
 
-.episode-list-video {
-  font-size: 0.75rem;
-  color: var(--accent);
-  margin-top: 2px;
+.ep-tbl-colored .ep-tbl-chal-name {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ep-tbl-chal-link {
+  color: inherit !important;
+  text-decoration: none;
+  display: inline;
+}
+
+.ep-tbl-chal-link:hover {
+  text-decoration: underline;
+}
+
+.ep-tbl-chal-winner {
+  font-weight: 700;
+}
+
+.ep-tbl-elim {
+}
+
+.ep-tbl-elim-colored {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ep-tbl-elim-link {
+  color: inherit !important;
+  text-decoration: none;
+}
+
+.ep-tbl-elim-link:hover {
+  text-decoration: underline;
+}
+
+.ep-tbl-elim-name {
+  font-weight: 700;
+}
+
+.ep-tbl-elim-vote {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+.ep-tbl-elim-note {
+  font-size: 0.68rem;
+  opacity: 0.75;
+  font-style: italic;
+}
+
+.ep-tbl-finale-label {
+  font-style: italic;
+  color: var(--text-muted);
 }
 
 /* ── Episode Challenge Block ─────────────────────────────────── */
@@ -1414,124 +2075,201 @@ body {
 }
 
 /* ── Tribe Page ──────────────────────────────────────────────── */
-.tribe-page-title {
+
+/* Banner */
+.tp-banner {
+  border-left: 4px solid;
+  padding: 16px 20px;
+  margin: 0 0 20px;
+  background: var(--bg-card);
+  border-radius: 0 6px 6px 0;
+}
+.tp-banner-top {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
-.tribe-page-color-dot {
+.tp-color-dot {
   display: inline-block;
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   flex-shrink: 0;
 }
-.tribe-page-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin: 16px 0 24px;
-  padding: 16px 20px;
+.tp-title {
+  margin: 0;
+  font-size: 2rem;
+}
+.tp-title-select-wrap {
+  position: relative;
+}
+.tp-title-select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.tp-title-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  cursor: pointer;
+  padding: 0 24px 0 0;
+  line-height: 1.2;
+}
+.tp-title-select:focus {
+  outline: none;
+}
+.tp-title-select option {
   background: var(--bg-card);
+  color: var(--text);
+  font-size: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.tp-subtitle {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Stats row */
+.tp-stats {
+  display: flex;
+  gap: 0;
+  margin-bottom: 28px;
   border: 1px solid var(--border);
   border-radius: 6px;
+  overflow: hidden;
 }
-.tribe-page-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.tribe-page-stat-label {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.tribe-page-stat-value {
-  font-size: 1.05rem;
-  font-weight: 600;
-}
-.tribe-page-record { display: flex; gap: 4px; align-items: center; }
-.record-wins  { color: #16a34a; }
-.record-losses { color: #dc2626; }
-
-.tribe-page-members {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin: 12px 0 28px;
-}
-.tribe-page-member-card {
+.tp-stat {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px 12px;
+  padding: 14px 12px;
   background: var(--bg-card);
-  border: 2px solid var(--tribe-color, var(--border));
-  border-radius: 8px;
-  text-decoration: none;
-  color: inherit;
-  width: 120px;
-  transition: transform 0.15s, box-shadow 0.15s;
 }
-.tribe-page-member-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+.tp-stat + .tp-stat {
+  border-left: 1px solid var(--border);
 }
-.tribe-page-member-photo-wrap {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid var(--tribe-color, var(--border));
+.tp-stat-val {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-heading);
 }
-.tribe-page-member-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.tp-stat-lbl {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
-.tribe-page-member-info { text-align: center; }
-.tribe-page-member-name { font-weight: 600; font-size: 0.9rem; }
-.tribe-page-member-placement { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-.tribe-page-member-orig { margin-top: 4px; font-size: 0.7rem; padding: 1px 6px; }
+.record-wins  { color: #22c55e; }
+.record-losses { color: #ef4444; }
 
-.tribe-page-table {
+/* Section headings */
+.tp-section-head {
+  border-left: 4px solid;
+  padding-left: 12px;
+  margin: 32px 0 16px;
+}
+
+/* Member cards */
+.tp-member-card {
+  border-top: 3px solid;
+}
+
+/* Table wrapper */
+.tp-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0 0 28px;
+}
+.tp-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 12px 0 24px;
   font-size: 0.9rem;
 }
-.tribe-page-table th,
-.tribe-page-table td {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
+.tp-table th,
+.tp-table td {
+  padding: 9px 14px;
   text-align: left;
 }
-.tribe-page-table th { background: var(--bg-card); font-weight: 600; }
-.tribe-page-tc-ep { text-align: center; white-space: nowrap; }
-
-.tribe-page-eliminated {
-  color: var(--accent);
+.tp-table th {
+  background: var(--bg-card);
   font-weight: 600;
-  text-decoration: none;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
 }
-.tribe-page-eliminated:hover { text-decoration: underline; }
+.tp-table td {
+  border-top: 1px solid var(--border);
+}
+.tp-row-win td  { background: rgba(34, 197, 94, 0.07); }
+.tp-row-loss td { background: rgba(239, 68, 68, 0.05); }
 
-.tribe-page-result-badge {
+.tp-result-badge {
   display: inline-block;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 0.8rem;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 0.78rem;
   font-weight: 600;
 }
-.result-win  { background: #16a34a; color: #fff; }
-.result-loss { background: #dc2626; color: #fff; }
+.result-win  { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+.result-loss { background: rgba(239, 68, 68, 0.18); color: #f87171; }
 
-.tribe-page-breakdown { font-size: 0.85rem; }
-.tribe-page-breakdown-entry { white-space: nowrap; }
-.breakdown-sep   { color: var(--text-muted); }
-.breakdown-count { color: var(--text-muted); font-size: 0.8em; }
+/* ── TC Tabs ── */
+.tp-tc-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tp-tc-tab {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  padding: 10px 18px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.tp-tc-tab:hover { color: var(--text); }
+.tp-tc-tab.active { color: var(--text-heading); }
+.tp-tc-tab-ep { font-size: 0.85rem; }
+.tp-tc-tab-elim {
+  font-size: 0.68rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+/* TC card panel inside tabs — remove top rounding since tabs sit above */
+.tp-tc-card-panel {
+  border-radius: 0 0 12px 12px;
+  margin-bottom: 28px;
+}
 
 /* ── Twists List ─────────────────────────────────────────────── */
 .twists-list {
@@ -1963,9 +2701,16 @@ body.sidebar-open {
     margin-bottom: 14px;
   }
 
-  /* ─── Infobox: stop floating, go full width ──── */
+  /* ─── Season top layout: stack on mobile ──── */
+  .season-top-layout {
+    flex-direction: column-reverse;
+  }
+
+  .season-top-aside {
+    width: 100%;
+  }
+
   .infobox {
-    float: none;
     width: 100%;
     margin: 0 0 20px 0;
   }
@@ -2088,54 +2833,17 @@ body.sidebar-open {
   }
 
   /* ─── Tribe Page ──────────────────────────────── */
-  .tribe-page-stats {
-    gap: 14px;
-    padding: 12px 14px;
-  }
-
-  .tribe-page-members {
-    gap: 10px;
-  }
-
-  .tribe-page-member-card {
-    width: 100px;
-    padding: 12px 8px;
-  }
-
-  .tribe-page-member-photo-wrap {
-    width: 56px;
-    height: 56px;
-  }
-
-  .tribe-page-member-name {
-    font-size: 0.8rem;
-  }
-
-  .tribe-page-member-placement {
-    font-size: 0.7rem;
-  }
-
-  .tribe-page-table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .tribe-page-table th,
-  .tribe-page-table td {
+  .tp-banner { padding: 12px 14px; }
+  .tp-title { font-size: 1.5rem; }
+  .tp-stats { flex-wrap: wrap; }
+  .tp-stat { padding: 10px 8px; }
+  .tp-stat-val { font-size: 1.1rem; }
+  .tp-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tp-table th,
+  .tp-table td {
     padding: 6px 8px;
     font-size: 0.82rem;
     white-space: nowrap;
-  }
-
-  /* ─── Tribe Members List (SeasonOverview) ────── */
-  .tribe-members-list {
-    gap: 8px;
-  }
-
-  .tribe-member-chip {
-    padding: 4px 8px;
-    font-size: 0.8rem;
   }
 
   /* ─── Episode Navigation ──────────────────────── */
@@ -2242,25 +2950,16 @@ body.sidebar-open {
     font-size: 0.78rem;
   }
 
-  /* Tribe page member cards */
-  .tribe-page-members {
-    justify-content: center;
-  }
-
-  .tribe-page-member-card {
-    width: 90px;
-    padding: 10px 6px;
-  }
-
-  .tribe-page-member-photo-wrap {
-    width: 48px;
-    height: 48px;
-  }
-
-  .tribe-page-stats {
-    flex-direction: column;
-    gap: 10px;
-  }
+  /* Tribe page */
+  .tp-banner { padding: 10px 12px; }
+  .tp-title { font-size: 1.3rem; }
+  .tp-color-dot { width: 16px; height: 16px; }
+  .tp-stats { flex-direction: column; }
+  .tp-stat { flex-direction: row; justify-content: space-between; padding: 8px 12px; }
+  .tp-stat + .tp-stat { border-left: none; border-top: 1px solid var(--border); }
+  .tp-stat-val { font-size: 1rem; }
+  .tp-stat-lbl { margin-top: 0; }
+  .tp-vote-pill { font-size: 0.75rem; padding: 3px 7px 3px 3px; }
 
   /* Photo editor full width */
   .photo-editor-panel {
