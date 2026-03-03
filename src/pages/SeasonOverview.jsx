@@ -180,7 +180,7 @@ export default function SeasonOverview() {
             <div className="tribe-members-list">
               {members.map((m) => (
                 <Link key={m.pid} to={`/season/${sid}/cast/${slugify(m.name)}`} className="tribe-member-chip">
-                  <Avatar name={m.name} color={tribe.color} size={26} />
+                  <Avatar name={m.name} color={tribe.color} size={26} photoUrl={m.photoUrl} imgStyle={m.photoStyle} pid={m.pid} />
                   {m.name}
                 </Link>
               ))}

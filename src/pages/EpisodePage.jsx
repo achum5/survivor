@@ -173,7 +173,7 @@ export default function EpisodePage() {
                               {voter && (
                                 <Link to={`/season/${sid}/cast/${slugify(voter.name)}`}
                                   style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                  <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={20} />
+                                  <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={20} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} />
                                   {voter.name}
                                 </Link>
                               )}
@@ -183,7 +183,7 @@ export default function EpisodePage() {
                                 <Link to={`/season/${sid}/cast/${slugify(target.name)}`}
                                   style={{ display: 'flex', alignItems: 'center', gap: 6,
                                     textDecoration: v.idolNullified ? 'line-through' : 'none' }}>
-                                  <Avatar name={target.name} color={getTribeColor(season, target.tid)} size={20} />
+                                  <Avatar name={target.name} color={getTribeColor(season, target.tid)} size={20} photoUrl={target.photoUrl} imgStyle={target.photoStyle} pid={target.pid} />
                                   {target.name}
                                 </Link>
                               )}
