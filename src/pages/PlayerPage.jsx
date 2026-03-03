@@ -180,8 +180,10 @@ function VotingHistoryTab({ player, season, sid }) {
 
   // Build row entries — no separator rows, phase shown via row background
   const tableRows = [];
+  let playerOut = false;
 
   season.episodes.forEach((ep) => {
+    if (playerOut) return;
     const epNum = ep.number;
     const tribeId = getTribeAtEpisode(player, epNum, switchEp, mergeEp);
     const tribe = tribeId ? season.tribes.find((t) => t.tid === tribeId) : null;
@@ -222,6 +224,7 @@ function VotingHistoryTab({ player, season, sid }) {
 
     if (eliminatedEp === epNum) {
       tableRows.push({ type: 'votedOut' });
+      playerOut = true;
     }
   });
 
