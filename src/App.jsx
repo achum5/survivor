@@ -1,5 +1,12 @@
 // src/App.jsx
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import SeasonOverview from './pages/SeasonOverview';
@@ -20,6 +27,7 @@ function AppInner() {
 
   return (
     <div className="layout">
+      <ScrollToTop />
       <Sidebar />
       <div className="main-content">
         <Routes>
