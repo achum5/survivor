@@ -125,7 +125,9 @@ function ChallengeHistoryTab({ player, season, sid }) {
           {rows.map((row, i) => (
             <tr key={i}>
               {row.epRowIndex === 0 && (
-                <td rowSpan={row.epRowSpan} className="pchall-ep-cell">{row.epNumber}</td>
+                <td rowSpan={row.epRowSpan} className="pchall-ep-cell">
+                  <Link to={`/season/${sid}/episode/${row.eid}`}>{row.epNumber}</Link>
+                </td>
               )}
               {row.epRowIndex === 0 && (
                 <td rowSpan={row.epRowSpan} className="pchall-tribe-cell">
@@ -197,7 +199,7 @@ function VotingHistoryTab({ player, season, sid }) {
 
     if (playerTcs.length === 0) {
       const immuneLabel = tribe ? `${tribe.name} Tribe Immune` : 'Tribe Immune';
-      tableRows.push({ type: 'immune', epNum, tribe, immuneLabel, phase });
+      tableRows.push({ type: 'immune', epNum, eid: ep.eid, tribe, immuneLabel, phase });
       return;
     }
 
@@ -210,7 +212,7 @@ function VotingHistoryTab({ player, season, sid }) {
 
       tableRows.push({
         type: 'vote',
-        epNum, tc, tribe, phase, isMerged,
+        epNum, eid: ep.eid, tc, tribe, phase, isMerged,
         myVote, votedForPlayer, votesAgainst,
         isElimHere: tc.eliminatedPid === player.pid,
         indivImmune,
@@ -254,7 +256,7 @@ function VotingHistoryTab({ player, season, sid }) {
               return (
                 <tr key={i} className="pvote-immune-row">
                   <td className="pvote-ep-cell" style={{ background: bg, color: '#fff', borderColor: bg }}>
-                    {row.epNum}
+                    <Link to={`/season/${sid}/episode/${row.eid}`} style={{ color: '#fff' }}>{row.epNum}</Link>
                   </td>
                   <td className="pvote-immune-cell" colSpan={2} style={{ background: bg, color: '#fff', borderColor: bg }}>
                     <em>{row.immuneLabel}</em>
@@ -328,7 +330,7 @@ function VotingHistoryTab({ player, season, sid }) {
                 style={rowStyle}
               >
                 <td className="pvote-ep-cell">
-                  {row.epNum}
+                  <Link to={`/season/${sid}/episode/${row.eid}`}>{row.epNum}</Link>
                   {isRevote && <span className="pvote-revote-tag"> Revote</span>}
                   {isTie    && <span className="pvote-revote-tag"> Tie</span>}
                 </td>
