@@ -1,8 +1,9 @@
 // src/pages/Home.jsx
 import { Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { slugify } from '../utils/helpers';
+import { slugify, getTribeColor } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
+import Avatar from '../components/Avatar';
 
 export default function Home() {
   return (
@@ -58,7 +59,9 @@ export default function Home() {
                   {comingSoon ? (
                     <span className="coming-soon-badge">Coming Soon</span>
                   ) : winner ? (
-                    <Link to={`/season/${s.sid}/cast/${slugify(winner.name)}`}>
+                    <Link to={`/season/${s.sid}/cast/${slugify(winner.name)}`}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <Avatar name={winner.name} color={getTribeColor(s, winner.tid)} size={20} photoUrl={winner.photoUrl} imgStyle={winner.photoStyle} pid={winner.pid} />
                       {winner.name}
                     </Link>
                   ) : '—'}

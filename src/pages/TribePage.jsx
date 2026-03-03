@@ -1,7 +1,7 @@
 // src/pages/TribePage.jsx
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { slugify, ordinal } from '../utils/helpers';
+import { slugify, ordinal, getTribeColor } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
 
@@ -166,7 +166,11 @@ export default function TribePage() {
                         ? r.sitOuts.map((p, si) => (
                           <span key={p.pid}>
                             {si > 0 && ', '}
-                            <Link to={`/season/${sid}/cast/${slugify(p.name)}`}>{p.name}</Link>
+                            <Link to={`/season/${sid}/cast/${slugify(p.name)}`}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                              <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={18} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} />
+                              {p.name}
+                            </Link>
                           </span>
                         ))
                         : <span className="text-muted">—</span>}
@@ -219,19 +223,28 @@ export default function TribePage() {
                     <td>
                       {eliminated ? (
                         <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`}
-                          className="tribe-page-eliminated">
+                          className="tribe-page-eliminated"
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                          <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)} size={20} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle} pid={eliminated.pid} />
                           {eliminated.name}
                         </Link>
                       ) : <span className="text-muted">—</span>}
                     </td>
                     <td className="tribe-page-breakdown">
-                      {breakdown.map((b, bi) => (
-                        <span key={b.pid} className="tribe-page-breakdown-entry">
-                          {bi > 0 && <span className="breakdown-sep"> · </span>}
-                          <Link to={`/season/${sid}/cast/${slugify(b.name)}`}>{b.name}</Link>
-                          <span className="breakdown-count"> ({b.count})</span>
-                        </span>
-                      ))}
+                      {breakdown.map((b, bi) => {
+                        const target = season.cast.find((p) => p.pid === b.pid);
+                        return (
+                          <span key={b.pid} className="tribe-page-breakdown-entry">
+                            {bi > 0 && <span className="breakdown-sep"> · </span>}
+                            <Link to={`/season/${sid}/cast/${slugify(b.name)}`}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                              {target && <Avatar name={target.name} color={getTribeColor(season, target.tid)} size={18} photoUrl={target.photoUrl} imgStyle={target.photoStyle} pid={target.pid} />}
+                              {b.name}
+                            </Link>
+                            <span className="breakdown-count"> ({b.count})</span>
+                          </span>
+                        );
+                      })}
                     </td>
                   </tr>
                 );

@@ -1,7 +1,9 @@
 // src/pages/EpisodeList.jsx
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
+import { slugify, getTribeColor } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
+import Avatar from '../components/Avatar';
 
 export default function EpisodeList() {
   const { sid } = useParams();
@@ -54,7 +56,9 @@ export default function EpisodeList() {
                 </td>
                 <td>
                   {elim ? (
-                    <Link to={`/season/${sid}/cast/${elim.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <Link to={`/season/${sid}/cast/${slugify(elim.name)}`}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <Avatar name={elim.name} color={getTribeColor(season, elim.tid)} size={20} photoUrl={elim.photoUrl} imgStyle={elim.photoStyle} pid={elim.pid} />
                       {elim.name}
                     </Link>
                   ) : '—'}
