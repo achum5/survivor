@@ -1,8 +1,9 @@
 // src/pages/VotingHistory.jsx
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { slugify } from '../utils/helpers';
+import { slugify, getTribeColor } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
+import Avatar from '../components/Avatar';
 
 function hexToRgba(hex, alpha) {
   if (!hex || !hex.startsWith('#')) return `rgba(100,100,100,${alpha})`;
@@ -162,7 +163,9 @@ export default function VotingHistory() {
                 <tr key={p.pid} className={isWinner ? 'vhist-winner-row' : ''}>
                   <td className="vhist-player-name"
                     style={{ borderLeft: `3px solid ${origTribeColor}` }}>
-                    <Link to={`/season/${sid}/cast/${slugify(p.name)}`}>
+                    <Link to={`/season/${sid}/cast/${slugify(p.name)}`}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                      <Avatar name={p.name} color={origTribeColor} size={24} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
                       {p.name}
                     </Link>
                     {isWinner && <span className="vhist-winner-star"> ★</span>}

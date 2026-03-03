@@ -1,9 +1,10 @@
 // src/pages/Challenges.jsx
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { getTribeName, slugify } from '../utils/helpers';
+import { getTribeColor, getTribeName, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import TribeBadge from '../components/TribeBadge';
+import Avatar from '../components/Avatar';
 
 export default function Challenges() {
   const { sid } = useParams();
@@ -42,7 +43,13 @@ export default function Challenges() {
     const tribe = season.tribes.find((t) => t.tid === winnerId);
     if (tribe) return <TribeBadge tribe={tribe} sid={sid} />;
     const player = season.cast.find((p) => p.pid === winnerId);
-    if (player) return <Link to={`/season/${sid}/cast/${slugify(player.name)}`}>{player.name}</Link>;
+    if (player) return (
+      <Link to={`/season/${sid}/cast/${slugify(player.name)}`}
+        style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20} photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} />
+        {player.name}
+      </Link>
+    );
     return <span>{winnerId}</span>;
   }
 

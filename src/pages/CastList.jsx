@@ -29,7 +29,7 @@ export default function CastList() {
       <div className="cast-grid">
         {sorted.map((p) => (
           <Link key={p.pid} to={`/season/${sid}/cast/${slugify(p.name)}`} className="cast-card">
-            <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={52} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} />
+            <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={56} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
             <h3>{p.name}</h3>
             <TribeBadge tribe={season.tribes.find((t) => t.tid === p.tid)} sid={sid} noLink />
             <span className="placement">{ordinal(p.placement)} place</span>
