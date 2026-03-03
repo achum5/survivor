@@ -100,6 +100,18 @@ function ChallengeHistoryTab({ player, season, sid }) {
     });
   });
 
+  // Compute tribe group spans: merge consecutive rows with the same tribe into one cell
+  let gi = 0;
+  while (gi < rows.length) {
+    const curTid = rows[gi].tribe?.tid ?? null;
+    let gj = gi;
+    while (gj < rows.length && (rows[gj].tribe?.tid ?? null) === curTid) gj++;
+    rows[gi].tribeGroupStart = true;
+    rows[gi].tribeGroupSpan = gj - gi;
+    for (let k = gi + 1; k < gj; k++) rows[k].tribeGroupStart = false;
+    gi = gj;
+  }
+
   const isWinner   = player.pid === season.winnerPid;
   const isRunnerUp = player.pid === season.runnerUpPid;
   const wasEliminated = season.votingHistory.some((tc) => tc.eliminatedPid === player.pid);
@@ -129,8 +141,8 @@ function ChallengeHistoryTab({ player, season, sid }) {
                   <Link to={`/season/${sid}/episode/${row.eid}`}>{row.epNumber}</Link>
                 </td>
               )}
-              {row.epRowIndex === 0 && (
-                <td rowSpan={row.epRowSpan} className="pchall-tribe-cell">
+              {row.tribeGroupStart && (
+                <td rowSpan={row.tribeGroupSpan} className="pchall-tribe-cell">
                   {row.tribe ? (
                     <TribeBadge tribe={row.tribe} sid={sid} />
                   ) : (
