@@ -208,40 +208,44 @@ function TribalCouncilCard({ tcs, season, sid, episode, onPlay }) {
       )}
 
       {/* Final Words quote */}
-      {elimTc?.confessionalQuote && eliminated && (
-        <div className="tc-final-words">
-          <div className="tc-final-words-header">
-            Final Words
-            {(() => {
-              const confessionalTs = elimTc?.confessionalTimestamp ?? null;
-              const confessionalUrl = (episode?.videoUrl && confessionalTs != null)
-                ? buildEmbedAt(episode.videoUrl, confessionalTs)
-                : null;
-              return confessionalUrl ? (
-                <button className="tc-final-words-play"
-                  onClick={() => onPlay(confessionalUrl, `${eliminated.name} — Final Words`)}
-                  title={`Watch ${eliminated.name}'s final words`}>
-                  ▶
-                </button>
-              ) : null;
-            })()}
-          </div>
-          <div className="tc-final-words-body">
-            <div className="tc-final-words-avatar" style={{ filter: 'grayscale(1)' }}>
-              <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`}>
-                <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)}
-                  size={56} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle}
-                  pid={eliminated.pid} noBorder />
-              </Link>
-              <div className="tc-final-words-who">{eliminated.name.toUpperCase()}</div>
+      {eliminated && (
+        elimTc?.confessionalQuote ? (
+          <div className="tc-final-words">
+            <div className="tc-final-words-header">
+              Final Words
+              {(() => {
+                const confessionalTs = elimTc?.confessionalTimestamp ?? null;
+                const confessionalUrl = (episode?.videoUrl && confessionalTs != null)
+                  ? buildEmbedAt(episode.videoUrl, confessionalTs)
+                  : null;
+                return confessionalUrl ? (
+                  <button className="tc-final-words-play"
+                    onClick={() => onPlay(confessionalUrl, `${eliminated.name} — Final Words`)}
+                    title={`Watch ${eliminated.name}'s final words`}>
+                    ▶
+                  </button>
+                ) : null;
+              })()}
             </div>
-            <div className="tc-final-words-quote">
-              <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
-              {elimTc.confessionalQuote}
-              <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+            <div className="tc-final-words-body">
+              <div className="tc-final-words-avatar" style={{ filter: 'grayscale(1)' }}>
+                <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`}>
+                  <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)}
+                    size={56} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle}
+                    pid={eliminated.pid} noBorder />
+                </Link>
+                <div className="tc-final-words-who">{eliminated.name.toUpperCase()}</div>
+              </div>
+              <div className="tc-final-words-quote">
+                <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
+                {elimTc.confessionalQuote}
+                <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="tc-no-confessional">No confessional was given.</div>
+        )
       )}
     </div>
   );
@@ -257,6 +261,8 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
     ? buildEmbedAt(episode.videoUrl, challengeTimestamp)
     : null;
 
+  const modalTitle = challenge.name ? `${label}: ${challenge.name}` : label;
+
   return (
     <div className="episode-challenge-block">
       <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -266,7 +272,7 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
         </Link>
         {playUrl && (
           <button className="tc-play-btn"
-            onClick={() => onPlay(playUrl, challenge.name ? `${label}: ${challenge.name}` : label)}
+            onClick={() => onPlay(playUrl, modalTitle)}
             title={`Watch ${label.toLowerCase()}`}>
             ▶
           </button>
@@ -349,15 +355,39 @@ export default function EpisodePage() {
 
       {/* Episode video — thumbnail + play button opens modal */}
       {embedUrl ? (() => {
+        const challengeThumb = episode.episodeImageUrl || episode.immunityChallenge?.imageUrl || episode.rewardChallenge?.imageUrl;
         const videoId = getYouTubeVideoId(episode.videoUrl);
-        const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+        const thumb = challengeThumb || (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null);
         const modalSrc = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
+        const fmTc = tcs.find((tc) => tc.firemaking?.imageUrl);
+        const fm = fmTc?.firemaking;
+        const fmPlayUrl = fm?.videoTimestamp != null ? buildEmbedAt(episode.videoUrl, fm.videoTimestamp) : null;
         return (
-          <div className="episode-thumb-wrapper" onClick={() => setModal({ src: modalSrc, title: `Episode ${episode.number}` })}>
-            {thumb && <img src={thumb} alt={`Episode ${episode.number} thumbnail`} />}
-            <div className="episode-thumb-play">
-              <div className="episode-thumb-play-btn">▶</div>
+          <div className="episode-thumbs-row">
+            <div>
+              <div className="episode-thumb-wrapper" onClick={() => setModal({ src: modalSrc, title: `Episode ${episode.number}` })}>
+                {thumb && <img src={thumb} alt={`Episode ${episode.number} thumbnail`} />}
+                <div className="episode-thumb-play">
+                  <div className="episode-thumb-play-btn">▶</div>
+                </div>
+              </div>
+              {!episode.episodeImageUrl && challengeThumb && <div className="episode-thumb-label">{episode.immunityChallenge?.name || episode.rewardChallenge?.name || 'Challenge'}</div>}
             </div>
+            {fm && (
+              <div>
+                <div className="episode-thumb-wrapper"
+                  onClick={fmPlayUrl ? () => setModal({ src: fmPlayUrl, title: fm.challenge }) : undefined}
+                  style={fmPlayUrl ? undefined : { cursor: 'default' }}>
+                  <img src={fm.imageUrl} alt={fm.challenge} />
+                  {fmPlayUrl && (
+                    <div className="episode-thumb-play">
+                      <div className="episode-thumb-play-btn">▶</div>
+                    </div>
+                  )}
+                </div>
+                <div className="episode-thumb-label">{fm.challenge}</div>
+              </div>
+            )}
           </div>
         );
       })() : (

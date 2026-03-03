@@ -1,8 +1,8 @@
 // src/pages/TribePage.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
-import { slugify, ordinal, getTribeColor } from '../utils/helpers';
+import { slugify, ordinal, getTribeColor, getYouTubeEmbedUrl } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
 import TribeBadge from '../components/TribeBadge';
@@ -14,14 +14,62 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+function getYouTubeVideoId(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    return u.hostname === 'youtu.be' ? u.pathname.slice(1) : u.searchParams.get('v');
+  } catch { return null; }
+}
+
+function buildEmbedAt(videoUrl, startSeconds) {
+  const videoId = getYouTubeVideoId(videoUrl);
+  if (!videoId || startSeconds == null) return null;
+  return `https://www.youtube.com/embed/${videoId}?start=${Math.round(startSeconds)}&autoplay=1`;
+}
+
+function VideoModal({ src, title, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div className="video-modal-backdrop" onClick={onClose}>
+      <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="video-modal-bar">
+          {title && <span className="video-modal-title">{title}</span>}
+          <button className="video-modal-close" onClick={onClose} title="Close (Esc)">✕</button>
+        </div>
+        <iframe
+          src={src}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    </div>
+  );
+}
+
 /* ── Tribal Council Tabs sub-component ── */
-function TcTabs({ tcs, season, sid, tribeColor }) {
+function TcTabs({ tcs, season, sid, tribeColor, onPlay }) {
   const [activeId, setActiveId] = useState(tcs[0]?.tcid);
   const activeTc = tcs.find((t) => t.tcid === activeId) ?? tcs[0];
 
   // Resolve tribe for the card header color
   const tcTribe = activeTc.tid ? season.tribes.find((t) => t.tid === activeTc.tid) : null;
   const headerTribe = tcTribe ?? season.mergeTribe ?? null;
+
+  // Find the episode for this TC to get the video URL
+  const episode = season.episodes.find((ep) => ep.number === activeTc.episode);
+  const tcTimestamp = activeTc.videoTimestamp ?? null;
+  const playUrl = episode?.videoUrl
+    ? (tcTimestamp != null
+        ? buildEmbedAt(episode.videoUrl, tcTimestamp)
+        : getYouTubeEmbedUrl(episode.videoUrl) + (getYouTubeEmbedUrl(episode.videoUrl)?.includes('?') ? '&' : '?') + 'autoplay=1'
+      )
+    : null;
 
   const eliminated = activeTc.eliminatedPid
     ? season.cast.find((p) => p.pid === activeTc.eliminatedPid)
@@ -70,6 +118,13 @@ function TcTabs({ tcs, season, sid, tribeColor }) {
             <TribeBadge tribe={headerTribe} sid={sid} />
           ) : (
             <span className="tribe-badge tribe-badge-merged">Merged</span>
+          )}
+          {playUrl && (
+            <button className="tc-play-btn"
+              onClick={() => onPlay(playUrl, `Tribal Council — ${headerTribe?.name ?? 'Merged'}`)}
+              title="Watch tribal council">
+              ▶
+            </button>
           )}
         </div>
 
@@ -158,25 +213,44 @@ function TcTabs({ tcs, season, sid, tribeColor }) {
           </div>
         )}
 
-        {activeTc.confessionalQuote && eliminated && (
-          <div className="tc-final-words">
-            <div className="tc-final-words-header">Final Words</div>
-            <div className="tc-final-words-body">
-              <div className="tc-final-words-avatar" style={{ filter: 'grayscale(1)' }}>
-                <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`}>
-                  <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)}
-                    size={56} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle}
-                    pid={eliminated.pid} noBorder />
-                </Link>
-                <div className="tc-final-words-who">{eliminated.name.toUpperCase()}</div>
+        {eliminated && (
+          activeTc.confessionalQuote ? (
+            <div className="tc-final-words">
+              <div className="tc-final-words-header">
+                Final Words
+                {(() => {
+                  const confessionalTs = activeTc.confessionalTimestamp ?? null;
+                  const confessionalUrl = (episode?.videoUrl && confessionalTs != null)
+                    ? buildEmbedAt(episode.videoUrl, confessionalTs)
+                    : null;
+                  return confessionalUrl ? (
+                    <button className="tc-final-words-play"
+                      onClick={() => onPlay(confessionalUrl, `${eliminated.name} — Final Words`)}
+                      title={`Watch ${eliminated.name}'s final words`}>
+                      ▶
+                    </button>
+                  ) : null;
+                })()}
               </div>
-              <div className="tc-final-words-quote">
-                <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
-                {activeTc.confessionalQuote}
-                <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+              <div className="tc-final-words-body">
+                <div className="tc-final-words-avatar" style={{ filter: 'grayscale(1)' }}>
+                  <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`}>
+                    <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)}
+                      size={56} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle}
+                      pid={eliminated.pid} noBorder />
+                  </Link>
+                  <div className="tc-final-words-who">{eliminated.name.toUpperCase()}</div>
+                </div>
+                <div className="tc-final-words-quote">
+                  <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
+                  {activeTc.confessionalQuote}
+                  <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="tc-no-confessional">No confessional was given.</div>
+          )
         )}
       </div>
     </>
@@ -186,6 +260,8 @@ function TcTabs({ tcs, season, sid, tribeColor }) {
 export default function TribePage() {
   const { sid, tid } = useParams();
   const navigate = useNavigate();
+  const [videoModal, setVideoModal] = useState(null);
+  const openVideo = (src, title) => setVideoModal({ src, title });
   const season = SEASONS.find((s) => s.sid === sid);
   if (!season) return <div className="article"><p>Season not found.</p></div>;
 
@@ -365,7 +441,11 @@ export default function TribePage() {
       )}
 
       {/* ── Tribal Council History (Tabbed) ── */}
-      {tcs.length > 0 && <TcTabs tcs={tcs} season={season} sid={sid} tribeColor={tc} />}
+      {tcs.length > 0 && <TcTabs tcs={tcs} season={season} sid={sid} tribeColor={tc} onPlay={openVideo} />}
+
+      {videoModal && (
+        <VideoModal src={videoModal.src} title={videoModal.title} onClose={() => setVideoModal(null)} />
+      )}
     </div>
   );
 }

@@ -1,6 +1,5 @@
 // src/pages/PlayerPage.jsx
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getPlayerBySlug, getTribeColor, getTribeName, getPlayerName, ordinal, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -10,6 +9,23 @@ import TribeBadge from '../components/TribeBadge';
 import Avatar from '../components/Avatar';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
+
+function tribeRowBg(hex) {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  if (d !== 0) {
+    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) * 60;
+    else if (max === g) h = ((b - r) / d + 2) * 60;
+    else h = ((r - g) / d + 4) * 60;
+  }
+  const l = (max + min) / 2;
+  const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+  return `hsl(${Math.round(h)}, ${Math.round(Math.max(s * 100, 55))}%, 38%)`;
+}
 
 // Determine the episode number where switched tribes first appeared
 function getSwitchEpisode(season) {
@@ -31,6 +47,147 @@ function getTribeAtEpisode(player, episode, switchEp, mergeEp) {
   if (episode >= mergeEp) return null; // merged, no tribe
   if (episode >= switchEp) return player.switchedTid ?? player.tid;
   return player.tid;
+}
+
+// ── Player Stats Computation ────────────────────────────────────────────────
+
+function computePlayerStats(player, season) {
+  const switchEp = getSwitchEpisode(season);
+  const mergeEp = getMergeEpisode(season);
+
+  let tribalsAttended = 0;
+  let totalVotesCast = 0;
+  let majorityVotes = 0;
+  let minorityVotes = 0;
+  let votesReceived = 0;
+  let timesReceivedButSurvived = 0;
+  let idolsPlayed = 0;
+  let votesNullifiedByIdol = 0;
+  let timesSavedByIdol = 0;
+  let timesVoteNullified = 0;
+  let currentStreak = 0;
+  let longestStreak = 0;
+
+  let eliminated = false;
+  let lastAttendedEp = null;
+
+  season.votingHistory.forEach((tc) => {
+    if (eliminated) return;
+
+    // Check if player was present at this TC
+    const isMerge = !tc.tid;
+    const playerTribe = getTribeAtEpisode(player, tc.episode, switchEp, mergeEp);
+    const present = isMerge || (tc.tid && tc.tid === playerTribe);
+    if (!present) return;
+
+    // Count unique episodes (tie + revote = 1 tribal)
+    if (tc.episode !== lastAttendedEp) {
+      tribalsAttended++;
+      lastAttendedEp = tc.episode;
+    }
+
+    // Votes cast by this player
+    const myVote = tc.votes.find((v) => v.voterPid === player.pid);
+    if (myVote) {
+      totalVotesCast++;
+      if (tc.eliminatedPid) {
+        if (myVote.votedForPid === tc.eliminatedPid) majorityVotes++;
+        else minorityVotes++;
+      }
+      if (myVote.idolNullified) timesVoteNullified++;
+    }
+
+    // Votes received
+    const against = tc.votes.filter((v) => v.votedForPid === player.pid);
+    votesReceived += against.length;
+    if (against.length > 0 && tc.eliminatedPid !== player.pid) {
+      timesReceivedButSurvived++;
+    }
+
+    // Voting streak (consecutive TCs without receiving votes)
+    if (against.length === 0) {
+      currentStreak++;
+      if (currentStreak > longestStreak) longestStreak = currentStreak;
+    } else {
+      currentStreak = 0;
+    }
+
+    // Idol plays
+    if (tc.idols) {
+      tc.idols.forEach((idol) => {
+        if (idol.playerPid === player.pid) {
+          idolsPlayed++;
+          votesNullifiedByIdol += tc.votes.filter(
+            (v) => v.idolNullified && v.votedForPid === idol.playedOn
+          ).length;
+        }
+        if (idol.playedOn === player.pid && idol.playerPid !== player.pid) {
+          timesSavedByIdol++;
+        }
+      });
+    }
+
+    if (tc.eliminatedPid === player.pid) eliminated = true;
+  });
+
+  // Challenge stats
+  let individualImmunityWins = 0;
+  let individualChallenges = 0;
+  let teamChallengeWins = 0;
+  let teamChallenges = 0;
+  let challengesParticipated = 0;
+  let challengeSitOuts = 0;
+
+  const elimEp = season.votingHistory.find((tc) => tc.eliminatedPid === player.pid)?.episode ?? Infinity;
+
+  season.episodes.forEach((ep) => {
+    if (ep.number > elimEp) return;
+    const isMerge = ep.number >= mergeEp;
+    const playerTribe = getTribeAtEpisode(player, ep.number, switchEp, mergeEp);
+
+    [ep.rewardChallenge, ep.immunityChallenge].forEach((ch) => {
+      if (!ch?.winner) return;
+
+      if (ch.sitOuts?.includes(player.pid)) {
+        challengeSitOuts++;
+        return;
+      }
+
+      challengesParticipated++;
+
+      if (isMerge) {
+        individualChallenges++;
+        if (ch.winner === player.pid) individualImmunityWins++;
+      } else {
+        teamChallenges++;
+        if (playerTribe && ch.winner === playerTribe) teamChallengeWins++;
+      }
+    });
+  });
+
+  const totalChallengeWins = individualImmunityWins + teamChallengeWins;
+  const challengeWinRate = challengesParticipated > 0
+    ? Math.round((totalChallengeWins / challengesParticipated) * 100)
+    : 0;
+
+  // Jury stats (finalists only)
+  let juryVotesReceived = null;
+  let juryVoteTotal = null;
+  const isFinalist = player.pid === season.winnerPid || player.pid === season.runnerUpPid || player.pid === season.secondRunnerUpPid;
+  if (isFinalist && season.juryVotes?.length > 0) {
+    juryVoteTotal = season.juryVotes.length;
+    juryVotesReceived = season.juryVotes.filter((jv) => jv.votedForPid === player.pid).length;
+  }
+
+  return {
+    tribalsAttended, totalVotesCast, majorityVotes, minorityVotes,
+    votesReceived, timesReceivedButSurvived, longestStreak,
+    idolsPlayed, votesNullifiedByIdol, timesSavedByIdol, timesVoteNullified,
+    individualImmunityWins, individualChallenges,
+    teamChallengeWins, teamChallenges,
+    challengeWinRate, challengeSitOuts, challengesParticipated,
+    juryVotesReceived, juryVoteTotal,
+  };
 }
 
 // ── Challenge History Tab ───────────────────────────────────────────────────
@@ -55,6 +212,7 @@ function ChallengeHistoryTab({ player, season, sid }) {
 
   // Build a flat list of challenge rows: one row per challenge entry per episode
   const rows = [];
+  let insertedMergeSeparator = false;
   season.episodes.forEach((ep) => {
     if (ep.number > eliminatedEp) return;
     const challenges = [];
@@ -67,6 +225,12 @@ function ChallengeHistoryTab({ player, season, sid }) {
 
     const tribeId = getTribeAtEpisode(player, ep.number, switchEp, mergeEp);
     const tribe = tribeId ? season.tribes.find((t) => t.tid === tribeId) : null;
+
+    // Insert merge separator row
+    if (!insertedMergeSeparator && ep.number >= mergeEp && player.merged) {
+      insertedMergeSeparator = true;
+      rows.push({ separator: 'merge' });
+    }
 
     challenges.forEach((entry, i) => {
       const { ch } = entry;
@@ -105,11 +269,13 @@ function ChallengeHistoryTab({ player, season, sid }) {
   });
 
   // Compute tribe group spans: merge consecutive rows with the same tribe into one cell
+  // (skip separator rows)
   let gi = 0;
   while (gi < rows.length) {
+    if (rows[gi].separator) { gi++; continue; }
     const curTid = rows[gi].tribe?.tid ?? null;
-    let gj = gi;
-    while (gj < rows.length && (rows[gj].tribe?.tid ?? null) === curTid) gj++;
+    let gj = gi + 1;
+    while (gj < rows.length && !rows[gj].separator && (rows[gj].tribe?.tid ?? null) === curTid) gj++;
     rows[gi].tribeGroupStart = true;
     rows[gi].tribeGroupSpan = gj - gi;
     for (let k = gi + 1; k < gj; k++) rows[k].tribeGroupStart = false;
@@ -138,7 +304,15 @@ function ChallengeHistoryTab({ player, season, sid }) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, i) => (
+          {rows.map((row, i) => {
+            if (row.separator === 'merge') {
+              return (
+                <tr key={i} className="pchall-merge-row">
+                  <td colSpan={6}>Tribes Merged</td>
+                </tr>
+              );
+            }
+            return (
             <tr key={i}>
               {row.epRowIndex === 0 && (
                 <td rowSpan={row.epRowSpan} className="pchall-ep-cell">
@@ -146,14 +320,21 @@ function ChallengeHistoryTab({ player, season, sid }) {
                 </td>
               )}
               {row.tribeGroupStart && (
-                <td rowSpan={row.tribeGroupSpan} className="pchall-tribe-cell">
-                  {row.tribe ? (
-                    <TribeBadge tribe={row.tribe} sid={sid} />
-                  ) : season.mergeTribe ? (
-                    <TribeBadge tribe={season.mergeTribe} sid={sid} />
-                  ) : (
-                    <span className="tribe-badge tribe-badge-merged">Merged</span>
-                  )}
+                <td
+                  rowSpan={row.tribeGroupSpan}
+                  className="pchall-tribe-cell"
+                  style={{
+                    background: row.tribe?.color ?? season.mergeTribe?.color ?? '#555',
+                    color: '#fff',
+                    borderColor: row.tribe?.color ?? season.mergeTribe?.color ?? '#555',
+                  }}
+                >
+                  <Link
+                    to={`/season/${sid}/tribe/${row.tribe?.tid ?? season.mergeTribe?.tid}`}
+                    style={{ color: '#fff', textDecoration: 'none' }}
+                  >
+                    {row.tribe?.name ?? season.mergeTribe?.name ?? 'Merged'}
+                  </Link>
                 </td>
               )}
               <td className="pchall-name-cell">
@@ -167,7 +348,8 @@ function ChallengeHistoryTab({ player, season, sid }) {
               <td className="pchall-sitout-cell">{row.sitOut ? 'Yes' : 'No'}</td>
               <td className="pchall-result-cell"><ResultBadge result={row.result} /></td>
             </tr>
-          ))}
+            );
+          })}
           {(wasEliminated || isWinner || isRunnerUp) && (
             <tr className="pchall-votedout">
               <td colSpan={6}>
@@ -183,7 +365,7 @@ function ChallengeHistoryTab({ player, season, sid }) {
 
 // ── Voting History Tab ──────────────────────────────────────────────────────
 
-function VotingHistoryTab({ player, season, sid }) {
+function VotingHistoryTab({ player, season, sid, navigate }) {
   const switchEp = getSwitchEpisode(season);
   const mergeEp = getMergeEpisode(season);
 
@@ -274,10 +456,11 @@ function VotingHistoryTab({ player, season, sid }) {
             // ── Tribe immune ──────────────────────────────────────────
             if (row.type === 'immune') {
               const bg = row.tribe?.color ?? season.mergeTribe?.color ?? '#888';
+              const epUrl = `/season/${sid}/episode/${row.eid}`;
               return (
-                <tr key={i} className="pvote-immune-row">
+                <tr key={i} className="pvote-immune-row pvote-clickable" onClick={() => navigate(epUrl)}>
                   <td className="pvote-ep-cell" style={{ background: bg, color: '#fff', borderColor: bg }}>
-                    <Link to={`/season/${sid}/episode/${row.eid}`} style={{ color: '#fff' }}>{row.epNum}</Link>
+                    <Link to={epUrl} style={{ color: '#fff' }}>{row.epNum}</Link>
                   </td>
                   <td className="pvote-immune-cell" colSpan={2} style={{ background: bg, color: '#fff', borderColor: bg }}>
                     <em>{row.immuneLabel}</em>
@@ -304,7 +487,7 @@ function VotingHistoryTab({ player, season, sid }) {
                     {row.target ? (
                       <Link to={`/season/${sid}/cast/${slugify(row.target.name)}`}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Avatar name={row.target.name} color={getTribeColor(season, row.target.tid)} size={30} photoUrl={row.target.photoUrl} imgStyle={row.target.photoStyle} pid={row.target.pid} noBorder />
+                        <Avatar name={row.target.name} color={getTribeColor(season, row.target.tid)} size={24} photoUrl={row.target.photoUrl} imgStyle={row.target.photoStyle} pid={row.target.pid} noBorder />
                         {row.target.name}
                       </Link>
                     ) : '—'}
@@ -336,8 +519,11 @@ function VotingHistoryTab({ player, season, sid }) {
 
             // ── Regular vote row ──────────────────────────────────────
             const { tc, myVote, votedForPlayer, votesAgainst, isElimHere, indivImmune, isRevote, isTie } = row;
-            const tribeColor = row.isMerged ? season.mergeTribe?.color : row.tribe?.color;
-            const rowStyle = tribeColor ? { background: tribeColor + '4d' } : {};
+            const rowTribeColor = row.isMerged ? season.mergeTribe?.color : row.tribe?.color;
+            const rowStyle = rowTribeColor ? { background: tribeRowBg(rowTribeColor) } : {};
+
+            const tribalUrl = `/season/${sid}/episode/${row.eid}#tribal-${tc.tcid}`;
+            const goToTribal = (e) => { if (!e.target.closest('a')) navigate(tribalUrl); };
 
             return (
               <tr key={i}
@@ -345,11 +531,13 @@ function VotingHistoryTab({ player, season, sid }) {
                   isElimHere        ? 'pvote-elim-row'     : 'pvote-vote-row',
                   row.phase === 'merged'   ? 'pvote-vote-merged'   : '',
                   row.phase === 'switched' ? 'pvote-vote-switched' : '',
+                  'pvote-clickable',
                 ].filter(Boolean).join(' ')}
                 style={rowStyle}
+                onClick={goToTribal}
               >
                 <td className="pvote-ep-cell">
-                  <Link to={`/season/${sid}/episode/${row.eid}`}>{row.epNum}</Link>
+                  <Link to={tribalUrl}>{row.epNum}</Link>
                   {isRevote && <span className="pvote-revote-tag"> Revote</span>}
                   {isTie    && <span className="pvote-revote-tag"> Tie</span>}
                 </td>
@@ -357,9 +545,8 @@ function VotingHistoryTab({ player, season, sid }) {
                   {myVote ? (
                     votedForPlayer ? (
                       <Link to={`/season/${sid}/cast/${slugify(votedForPlayer.name)}`}
-                        className="pvote-vote-chip"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Avatar name={votedForPlayer.name} color={getTribeColor(season, votedForPlayer.tid)} size={30} photoUrl={votedForPlayer.photoUrl} imgStyle={votedForPlayer.photoStyle} pid={votedForPlayer.pid} noBorder />
+                        className="pvote-vote-chip">
+                        <Avatar name={votedForPlayer.name} color={getTribeColor(season, votedForPlayer.tid)} size={24} photoUrl={votedForPlayer.photoUrl} imgStyle={votedForPlayer.photoStyle} pid={votedForPlayer.pid} noBorder />
                         {votedForPlayer.name}
                       </Link>
                     ) : getPlayerName(season, myVote.votedForPid)
@@ -383,11 +570,10 @@ function VotingHistoryTab({ player, season, sid }) {
                                   color: v.idolNullified ? 'var(--text-muted)' : 'var(--link)',
                                   textDecoration: v.idolNullified ? 'line-through' : 'none',
                                 }}>
-                                <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={28} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />
+                                <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={24} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />
                                 {voter.name}
                               </Link>
                             ) : getPlayerName(season, v.voterPid)}
-                            {v.idolNullified && <span title="nullified"> 🛡️</span>}
                           </span>
                         );
                       })}
@@ -409,6 +595,7 @@ function VotingHistoryTab({ player, season, sid }) {
 
 export default function PlayerPage() {
   const { sid, slug } = useParams();
+  const navigate = useNavigate();
   const season = SEASONS.find((s) => s.sid === sid);
   if (!season) return <div className="article"><p>Season not found.</p></div>;
 
@@ -420,18 +607,51 @@ export default function PlayerPage() {
   const tribeName = getTribeName(season, player.tid);
   const origTribe = season.tribes.find((t) => t.tid === player.tid);
 
-  const [activeTab, setActiveTab] = useState('votingHistory');
-
-  const votesAgainstCount = season.votingHistory.reduce((sum, tc) =>
-    sum + tc.votes.filter((v) => v.votedForPid === player.pid).length, 0
-  );
+  const stats = computePlayerStats(player, season);
 
   const infoRows = [
     { label: 'Season',        value: <Link to={`/season/${sid}`}>{season.name}</Link> },
-    { label: 'Tribe',         value: <TribeBadge tribe={origTribe} sid={sid} /> },
+    { label: origTribe && (player.switchedTid || player.merged) ? 'Tribes' : 'Tribe',
+      value: (() => {
+        const tribes = [];
+        if (origTribe) tribes.push(origTribe);
+        if (player.switchedTid) {
+          const sw = season.tribes.find((t) => t.tid === player.switchedTid);
+          if (sw && sw.tid !== origTribe?.tid) tribes.push(sw);
+        }
+        if (player.merged && season.mergeTribe) tribes.push(season.mergeTribe);
+        return <span style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          {tribes.map((t) => <TribeBadge key={t.tid} tribe={t} sid={sid} />)}
+        </span>;
+      })() },
     { label: 'Placement',     value: ordinal(player.placement) + (player.pid === season.winnerPid ? ' ★ Sole Survivor' : '') },
-    { label: 'Votes Against', value: votesAgainstCount },
     { label: 'Jury Member',   value: player.juryMember ? 'Yes' : 'No' },
+    // ── Voting stats ──
+    { section: 'Voting' },
+    { label: 'Tribals Attended',  value: stats.tribalsAttended },
+    { label: 'Votes Cast',        value: stats.totalVotesCast },
+    { label: 'In Majority',        value: stats.majorityVotes },
+    { label: 'In Minority',        value: stats.minorityVotes },
+    // ── Survival stats ──
+    { section: 'Survival' },
+    { label: 'Votes Against',     value: stats.votesReceived },
+    { label: 'Survived Votes',    value: stats.timesReceivedButSurvived },
+    { label: 'Longest Streak',    value: stats.longestStreak },
+    ...(stats.idolsPlayed > 0 ? [{ label: 'Idols Played', value: stats.idolsPlayed }] : []),
+    ...(stats.votesNullifiedByIdol > 0 ? [{ label: 'Votes Nullified', value: stats.votesNullifiedByIdol }] : []),
+    ...(stats.timesSavedByIdol > 0 ? [{ label: 'Saved by Idol', value: stats.timesSavedByIdol }] : []),
+    ...(stats.timesVoteNullified > 0 ? [{ label: 'Own Votes Nullified', value: stats.timesVoteNullified }] : []),
+    // ── Challenge stats ──
+    { section: 'Challenges' },
+    { label: 'Individual Wins',   value: `${stats.individualImmunityWins} / ${stats.individualChallenges}` },
+    { label: 'Team Wins',         value: `${stats.teamChallengeWins} / ${stats.teamChallenges}` },
+    { label: 'Win Rate',          value: `${stats.challengeWinRate}%` },
+    ...(stats.challengeSitOuts > 0 ? [{ label: 'Sat Out', value: stats.challengeSitOuts }] : []),
+    // ── Jury stats (finalists only) ──
+    ...(stats.juryVotesReceived !== null ? [
+      { section: 'Jury' },
+      { label: 'Jury Votes', value: `${stats.juryVotesReceived} / ${stats.juryVoteTotal}` },
+    ] : []),
   ];
 
   return (
@@ -439,11 +659,32 @@ export default function PlayerPage() {
       <Breadcrumbs crumbs={[
         { label: 'Main Page', to: '/' },
         { label: season.name, to: `/season/${sid}` },
-        { label: 'Cast', to: `/season/${sid}/cast` },
         { label: player.name },
       ]} />
 
-      <h1>{player.name}</h1>
+      <div className="player-page-name-row">
+        <h1 className="player-page-name">
+          <select
+            className="player-select"
+            value={player.pid}
+            onChange={(e) => {
+              const p = season.cast.find((c) => c.pid === e.target.value);
+              if (p) navigate(`/season/${sid}/cast/${slugify(p.name)}`);
+            }}
+          >
+            {[...season.cast].sort((a, b) => (a.name).localeCompare(b.name)).map((p) => (
+              <option key={p.pid} value={p.pid}>
+                {p.fullName ?? p.name}
+              </option>
+            ))}
+          </select>
+          {player.instagram && (
+            <a href={player.instagram} target="_blank" rel="noopener noreferrer" className="player-ig-link" title="Instagram">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+          )}
+        </h1>
+      </div>
 
       <div className="player-article clearfix">
         <Infobox
@@ -457,40 +698,17 @@ export default function PlayerPage() {
             : undefined}
         />
 
-        <p className="player-bio">{player.bio}</p>
-
-        <p>
-          <strong>{player.name}</strong> competed in{' '}
-          <Link to={`/season/${sid}`}>{season.name}</Link> as a member of the{' '}
-          <TribeBadge tribe={origTribe} sid={sid} /> tribe.
-          {player.pid === season.winnerPid && <> They won the season as the Sole Survivor.</>}
-          {player.pid === season.fanFavoritePid && <> They were voted Fan Favorite by viewers.</>}
-        </p>
-      </div>
-
-      {/* ── Tabs ── */}
-      <div className="player-tabs">
-        <button
-          className={`player-tab-btn ${activeTab === 'challengeHistory' ? 'active' : ''}`}
-          onClick={() => setActiveTab('challengeHistory')}
-        >
-          Challenge History
-        </button>
-        <button
-          className={`player-tab-btn ${activeTab === 'votingHistory' ? 'active' : ''}`}
-          onClick={() => setActiveTab('votingHistory')}
-        >
-          Voting History
-        </button>
-      </div>
-
-      <div className="player-tab-content">
-        {activeTab === 'challengeHistory' && (
-          <ChallengeHistoryTab player={player} season={season} sid={sid} />
+        {player.bio && (
+          Array.isArray(player.bio)
+            ? player.bio.map((para, i) => <p key={i} className="player-bio">{para}</p>)
+            : <p className="player-bio">{player.bio}</p>
         )}
-        {activeTab === 'votingHistory' && (
-          <VotingHistoryTab player={player} season={season} sid={sid} />
-        )}
+
+        <h2 className="player-section-heading">Voting History</h2>
+        <VotingHistoryTab player={player} season={season} sid={sid} navigate={navigate} />
+
+        <h2 className="player-section-heading">Challenge History</h2>
+        <ChallengeHistoryTab player={player} season={season} sid={sid} />
       </div>
     </div>
   );

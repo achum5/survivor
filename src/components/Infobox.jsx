@@ -36,12 +36,18 @@ export default function Infobox({ title, headerColor = '#e74c3c', rows = [], log
         )}
 
         {/* Rows */}
-        {rows.map((row, i) => (
-          <tr key={row.label} className={i % 2 === 0 ? 'infobox-row even' : 'infobox-row odd'}>
-            <td className="infobox-label">{row.label}</td>
-            <td className="infobox-value">{row.value}</td>
-          </tr>
-        ))}
+        {rows.map((row, i) =>
+          row.section ? (
+            <tr key={row.section}>
+              <td colSpan={2} className="infobox-section-header">{row.section}</td>
+            </tr>
+          ) : (
+            <tr key={row.label} className={i % 2 === 0 ? 'infobox-row even' : 'infobox-row odd'}>
+              <td className="infobox-label">{row.label}</td>
+              <td className="infobox-value">{row.value}</td>
+            </tr>
+          )
+        )}
 
         {/* Cast Photo */}
         {castPhoto && (

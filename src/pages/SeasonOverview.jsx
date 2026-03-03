@@ -15,6 +15,49 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+// Turn plain-text paragraphs into React nodes with player/tribe names as <Link>s
+function linkifySummary(text, season, sid) {
+  const terms = [];
+
+  season.cast.forEach((p) => {
+    terms.push({ text: p.name, url: `/season/${sid}/cast/${slugify(p.name)}` });
+  });
+  season.tribes.forEach((t) => {
+    terms.push({ text: t.name, url: `/season/${sid}/tribe/${t.tid}` });
+  });
+  if (season.mergeTribe) {
+    terms.push({ text: season.mergeTribe.name, url: `/season/${sid}/tribe/${season.mergeTribe.tid}` });
+  }
+
+  // Sort longest first so "Sam R." matches before "Sam"
+  terms.sort((a, b) => b.text.length - a.text.length);
+
+  const termMap = {};
+  terms.forEach((t) => { termMap[t.text] = t.url; });
+
+  // Build regex: \b at start, \b at end only if term ends with a word char
+  const escaped = terms.map((t) => {
+    const e = t.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const endB = /\w$/.test(t.text) ? '\\b' : '';
+    return `\\b${e}${endB}`;
+  });
+  const pattern = escaped.join('|');
+  if (!pattern) return [text];
+
+  const regex = new RegExp(pattern, 'g');
+  const parts = [];
+  let lastIdx = 0;
+
+  for (const m of text.matchAll(regex)) {
+    if (m.index > lastIdx) parts.push(text.slice(lastIdx, m.index));
+    const url = termMap[m[0]];
+    parts.push(url ? <Link key={m.index} to={url}>{m[0]}</Link> : m[0]);
+    lastIdx = m.index + m[0].length;
+  }
+  if (lastIdx < text.length) parts.push(text.slice(lastIdx));
+  return parts;
+}
+
 export default function SeasonOverview() {
   const { sid } = useParams();
   const seasonIdx = SEASONS.findIndex((s) => s.sid === sid);
@@ -80,8 +123,19 @@ export default function SeasonOverview() {
 
       <h1>{season.name}</h1>
 
-      <div className="season-top-layout">
-        <div className="season-top-main">
+      <div className="season-content">
+        <div className="season-infobox-float">
+          <Infobox
+            title={season.name}
+            headerColor={season.tribes[0]?.color || '#8b0000'}
+            rows={infoRows}
+            logo={season.logoPath}
+            logoSubHeader="Season Information"
+            castPhoto={season.castPhotoPath}
+            chronology={{ prev: prevSeason, next: nextSeason }}
+          />
+        </div>
+
           <p>
             <strong>{season.name}</strong> is a season of 14508 Survivor
             filmed on {season.filmingDates}.
@@ -91,7 +145,10 @@ export default function SeasonOverview() {
           {season.summary && (
             <>
               <h2>Season Summary</h2>
-              <p>{season.summary}</p>
+              {Array.isArray(season.summary)
+                ? season.summary.map((para, i) => <p key={i}>{linkifySummary(para, season, sid)}</p>)
+                : <p>{linkifySummary(season.summary, season, sid)}</p>
+              }
             </>
           )}
 
@@ -586,19 +643,7 @@ export default function SeasonOverview() {
           </>
         );
       })()}
-        </div>
 
-        <div className="season-top-aside">
-          <Infobox
-            title={season.name}
-            headerColor={season.tribes[0]?.color || '#8b0000'}
-            rows={infoRows}
-            logo={season.logoPath}
-            logoSubHeader="Season Information"
-            castPhoto={season.castPhotoPath}
-            chronology={{ prev: prevSeason, next: nextSeason }}
-          />
-        </div>
       </div>
 
     </div>

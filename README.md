@@ -1,6 +1,6 @@
-# Backyard Survivor Wiki
+# 14508 Survivor Wiki
 
-A dark, tribal-themed wiki for tracking Backyard Survivor seasons — cast pages, voting history, challenges, and elimination order.
+A dark, tribal-themed wiki for tracking 14508 Survivor seasons — cast pages, voting history, challenges, and elimination order.
 
 ## Quick Start
 

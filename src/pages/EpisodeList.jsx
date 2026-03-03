@@ -35,7 +35,7 @@ export default function EpisodeList() {
 
       <h1>{season.name} — Episodes</h1>
 
-      <table className="challenge-table">
+      <table className="challenge-table episode-list-table">
         <thead>
           <tr>
             <th>#</th>

@@ -1,10 +1,49 @@
 // src/pages/ChallengePage.jsx
 import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { SEASONS } from '../data';
 import { getTribe, getTribeColor, getTribeName, getPlayer, getPlayerName, slugify, getYouTubeEmbedUrl } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
 import TribeBadge from '../components/TribeBadge';
+
+function getYouTubeVideoId(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    return u.hostname === 'youtu.be' ? u.pathname.slice(1) : u.searchParams.get('v');
+  } catch { return null; }
+}
+
+function buildEmbedAt(videoUrl, startSeconds) {
+  const videoId = getYouTubeVideoId(videoUrl);
+  if (!videoId || startSeconds == null) return null;
+  return `https://www.youtube.com/embed/${videoId}?start=${Math.round(startSeconds)}&autoplay=1`;
+}
+
+function VideoModal({ src, title, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div className="video-modal-backdrop" onClick={onClose}>
+      <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="video-modal-bar">
+          {title && <span className="video-modal-title">{title}</span>}
+          <button className="video-modal-close" onClick={onClose} title="Close (Esc)">✕</button>
+        </div>
+        <iframe
+          src={src}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    </div>
+  );
+}
 
 function PlaceBadge({ place, total }) {
   if (!place) return null;
@@ -41,6 +80,7 @@ function WinnerDisplay({ winnerId, season, sid }) {
 
 export default function ChallengePage() {
   const { sid, eid, ctype } = useParams();
+  const [modal, setModal] = useState(null);
   const season = SEASONS.find((s) => s.sid === sid);
   if (!season) return <div className="article"><p>Season not found.</p></div>;
 
@@ -52,10 +92,18 @@ export default function ChallengePage() {
 
   const typeLabel = ctype === 'reward' ? 'Reward Challenge' : 'Immunity Challenge';
   const challengeName = ch.name ?? typeLabel;
-  const embedUrl = getYouTubeEmbedUrl(episode.videoUrl, episode.videoEndTime);
+
+  // Build play URL: prefer challenge-specific timestamp, fall back to episode start
+  const playUrl = (episode.videoUrl && ch.videoTimestamp != null)
+    ? buildEmbedAt(episode.videoUrl, ch.videoTimestamp)
+    : (() => {
+        const base = getYouTubeEmbedUrl(episode.videoUrl);
+        return base ? (base.includes('?') ? base + '&autoplay=1' : base + '?autoplay=1') : null;
+      })();
 
   return (
     <div className="article">
+      {modal && <VideoModal src={modal.src} title={modal.title} onClose={() => setModal(null)} />}
       <Breadcrumbs crumbs={[
         { label: 'Main Page', to: '/' },
         { label: season.name, to: `/season/${sid}` },
@@ -67,24 +115,34 @@ export default function ChallengePage() {
       <h1>{challengeName}</h1>
 
       <div className="challenge-page-meta">
-        <span className={`challenge-type-tag ${ctype === 'immunity' ? 'challenge-type-immunity' : 'challenge-type-reward'}`}>
-          {ctype === 'immunity' ? '🛡️ Immunity Challenge' : '🎁 Reward Challenge'}
-        </span>
         <span className="challenge-page-episode">
           <Link to={`/season/${sid}/episode/${eid}`}>Episode {episode.number}</Link>
         </span>
       </div>
 
-      {/* Video embed */}
-      {embedUrl ? (
-        <div className="episode-embed-wrapper">
-          <iframe
-            className="episode-embed"
-            src={embedUrl}
-            title={challengeName}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+      {/* Challenge thumbnail with play overlay */}
+      {ch.imageUrl ? (
+        <div className="episode-thumb-wrapper challenge-thumb"
+          onClick={playUrl ? () => setModal({ src: playUrl, title: challengeName }) : undefined}
+          style={playUrl ? undefined : { cursor: 'default' }}>
+          <img src={ch.imageUrl} alt={challengeName} />
+          {playUrl && (
+            <div className="episode-thumb-play">
+              <div className="episode-thumb-play-btn">▶</div>
+            </div>
+          )}
+        </div>
+      ) : playUrl ? (
+        <div className="episode-thumb-wrapper challenge-thumb"
+          onClick={() => setModal({ src: playUrl, title: challengeName })}>
+          {(() => {
+            const videoId = getYouTubeVideoId(episode.videoUrl);
+            const thumb = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+            return thumb && <img src={thumb} alt={challengeName} />;
+          })()}
+          <div className="episode-thumb-play">
+            <div className="episode-thumb-play-btn">▶</div>
+          </div>
         </div>
       ) : (
         <div className="episode-no-video">No video available.</div>
@@ -95,9 +153,6 @@ export default function ChallengePage() {
         <tbody>
           {ch.description && (
             <tr><th>Description</th><td>{ch.description}</td></tr>
-          )}
-          {ch.type && (
-            <tr><th>Type</th><td>{ch.type}</td></tr>
           )}
           {(ch.winner !== undefined && ch.winner !== null) && (
             <tr>

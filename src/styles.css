@@ -55,133 +55,108 @@ body {
   padding-bottom: 32px;
 }
 
-.sidebar-logo {
-  padding: 14px 12px 10px;
+/* Brand bar */
+.sb-brand {
+  display: block;
+  text-decoration: none;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
+  overflow: hidden;
 }
 
-.sidebar-brand {
+.sb-brand-img {
+  display: block;
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  object-position: 55% 45%;
+}
+
+.sb-brand-text {
+  display: block;
+  padding: 6px 12px 8px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  text-align: center;
+}
+
+/* Navigation list */
+.sb-nav {
+  padding: 4px 0 20px;
+}
+
+/* Section headers (season names) */
+.sb-section-hdr {
   display: flex;
   align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: var(--accent);
-}
-
-.sidebar-brand-icon { font-size: 1.3rem; }
-
-.sidebar-brand-text {
-  font-family: Georgia, serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--accent);
-}
-
-.sidebar-section { padding: 6px 0; }
-
-.sidebar-section-title {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  padding: 10px 14px 4px;
-}
-
-.sidebar-link {
-  display: block;
-  padding: 5px 14px;
-  color: var(--sidebar-link);
-  text-decoration: none;
-  font-size: 0.88rem;
-  border-left: 3px solid transparent;
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.sidebar-link:hover { color: #fff; }
-
-.sidebar-link.active {
-  color: var(--sidebar-active);
-  border-left-color: var(--sidebar-active);
-  background: rgba(245, 166, 35, 0.05);
-}
-
-.sidebar-sub { margin: 0; }
-
-.sidebar-sublink {
-  display: block;
-  padding: 4px 14px 4px 26px;
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.82rem;
-  border-left: 3px solid transparent;
-  transition: color 0.15s;
-}
-
-.sidebar-sublink:hover { color: var(--text); }
-
-.sidebar-sublink.active {
-  color: var(--sidebar-active);
-  border-left-color: var(--sidebar-active);
-}
-
-.sidebar-season-header {
-  display: flex;
-  align-items: center;
-}
-
-.sidebar-season-header .sidebar-link {
-  flex: 1;
-  min-width: 0;
-}
-
-.sidebar-toggle {
+  gap: 6px;
+  width: 100%;
+  padding: 12px 10px 4px;
   background: none;
   border: none;
-  color: var(--text-muted);
   cursor: pointer;
-  padding: 4px 10px;
-  font-size: 0.7rem;
-  line-height: 1;
-  transition: color 0.15s;
-}
-
-.sidebar-toggle:hover {
-  color: #fff;
-}
-
-.sidebar-episodes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  padding: 3px 14px 6px 26px;
-}
-
-.sidebar-ep-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 22px;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  text-decoration: none;
-  border-radius: 4px;
-  transition: background 0.15s, color 0.15s;
-}
-
-.sidebar-ep-link:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-}
-
-.sidebar-ep-link.active {
-  background: var(--sidebar-active);
-  color: #000;
+  color: var(--accent);
+  font-size: 0.92rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
+  text-align: left;
 }
+
+.sb-section-hdr:hover { color: #fff; }
+
+.sb-arrow {
+  font-size: 0.55rem;
+  width: 10px;
+  flex-shrink: 0;
+  text-align: center;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.sb-arrow.open {
+  transform: rotate(90deg);
+}
+
+/* Expandable section */
+.sb-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.sb-expand.open {
+  grid-template-rows: 1fr;
+}
+
+.sb-expand-inner {
+  overflow: hidden;
+}
+
+/* All nav items — flat list */
+.sb-item {
+  display: block;
+  padding: 2px 10px 2px 24px;
+  color: var(--sidebar-link);
+  text-decoration: none;
+  font-size: 0.87rem;
+  line-height: 1.7;
+  transition: color 0.1s;
+}
+
+.sb-item:hover { color: #fff; }
+
+.sb-item.active { color: var(--accent); }
+
+/* Episode sub-items — slightly muted */
+.sb-ep-num {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.sb-item:hover .sb-ep-num { color: #fff; }
+.sb-item.active .sb-ep-num { color: var(--accent); }
 
 /* ─── Main Content ─────────────────────────────────── */
 
@@ -195,6 +170,7 @@ body {
   max-width: 960px;
   margin: 0 auto;
   padding: 28px 36px 60px;
+  overflow-x: hidden;
 }
 
 /* ─── Breadcrumbs ──────────────────────────────────── */
@@ -250,25 +226,16 @@ body {
 .article a { color: var(--link); text-decoration: none; }
 .article a:hover { text-decoration: underline; color: var(--link-hover); }
 
-/* ─── Season Top Layout ────────────────────────────── */
+/* ─── Season Content Layout ────────────────────────── */
 
-.season-top-layout {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
+.season-content {
+  overflow: hidden; /* contain floats */
 }
 
-.season-top-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.season-top-aside {
-  flex-shrink: 0;
-  width: 260px;
-  position: sticky;
-  top: 16px;
-  align-self: flex-start;
+.season-infobox-float {
+  float: right;
+  width: 280px;
+  margin: 0 0 16px 20px;
 }
 
 .elim-table-wrap {
@@ -433,61 +400,125 @@ a.infobox-tribe-swatch:hover {
 /* ─── Home Page ────────────────────────────────────── */
 
 .home-hero {
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 20px;
-  margin-bottom: 28px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .home-hero h1 {
-  font-family: Georgia, serif;
-  font-size: 2rem;
-  color: var(--text-heading);
-  margin-bottom: 6px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.8rem;
+  color: var(--accent);
   border: none;
   padding: 0;
 }
 
-.home-hero p { color: var(--text-muted); font-size: 0.95rem; }
-
-.season-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 8px;
+/* Season Cards */
+.season-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.season-table th {
-  text-align: left;
-  padding: 8px 12px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  border-bottom: 2px solid var(--border);
-}
-
-.season-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.9rem;
-  vertical-align: middle;
-}
-
-.season-table tr:hover td { background: var(--bg-card); }
-
-.season-table a {
-  color: var(--link);
+.season-card {
+  position: relative;
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 180px;
   text-decoration: none;
-  font-weight: 500;
+  color: #fff;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, transform 0.2s;
 }
 
-.season-table a:hover { text-decoration: underline; }
+.season-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.season-card, .season-card:hover, .season-card * {
+  text-decoration: none !important;
+}
 
-.coming-soon-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  background: #333;
-  color: var(--text-muted);
-  border-radius: 3px;
-  font-size: 0.78rem;
+.season-card--soon {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.season-card--soon:hover {
+  border-color: var(--border);
+  transform: none;
+}
+
+.season-card-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+.season-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 100%);
+}
+
+.season-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 180px;
+  justify-content: center;
+}
+
+.season-card-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.season-card-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.65);
+}
+
+.season-card-coming {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+}
+
+.season-card-winner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.season-card-winner-info {
+  display: flex;
+  flex-direction: column;
+  margin-right: 12px;
+}
+
+.season-card-winner-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.5);
+}
+
+.season-card-winner-name {
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 /* ─── Season Overview ──────────────────────────────── */
@@ -540,6 +571,7 @@ a.infobox-tribe-swatch:hover {
 /* ─── Cast Table (Season Overview) ─────────────────── */
 
 .cast-table-wrap {
+  clear: both;
   overflow-x: auto;
   margin-bottom: 12px;
 }
@@ -935,9 +967,55 @@ a.cast-tribe-label:hover {
 
 /* ─── Player Page ──────────────────────────────────── */
 
+.player-page-name-row {
+  margin-bottom: 0;
+}
+
+.player-page-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-select {
+  font: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--heading);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  max-width: 100%;
+  appearance: auto;
+}
+.player-select:hover {
+  border-color: var(--text-muted);
+}
+.player-select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.player-select option {
+  font-size: 1rem;
+  font-weight: 400;
+  background: #242424;
+  color: #e0e0e0;
+}
+
+.player-ig-link {
+  display: inline-flex;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.player-ig-link:hover {
+  color: #E1306C;
+}
+
 .player-article { overflow: hidden; /* contain float */ }
 
-.player-bio { margin-bottom: 20px; color: var(--text); }
+.player-bio { margin: 0 0 16px; color: var(--text); line-height: 1.65; }
 
 .player-vote-grid {
   width: 100%;
@@ -959,37 +1037,15 @@ a.cast-tribe-label:hover {
   font-weight: 600;
 }
 
-/* ─── Player Page Tabs ──────────────────────────────── */
+/* ─── Player Stats Grid ────────────────────────────── */
 
-.player-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 2px solid var(--border);
-  margin-top: 28px;
-  margin-bottom: 0;
-}
+/* ─── Player Page Section Headings ──────────────────── */
 
-.player-tab-btn {
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -2px;
-  padding: 9px 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
-}
-
-.player-tab-btn:hover { color: var(--text); }
-.player-tab-btn.active {
-  color: var(--link);
-  border-bottom-color: var(--link);
-}
-
-.player-tab-content {
-  padding-top: 18px;
+.player-section-heading {
+  margin: 24px 0 10px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
 }
 
 /* ─── Player Challenge History ──────────────────────── */
@@ -1026,7 +1082,14 @@ a.cast-tribe-label:hover {
   white-space: nowrap;
 }
 
-.pchall-tribe-cell { text-align: center; white-space: nowrap; }
+.pchall-tribe-cell {
+  text-align: center;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  vertical-align: middle;
+}
 .pchall-name-cell  { color: var(--text); }
 .pchall-type-cell  { color: var(--text-muted); font-size: 0.78rem; white-space: nowrap; }
 .pchall-sitout-cell { text-align: center; color: var(--text-muted); font-size: 0.78rem; }
@@ -1044,6 +1107,17 @@ a.cast-tribe-label:hover {
 .pchall-result-mid  { background: #1c1c1c; color: var(--text-muted); }
 .pchall-result-empty { color: var(--text-muted); }
 
+.pchall-merge-row td {
+  background: var(--bg-card);
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-style: italic;
+  padding: 5px 12px;
+  border-color: var(--border);
+}
+
 .pchall-votedout td {
   background: #555;
   color: #fff;
@@ -1060,26 +1134,27 @@ a.cast-tribe-label:hover {
 .pvote-wrap { overflow-x: auto; }
 
 .pvote-table {
-  width: 100%;
   border-collapse: collapse;
-  font-size: 0.83rem;
+  font-size: 0.82rem;
 }
 
 .pvote-table th {
   background: var(--bg-card);
   color: var(--text-muted);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  padding: 7px 12px;
+  padding: 5px 10px;
   text-align: left;
   border: 1px solid var(--border);
+  white-space: nowrap;
 }
-.pvote-ep-header { width: 80px; text-align: center; }
+.pvote-ep-header { width: 48px; text-align: center; }
 
 .pvote-table td {
-  padding: 7px 12px;
+  padding: 4px 10px;
   border: 1px solid var(--border);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .pvote-ep-cell {
@@ -1092,7 +1167,7 @@ a.cast-tribe-label:hover {
 
 .pvote-revote-tag {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 400;
   color: var(--text-muted);
   font-style: italic;
@@ -1100,13 +1175,13 @@ a.cast-tribe-label:hover {
 
 .pvote-cast-cell  { color: var(--text); }
 .pvote-against-cell { color: var(--text); }
-.pvote-against-list { display: flex; flex-wrap: wrap; gap: 2px 6px; }
+.pvote-against-list { display: flex; flex-wrap: wrap; gap: 1px 5px; }
 .pvote-empty { color: var(--text-muted); }
 
 /* Immune rows — full tribe color background */
 .pvote-immune-row td {
   font-weight: 600;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
 .pvote-immune-cell { text-align: center; }
@@ -1114,15 +1189,15 @@ a.cast-tribe-label:hover {
 /* Switched phase TC rows — subtle tribe tint (set inline via style prop) */
 .pvote-vote-switched td { /* inline bg set per player */ }
 
-/* Merged phase TC rows — color set inline via tr style prop, no td override needed */
-
 /* Vote chip for the player's vote in cast cell */
 .pvote-vote-chip {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: rgba(99, 102, 241, 0.18);
   color: var(--link) !important;
   border-radius: 4px;
-  padding: 1px 8px;
+  padding: 2px 8px;
   text-decoration: none !important;
   font-weight: 500;
 }
@@ -1132,20 +1207,21 @@ a.cast-tribe-label:hover {
 .pvote-indiv-immune {
   color: var(--accent);
   font-style: italic;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 .pvote-elim-row td { background: rgba(239, 68, 68, 0.08); }
+.pvote-clickable { cursor: pointer; }
 .pvote-vote-row:hover td { background: var(--bg-card); }
 
 .pvote-votedout td {
   background: #555;
   color: #fff;
   text-align: center;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   font-style: italic;
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-color: #444;
 }
 
@@ -1153,7 +1229,7 @@ a.cast-tribe-label:hover {
 .pvote-juryvote td {
   background: rgba(180, 140, 50, 0.1);
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-style: italic;
 }
 .pvote-jury-label {
@@ -1162,7 +1238,8 @@ a.cast-tribe-label:hover {
   white-space: nowrap;
   font-style: normal !important;
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.3;
+  font-size: 0.72rem;
 }
 .pvote-jury-target { font-style: normal !important; color: var(--text) !important; }
 .pvote-jury-target a { color: var(--link); text-decoration: none; }
@@ -1329,6 +1406,11 @@ a.cast-tribe-label:hover {
 .challenge-page-episode a { color: var(--link); text-decoration: none; }
 .challenge-page-episode a:hover { text-decoration: underline; }
 
+.challenge-thumb {
+  width: 480px;
+  max-width: 100%;
+}
+
 .challenge-place-badge {
   display: inline-block;
   padding: 2px 10px;
@@ -1401,6 +1483,21 @@ a.cast-tribe-label:hover {
   width: 100%;
   height: 100%;
   border: none;
+}
+
+.episode-thumbs-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.episode-thumbs-row .episode-thumb-wrapper {
+  margin-bottom: 4px;
+}
+.episode-thumb-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: center;
 }
 
 .episode-thumb-wrapper {
@@ -1605,25 +1702,25 @@ a.cast-tribe-label:hover {
 
 .tc-voted-out-footer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: 6px;
+  padding: 14px 14px;
   background: rgba(0, 0, 0, 0.28);
   border-top: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .tc-voted-out-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .tc-voted-out-name {
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 1rem;
 }
 
 .tc-confessional-btn {
@@ -1649,6 +1746,14 @@ a.cast-tribe-label:hover {
 }
 
 /* Final Words quote block */
+.tc-no-confessional {
+  padding: 12px 18px;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
 .tc-final-words {
   background: rgba(0,0,0,0.15);
   border-top: 1px solid rgba(255,255,255,0.12);
@@ -2644,6 +2749,16 @@ body.sidebar-open {
   /* ─── Show mobile menu button ─────────────────── */
   .mobile-menu-btn {
     display: flex;
+    top: 8px;
+    left: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+
+  /* Hide burger when sidebar is open — overlay handles close */
+  body.sidebar-open .mobile-menu-btn {
+    display: none;
   }
 
   /* ─── Sidebar: hidden by default, slide in ────── */
@@ -2697,17 +2812,18 @@ body.sidebar-open {
 
   /* ─── Breadcrumbs ─────────────────────────────── */
   .breadcrumbs {
-    font-size: 0.75rem;
-    margin-bottom: 14px;
+    font-size: 0.72rem;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  /* ─── Season top layout: stack on mobile ──── */
-  .season-top-layout {
-    flex-direction: column-reverse;
-  }
-
-  .season-top-aside {
+  /* ─── Season layout: un-float on mobile ──── */
+  .season-infobox-float {
+    float: none;
     width: 100%;
+    margin: 0 0 20px 0;
   }
 
   .infobox {
@@ -2715,18 +2831,14 @@ body.sidebar-open {
     margin: 0 0 20px 0;
   }
 
-  /* ─── Season Table (Home page) ────────────────── */
-  .season-table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  /* ─── Season Cards (Home page) ───────────────── */
+  .season-card-body {
+    padding: 18px 20px;
+    min-height: 150px;
   }
 
-  .season-table th,
-  .season-table td {
-    padding: 8px;
-    font-size: 0.82rem;
-    white-space: nowrap;
+  .season-card-name {
+    font-size: 1.3rem;
   }
 
   .season-logo-thumb {
@@ -2774,20 +2886,54 @@ body.sidebar-open {
     gap: 8px;
   }
 
+  /* ─── Cast Table (Season Overview) ───────────── */
+  .cast-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cast-table {
+    min-width: 480px;
+  }
+
+  .cast-photo-frame {
+    width: 36px;
+    height: 44px;
+  }
+
+  .cast-cell-photo {
+    width: 40px;
+    padding: 3px 2px;
+  }
+
+  .cast-player-name {
+    font-size: 0.78rem;
+  }
+
+  .cast-table th,
+  .cast-table td {
+    padding: 4px 5px;
+    font-size: 0.75rem;
+  }
+
+  .cast-cell-tribe {
+    min-width: 55px;
+  }
+
+  .cast-tribe-label {
+    font-size: 0.65rem;
+  }
+
   /* ─── Player Page ─────────────────────────────── */
   .player-article {
     overflow: visible;
   }
 
-  .player-tabs {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .player-tab-btn {
-    padding: 9px 14px;
-    font-size: 0.82rem;
-    white-space: nowrap;
+  .player-article .infobox {
+    float: none;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 20px;
   }
 
   /* ─── Player Vote/Challenge Tables ────────────── */
@@ -2799,17 +2945,132 @@ body.sidebar-open {
 
   .pchall-table,
   .pvote-table {
-    min-width: 500px;
+    min-width: 440px;
+  }
+
+  .pchall-table th,
+  .pchall-table td,
+  .pvote-table th,
+  .pvote-table td {
+    padding: 5px 6px;
+    font-size: 0.78rem;
   }
 
   /* ─── Voting History Grid ─────────────────────── */
   .voting-grid-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
   .vhist-table {
+    min-width: 550px;
+    font-size: 0.72rem;
+  }
+
+  .vhist-table th,
+  .vhist-table td {
+    padding: 3px 5px;
+  }
+
+  /* ─── Season Overview Voting History ────────── */
+  .vh-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .vh-table {
     min-width: 600px;
+    font-size: 0.72rem;
+  }
+
+  .vh-table th,
+  .vh-table td {
+    padding: 3px 4px;
+    font-size: 0.72rem;
+  }
+
+  .vh-elim-name {
+    font-size: 0.58rem;
+  }
+
+  .vh-player-cell {
+    min-width: 65px;
+    font-size: 0.7rem;
+  }
+
+  /* ─── TC Vote Cards ────────────────────────────── */
+  .tc-card {
+    max-width: 100%;
+  }
+
+  .tc-cols-header,
+  .tc-vote-row {
+    grid-template-columns: 130px 1fr;
+  }
+
+  .tc-target-cell {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .tc-voters-cell {
+    padding: 8px;
+  }
+
+  .tc-voter-photos {
+    gap: 4px;
+  }
+
+  /* ─── Episode Table (Season Overview) ──────── */
+  .episode-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .episode-table th,
+  .episode-table td {
+    padding: 5px 6px;
+    font-size: 0.75rem;
+  }
+
+  .ep-tbl-chal-name {
+    font-size: 0.68rem;
+  }
+
+  .ep-tbl-elim-vote,
+  .ep-tbl-elim-note {
+    font-size: 0.65rem;
+  }
+
+  /* ─── Touch Targets ─────────────────────────── */
+  .sb-item {
+    padding: 8px 10px 8px 24px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sb-section-hdr {
+    min-height: 44px;
+  }
+
+  .episode-nav-btn {
+    min-height: 44px;
+  }
+
+  .challenge-table a,
+  .episode-table a,
+  .tp-table a {
+    display: inline-block;
+    padding: 4px 0;
   }
 
   /* ─── Challenge Table ─────────────────────────── */
@@ -2919,8 +3180,9 @@ body.sidebar-open {
 
 @media (max-width: 480px) {
 
+  /* ─── Article ───────────────────────────────── */
   .article {
-    padding: 56px 12px 32px;
+    padding: 52px 10px 28px;
   }
 
   .article h1 {
@@ -2929,39 +3191,193 @@ body.sidebar-open {
 
   .article h2 {
     font-size: 1rem;
+    margin: 20px 0 8px;
+  }
+
+  .article p {
+    font-size: 0.88rem;
   }
 
   .home-hero h1 {
     font-size: 1.3rem;
   }
 
-  /* Cast grid: 2 columns tighter */
-  .cast-grid {
-    grid-template-columns: repeat(2, 1fr);
+  /* ─── Breadcrumbs ───────────────────────────── */
+  .breadcrumbs {
+    font-size: 0.68rem;
+    margin-bottom: 8px;
+  }
+
+  .breadcrumb-sep {
+    margin: 0 2px;
+  }
+
+  /* ─── Season Cards (Home page) ───────────────── */
+  .season-card-body {
+    padding: 16px;
+    min-height: 130px;
+  }
+
+  .season-card-name {
+    font-size: 1.1rem;
+  }
+
+  .season-card-stats {
+    flex-wrap: wrap;
     gap: 8px;
-  }
-
-  .cast-card {
-    padding: 8px 6px;
-    gap: 5px;
-  }
-
-  .cast-card h3 {
     font-size: 0.78rem;
   }
 
-  /* Tribe page */
+  .season-card-winner {
+    flex-wrap: wrap;
+  }
+
+  /* ─── Infobox ───────────────────────────────── */
+  .infobox {
+    font-size: 0.78rem;
+  }
+
+  .infobox-header {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+
+  .infobox-label,
+  .infobox-value {
+    padding: 4px 8px;
+    font-size: 0.78rem;
+  }
+
+  /* ─── Cast Grid ─────────────────────────────── */
+  .cast-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .cast-card {
+    padding: 6px 4px;
+    gap: 4px;
+  }
+
+  .cast-card h3 {
+    font-size: 0.75rem;
+  }
+
+  .cast-card .placement {
+    font-size: 0.7rem;
+  }
+
+  /* ─── Episode List Table ────────────────────── */
+  .episode-list-table th:nth-child(4),
+  .episode-list-table td:nth-child(4) {
+    display: none;
+  }
+
+  .episode-list-table th,
+  .episode-list-table td {
+    padding: 6px 6px;
+    font-size: 0.8rem;
+  }
+
+  /* ─── Season Overview Episode Table ─────────── */
+  .episode-table-wrap {
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .episode-table {
+    min-width: 360px;
+  }
+
+  /* ─── Voting History Tables ─────────────────── */
+  .vh-table-wrap,
+  .voting-grid-wrapper {
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .vh-table th,
+  .vh-table td {
+    padding: 2px 3px;
+    font-size: 0.68rem;
+  }
+
+  .vhist-table th,
+  .vhist-table td {
+    padding: 2px 4px;
+    font-size: 0.68rem;
+  }
+
+  /* ─── TC Vote Cards ─────────────────────────── */
+  .tc-cols-header,
+  .tc-vote-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tc-col-label:first-child {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .tc-target-cell {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 8px 10px;
+  }
+
+  .tc-voters-cell {
+    padding: 8px 10px;
+  }
+
+  .tc-final-words-body {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .tc-final-words {
+    padding: 10px 12px;
+  }
+
+  /* ─── Player Page Tables ────────────────────── */
+  .pchall-table,
+  .pvote-table {
+    min-width: 380px;
+  }
+
+  /* ─── Challenge Page Meta ───────────────────── */
+  .challenge-page-meta {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.78rem;
+  }
+
+  /* ─── Tribe Page ────────────────────────────── */
   .tp-banner { padding: 10px 12px; }
   .tp-title { font-size: 1.3rem; }
   .tp-color-dot { width: 16px; height: 16px; }
+  .tp-subtitle { font-size: 0.82rem; }
   .tp-stats { flex-direction: column; }
   .tp-stat { flex-direction: row; justify-content: space-between; padding: 8px 12px; }
   .tp-stat + .tp-stat { border-left: none; border-top: 1px solid var(--border); }
   .tp-stat-val { font-size: 1rem; }
   .tp-stat-lbl { margin-top: 0; }
-  .tp-vote-pill { font-size: 0.75rem; padding: 3px 7px 3px 3px; }
 
-  /* Photo editor full width */
+  .tp-tc-tabs { gap: 0; }
+  .tp-tc-tab { padding: 8px 12px; font-size: 0.78rem; }
+  .tp-tc-tab-ep { font-size: 0.78rem; }
+
+  .tp-table th:nth-child(5),
+  .tp-table td:nth-child(5) {
+    display: none;
+  }
+
+  /* ─── Photo Editor ──────────────────────────── */
   .photo-editor-panel {
     right: 0;
     left: 0;
