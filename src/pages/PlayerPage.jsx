@@ -331,8 +331,8 @@ function VotingHistoryTab({ player, season, sid }) {
             // ── Regular vote row ──────────────────────────────────────
             const { tc, myVote, votedForPlayer, votesAgainst, isElimHere, indivImmune, isRevote, isTie } = row;
             const tribeColor = row.tribe?.color;
-            const rowStyle = row.phase === 'switched' && tribeColor
-              ? { background: tribeColor + '22' }
+            const rowStyle = !row.isMerged && tribeColor
+              ? { background: tribeColor + '4d' }
               : {};
 
             return (
