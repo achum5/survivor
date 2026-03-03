@@ -363,7 +363,7 @@ function VotingHistoryTab({ player, season, sid }) {
                                   color: v.idolNullified ? 'var(--text-muted)' : 'var(--link)',
                                   textDecoration: v.idolNullified ? 'line-through' : 'none',
                                 }}>
-                                <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={18} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} />
+                                <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={22} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />
                                 {voter.name}
                               </Link>
                             ) : getPlayerName(season, v.voterPid)}

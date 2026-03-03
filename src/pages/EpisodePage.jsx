@@ -22,7 +22,7 @@ function WinnerDisplay({ winnerId, season, sid }) {
     return (
       <Link to={`/season/${sid}/cast/${slugify(player.name)}`}
         style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20} photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} />
+        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={24} photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} noBorder />
         {player.name}
       </Link>
     );
@@ -173,7 +173,7 @@ export default function EpisodePage() {
                               {voter && (
                                 <Link to={`/season/${sid}/cast/${slugify(voter.name)}`}
                                   style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                  <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={20} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} />
+                                  <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={24} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />
                                   {voter.name}
                                 </Link>
                               )}
@@ -183,7 +183,7 @@ export default function EpisodePage() {
                                 <Link to={`/season/${sid}/cast/${slugify(target.name)}`}
                                   style={{ display: 'flex', alignItems: 'center', gap: 6,
                                     textDecoration: v.idolNullified ? 'line-through' : 'none' }}>
-                                  <Avatar name={target.name} color={getTribeColor(season, target.tid)} size={20} photoUrl={target.photoUrl} imgStyle={target.photoStyle} pid={target.pid} />
+                                  <Avatar name={target.name} color={getTribeColor(season, target.tid)} size={24} photoUrl={target.photoUrl} imgStyle={target.photoStyle} pid={target.pid} noBorder />
                                   {target.name}
                                 </Link>
                               )}

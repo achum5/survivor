@@ -30,8 +30,8 @@ function WinnerDisplay({ winnerId, season, sid }) {
     return (
       <Link to={`/season/${sid}/cast/${slugify(player.name)}`}
         style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20}
-          photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} />
+        <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={24}
+          photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} noBorder />
         {player.name}
       </Link>
     );
@@ -118,8 +118,8 @@ export default function ChallengePage() {
                     return p ? (
                       <Link key={pid} to={`/season/${sid}/cast/${slugify(p.name)}`}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                        <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={20}
-                          photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} />
+                        <Avatar name={p.name} color={getTribeColor(season, p.tid)} size={24}
+                          photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
                         {p.name}
                       </Link>
                     ) : <span key={pid}>{pid}</span>;
@@ -157,8 +157,8 @@ export default function ChallengePage() {
                       ) : player ? (
                         <Link to={`/season/${sid}/cast/${slugify(player.name)}`}
                           style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                          <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={20}
-                            photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} />
+                          <Avatar name={player.name} color={getTribeColor(season, player.tid)} size={24}
+                            photoUrl={player.photoUrl} imgStyle={player.photoStyle} pid={player.pid} noBorder />
                           {player.name}
                         </Link>
                       ) : r.id}
