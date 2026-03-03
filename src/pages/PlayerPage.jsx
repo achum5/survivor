@@ -281,7 +281,7 @@ function VotingHistoryTab({ player, season, sid }) {
                     {row.target ? (
                       <Link to={`/season/${sid}/cast/${slugify(row.target.name)}`}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Avatar name={row.target.name} color={getTribeColor(season, row.target.tid)} size={20} photoUrl={row.target.photoUrl} imgStyle={row.target.photoStyle} pid={row.target.pid} />
+                        <Avatar name={row.target.name} color={getTribeColor(season, row.target.tid)} size={24} photoUrl={row.target.photoUrl} imgStyle={row.target.photoStyle} pid={row.target.pid} noBorder />
                         {row.target.name}
                       </Link>
                     ) : '—'}
@@ -338,7 +338,7 @@ function VotingHistoryTab({ player, season, sid }) {
                       <Link to={`/season/${sid}/cast/${slugify(votedForPlayer.name)}`}
                         className="pvote-vote-chip"
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Avatar name={votedForPlayer.name} color={getTribeColor(season, votedForPlayer.tid)} size={20} photoUrl={votedForPlayer.photoUrl} imgStyle={votedForPlayer.photoStyle} pid={votedForPlayer.pid} />
+                        <Avatar name={votedForPlayer.name} color={getTribeColor(season, votedForPlayer.tid)} size={24} photoUrl={votedForPlayer.photoUrl} imgStyle={votedForPlayer.photoStyle} pid={votedForPlayer.pid} noBorder />
                         {votedForPlayer.name}
                       </Link>
                     ) : getPlayerName(season, myVote.votedForPid)

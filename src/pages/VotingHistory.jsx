@@ -165,7 +165,7 @@ export default function VotingHistory() {
                     style={{ borderLeft: `3px solid ${origTribeColor}` }}>
                     <Link to={`/season/${sid}/cast/${slugify(p.name)}`}
                       style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                      <Avatar name={p.name} color={origTribeColor} size={20} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} />
+                      <Avatar name={p.name} color={origTribeColor} size={24} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
                       {p.name}
                     </Link>
                     {isWinner && <span className="vhist-winner-star"> ★</span>}
