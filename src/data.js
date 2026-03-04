@@ -66,14 +66,14 @@ export const SEASONS = [
           results: [{ id: "s1_t2", place: 1 }, { id: "s1_t1", place: 2 }], sitOuts: [] } },
       { eid: "s1_e02", number: 2,  title: "Episode 2",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=143", videoEndTime: 508,
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: "Nothing But Net", type: "Immunity", description: "A basketball free throw shooting competition. Players lined up and shot one at a time, alternating between tribes. First team to six misses lost immunity and went to tribal council.", winner: "s1_t2",
+        immunityChallenge: { name: "Nothing But Net", type: "Immunity", description: "A basketball free throw shooting competition. Players lined up and shot one at a time, alternating between tribes. First team to six misses lost immunity and went to tribal council.", winner: "s1_t2", videoTimestamp: 143,
           imageUrl: "https://i.imgur.com/9w4qvbD.png",
           results: [{ id: "s1_t2", place: 1 }, { id: "s1_t1", place: 2 }], sitOuts: ["s1_p09"] } },
       { eid: "s1_e03", number: 3,  title: "Episode 3",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=852",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: "Word Scramble", type: "Immunity", description: "Each tribe received a sheet of paper and had 3 minutes to write down as many valid words (3+ letters) as they could form from the letters in the word \"CHALLENGE\". Words were scored against a pre-made Scrabble-valid answer key, and teams graded each other's lists. Most valid words won immunity; the two lowest-scoring tribes went to tribal council. One player was caught writing after time was called and received a −1 penalty. The winning tribe also got to pick their camp spot and received pizza.", winner: "s1_t2",
+        immunityChallenge: { name: "Word Scramble", type: "Immunity", description: "Each tribe received a sheet of paper and had 3 minutes to write down as many valid words (3+ letters) as they could form from the letters in the word \"CHALLENGE\". Words were scored against a pre-made Scrabble-valid answer key, and teams graded each other's lists. Most valid words won immunity; the two lowest-scoring tribes went to tribal council. One player was caught writing after time was called and received a −1 penalty. The winning tribe also got to pick their camp spot and received pizza.", winner: "s1_t2", videoTimestamp: 852,
           imageUrl: "https://i.imgur.com/q7cq6UY.png",
-          results: [{ id: "s1_t2", place: 1 }, { id: "s1_t3", place: 2 }, { id: "s1_t4", place: 3 }], sitOuts: [] } },
+          results: [{ id: "s1_t2", place: 1 }, { id: "s1_t3", place: 2 }, { id: "s1_t4", place: 2 }], sitOuts: [] } },
       { eid: "s1_e04", number: 4,  title: "Episode 4",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=2361",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: "Puzzle Race", type: "Immunity", description: "Each tribe raced to solve the same 48-piece puzzle. The two fastest tribes won immunity; the losing tribe went to tribal council.", winner: "s1_t3", videoTimestamp: 2361,
@@ -84,7 +84,7 @@ export const SEASONS = [
         immunityChallenge: { name: "Noodle Count", type: "Immunity", description: "Castaways estimated the number of macaroni noodles in a jar. Anyone who guessed over the actual number was eliminated — the closest guess under won. Madison and Jace tied with the same distance from the answer, forcing a tiebreaker draw — Jace won immunity.", winner: "s1_p01", videoTimestamp: 2958, imageUrl: "https://i.imgur.com/2fEZbiJ.png" } },
       { eid: "s1_e06", number: 6,  title: "Episode 6",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=3650",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
-        immunityChallenge: { name: "Paper Airplane Toss", type: "Immunity", description: "Alex is dumb. Challenge was not recorded. Abdul won immunity.", winner: "s1_p05", imageUrl: "https://i.imgur.com/IzbWgBH.png" } },
+        immunityChallenge: { name: "Paper Airplane Toss", type: "Immunity", description: "Alex is dumb. Challenge was not recorded. Abdul won immunity.", winner: "s1_p05", videoTimestamp: 3650, imageUrl: "https://i.imgur.com/IzbWgBH.png" } },
       { eid: "s1_e07", number: 7,  title: "Episode 7",  videoUrl: "https://youtu.be/qPJoYyABYHE?t=3987",
         rewardChallenge:   { name: null, description: null, winner: null, reward: null },
         immunityChallenge: { name: "Spelling Bee", type: "Immunity", description: "Rounds-based spelling bee. Players were given increasingly difficult words and eliminated when they misspelled one; if all remaining players in a round missed, no one was eliminated and a new round began. Words included accommodate, condominium, frivolous, requirement, chauffeur, encyclopedia, rhythm, and guarantee. Jace won immunity in the final round by correctly spelling \"emphasize\".", winner: "s1_p01", videoTimestamp: 3987, imageUrl: "https://i.imgur.com/J4VUv3O.png" } },
@@ -383,7 +383,34 @@ export const SEASONS = [
     ],
     mergeTribe: null,
     juryVotes: [],
-    episodes: [],
+    advantages: [
+      { type: "Hidden Immunity Idol", holder: "s2_sean", foundEpisode: 1, playedEpisode: null, status: "held", notes: "Found at camp during Episode 1. Told his tribemates about it." },
+      { type: "Safety Without Power", holder: "s2_samr", foundEpisode: 1, playedEpisode: null, status: "expired", notes: "Won at the Episode 1 journey (multiplication tables). Allows holder to leave tribal council before the vote for guaranteed safety, but forfeits their vote. Sam chose not to play it and was voted out." },
+    ],
+    episodes: [
+      { eid: "s2_e01", number: 1, title: "Episode 1", videoUrl: "https://www.youtube.com/watch?v=KMz9zRmdb54", episodeImageUrl: "https://i.imgur.com/R8CX9ZG.png",
+        rewardChallenge: { name: "Memory Grid", type: "Reward",
+          description: "One member from each tribe raced back and forth between a grid of random objects and a blank grid at their station. Players had to memorize the positions of objects and recreate them on their blank grid. The strategic dilemma: memorize everything in one trip or make multiple quick trips remembering fewer objects each time.",
+          winner: "s2_yellow", reward: "First pick of camp location", imageUrl: "https://i.imgur.com/R8CX9ZG.png",
+          results: [{ id: "s2_yellow", place: 1 }, { id: "s2_red", place: 2 }, { id: "s2_blue", place: 3 }], sitOuts: [] },
+        immunityChallenge: { name: "Relay Race Puzzle", type: "Immunity",
+          description: "Tribe relay race around the block. On the far side, each tribe member received a number. Once all members returned, the tribe had to unscramble their numbers to figure out a lock combination. After unlocking, they opened a bag of puzzle pieces and raced to complete the puzzle. First two tribes to finish won immunity.",
+          winner: "s2_blue", imageUrl: "https://i.imgur.com/0jvefJi.png", videoTimestamp: 911,
+          results: [{ id: "s2_blue", place: 1 }, { id: "s2_red", place: 2 }, { id: "s2_yellow", place: 3 }], sitOuts: ["s2_phil", "s2_meredith"] },
+        journey: {
+          videoUrl: "https://youtu.be/KMz9zRmdb54?t=1531",
+          imageUrl: "https://i.imgur.com/joHjgFj.png",
+          description: "The winning Blue tribe selected one member from each tribe to go on a journey. Phil (Blue), Abdul (Red), and Sam R. (Yellow) were sent to compete in a timed multiplication tables quiz with one minute on the clock. The winner received the contents of a mystery box — the Safety Without Power advantage. The two losers each lost their vote at their next tribal council.",
+          sentBy: "s2_blue",
+          participants: [
+            { pid: "s2_phil", result: "Lost vote at next tribal" },
+            { pid: "s2_abdul", result: "Lost vote at next tribal" },
+            { pid: "s2_samr", result: "Won Safety Without Power advantage" },
+          ],
+        },
+        tribalCouncilUrl: "https://youtu.be/KMz9zRmdb54?t=1868",
+      },
+    ],
 
     tribes: [
       { tid: "s2_blue",   name: "Navy Blue", color: "#1a3c6e", phase: "original" },
@@ -394,29 +421,53 @@ export const SEASONS = [
     cast: [
       // ── Navy Blue tribe (6) ──────────────────────────────────
       { pid: "s2_caroline",  name: "Caroline",  fullName: "Caroline Kremer",   personId: "caroline_kremer", photoUrl: "https://i.imgur.com/Pq42UDY.png", photoStyle: { objectPosition: "50% -183%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_benw",      name: "Ben W.",    fullName: "Ben Williams",      tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_benc",      name: "Ben C.",    fullName: "Ben Currey",        tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_benw",      name: "Ben W.",    fullName: "Ben Williams",      photoUrl: "https://i.imgur.com/177kE7y.png", photoStyle: { objectPosition: "50% -10%", transformOrigin: "50% 20%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 5%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_benc",      name: "Ben C.",    fullName: "Ben Currey",        instagram: "https://www.instagram.com/ben_currey/", photoUrl: "https://i.imgur.com/zZ2Uskz.png", photoStyle: { objectPosition: "50% -30%", transformOrigin: "50% 30%", transform: "scale(1.4)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 15%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
       { pid: "s2_jacob",     name: "Jacob",     fullName: "Jacob Williams",    personId: "jacob_williams", photoUrl: "https://i.imgur.com/IKBqmSa.png", photoStyle: { objectPosition: "50% -162%", transformOrigin: "49% 50%", transform: "scale(1.70)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
       { pid: "s2_olivia",    name: "Olivia",    fullName: "Olivia Saylor",     personId: "olivia_saylor", photoUrl: "https://i.imgur.com/v15gL2S.png", portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_phil",      name: "Phil",      fullName: "Phil Johnson",      tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_phil",      name: "Phil",      fullName: "Phil Johnson",      instagram: "https://www.instagram.com/phill_johnson/", photoUrl: "https://i.imgur.com/75A82Z1.png", photoStyle: { objectPosition: "50% -20%", transformOrigin: "50% 25%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
 
       // ── Red tribe (6) ────────────────────────────────────────
-      { pid: "s2_alyssa",    name: "Alyssa",    fullName: "Alyssa French",     tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_kylea",     name: "Kylea",     fullName: "Kylea Dobson",      tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_alyssa",    name: "Alyssa",    fullName: "Alyssa French",     instagram: "https://www.instagram.com/alyssafrenchh/", photoUrl: "https://i.imgur.com/3u6Wor2.png", photoStyle: { objectPosition: "50% -10%", transformOrigin: "50% 22%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 5%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_kylea",     name: "Kylea",     fullName: "Kylea Dobson",      instagram: "https://www.instagram.com/kdobson_12/", photoUrl: "https://i.imgur.com/Ys122rX.png", photoStyle: { objectPosition: "50% -10%", transformOrigin: "50% 25%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
       { pid: "s2_abdul",     name: "Abdul",     fullName: "Abdul Alwan",       personId: "abdul_alwan", photoUrl: "https://i.imgur.com/O18he6C.png", photoStyle: { objectPosition: "50% -91%", transformOrigin: "66% 50%", transform: "scale(1.65)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
       { pid: "s2_madison",   name: "Madison",   fullName: "Madison Chumbler",  personId: "madison_chumbler", photoUrl: "https://i.imgur.com/VBmfwXj.png", photoStyle: { objectPosition: "50% -73%", transform: "scale(1.65)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
       { pid: "s2_meredith",  name: "Meredith",  fullName: "Meredith Hogue",    personId: "meredith_hogue", photoUrl: "https://i.imgur.com/47WJZvC.png", photoStyle: { objectPosition: "50% -63%", transform: "scale(1.55)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%", transformOrigin: "47% 50%", transform: "scale(1.15)" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_samw",      name: "Sam W.",    fullName: "Sam Williams",      tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_samw",      name: "Sam W.",    fullName: "Sam Williams",      instagram: "https://www.instagram.com/sam.williams123/", photoUrl: "https://i.imgur.com/3J8BU5u.png", photoStyle: { objectPosition: "50% -5%", transformOrigin: "50% 25%", transform: "scale(1.25)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
 
       // ── Yellow tribe (5) ─────────────────────────────────────
       { pid: "s2_savannah",  name: "Savannah",  fullName: "Savannah Brinley",  personId: "savannah_brinley", photoUrl: "https://i.imgur.com/s9JnOdy.png", photoStyle: { objectPosition: "50% -22%", transformOrigin: "22% 50%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_samr",      name: "Sam R.",    fullName: "Sam Roth",          personId: "sam_roth", photoUrl: "https://i.imgur.com/HfnY3vo.jpeg", photoStyle: { objectPosition: "50% -10%", transform: "scale(1.20)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_samr",      name: "Sam R.",    fullName: "Sam Roth",          personId: "sam_roth", photoUrl: "https://i.imgur.com/HfnY3vo.jpeg", photoStyle: { objectPosition: "50% -10%", transform: "scale(1.20)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: 17, juryMember: false, votesAgainst: 3, switchedTid: null, merged: false },
       { pid: "s2_kelsey",    name: "Kelsey",    fullName: "Kelsey Brown",      personId: "kelsey_brown", photoUrl: "https://i.imgur.com/vb5oY6d.png", photoStyle: { objectPosition: "50% -11%", transform: "scale(1.05)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
       { pid: "s2_sean",      name: "Sean",      fullName: "Sean Stephens",     personId: "sean_stephens", photoUrl: "https://i.imgur.com/VjBqAOH.png", photoStyle: { objectPosition: "50% 15%" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 15%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_ashton",    name: "Ashton",    fullName: "Ashton Sims",       tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_ashton",    name: "Ashton",    fullName: "Ashton Sims",       instagram: "https://www.instagram.com/ashtonsims8/", photoUrl: "https://i.imgur.com/bZnfHyw.png", photoStyle: { objectPosition: "50% -15%", transformOrigin: "50% 25%", transform: "scale(1.35)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
     ],
 
-    votingHistory: [],
+    votingHistory: [
+      // ── TC 1: Sam R. eliminated (3-2) — Yellow tribe ──────────────
+      {
+        tcid: "s2_tc01", eid: "s2_e01", episode: 1, tid: "s2_yellow",
+        videoTimestamp: 1873, imageUrl: "https://i.imgur.com/05l3yDi.png",
+        notes: "Sean had a Hidden Immunity Idol but did not play it. Sam R. held Safety Without Power but chose not to use it. Sean, Savannah, and Kelsey blindsided Sam R. while Sam and Ashton voted Kelsey.",
+        confessionalTimestamp: 2079,
+        confessionalQuote: "Honestly, I don't know. I was told to vote Kelsey. I honestly thought that was the play. I thought telling them I had the idol would have been a play that they would have wanted to team up with me later on down the line. But taking the idol out of the game and taking me out of the game, I'm kind of surprised by it.",
+        confessionals: [
+          { pid: "s2_sean", timestamp: 1727, quote: "I have my idol in my pocket. Probably won't use it because I feel pretty good about the vote. I told Sam that I'm going home because my neck hurts, I don't feel good. So I think he thinks that I'm just going to throw myself on the chopping block. But not sure if that's the best for my game just yet. So we might switch that up." },
+          { pid: "s2_savannah", timestamp: 1750, quote: "[I'm feeling] very nervous, very confused. I have no idea what's going on actually still. We're looking at voting out maybe two people and I don't know which one's actually going to happen. I feel like they're probably talking about it right now and hopefully it's not me. Kelsey is a possibility. Sean is acting like he's not feeling well to get Sam out, which is what Kelsey and them think. But Kelsey's name has been thrown out. Not by me, but I am looking at my options." },
+          { pid: "s2_ashton", timestamp: 1783, quote: "[I have] little mixed feelings. I think if I had to guess, [the person going home] would be Sam. It puts me in a tough situation because if I don't [vote him], then I'll probably be the next one out." },
+          { pid: "s2_kelsey", timestamp: 1811, quote: "[I'm feeling] not good. I think someone has [the idol]. Someone's lying. I think it's Sam. We're going to try to go for him and say that Sean is hurt, he's just not feeling good, and he's okay to go out. My plan is to try to get out with Sam to find the idol with him, to make him think I'm with him because he did pick me. So I think he was open to it." },
+          { pid: "s2_samr", timestamp: 1850, quote: "I'm feeling good. I told everyone about my Safety Without Power because I suck at lying basically. They told me about Kelsey, but I think people think that we're voting Sean because his neck hurts right now. So it's either going to be Sean or Kelsey." },
+        ],
+        eliminatedPid: "s2_samr",
+        votes: [
+          { vid: "s2_tc01_v1", voterPid: "s2_sean",     votedForPid: "s2_samr" },   // Sean → Sam R.
+          { vid: "s2_tc01_v2", voterPid: "s2_savannah",  votedForPid: "s2_samr" },   // Savannah → Sam R.
+          { vid: "s2_tc01_v3", voterPid: "s2_kelsey",   votedForPid: "s2_samr" },   // Kelsey → Sam R.
+          { vid: "s2_tc01_v4", voterPid: "s2_samr",     votedForPid: "s2_kelsey" }, // Sam R. → Kelsey
+          { vid: "s2_tc01_v5", voterPid: "s2_ashton",   votedForPid: "s2_kelsey" }, // Ashton → Kelsey
+        ],
+      },
+    ],
     challenges: [],
   },
 

@@ -272,10 +272,12 @@ body {
   text-decoration: none;
   transition: color 0.15s, background 0.15s, border-color 0.15s;
 }
+.article a.season-quicknav-btn:hover,
 .season-quicknav-btn:hover {
   color: var(--text-heading);
   background: var(--bg-table-odd);
   border-color: var(--text-muted);
+  text-decoration: none;
 }
 
 /* ─── Season Content Layout ────────────────────────── */
@@ -1561,17 +1563,59 @@ a.cast-tribe-label:hover {
 
 .episode-thumbs-row {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 28px;
 }
+.episode-thumbs-row > div {
+  width: 180px;
+  flex-shrink: 0;
+}
 .episode-thumbs-row .episode-thumb-wrapper {
+  width: 100%;
   margin-bottom: 4px;
 }
 .episode-thumb-label {
   font-size: 0.78rem;
   color: var(--text-muted);
   text-align: center;
+}
+
+/* Journey section on episode page */
+.journey-section { margin: 12px 0 24px; }
+.journey-thumb { margin-bottom: 12px; }
+.journey-description {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.journey-participants {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.journey-participant {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--surface-alt, #2a2a2a);
+  border-radius: 8px;
+}
+.journey-participant-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.journey-participant-name {
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e0);
+}
+.journey-participant-result {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .episode-thumb-wrapper {
@@ -1625,6 +1669,15 @@ a.cast-tribe-label:hover {
   transform: scale(1.12);
   background: rgba(0, 0, 0, 0.85);
 }
+
+.episode-header-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.episode-header-row h1 { margin-bottom: 0; }
 
 .episode-no-video {
   padding: 20px;
@@ -1906,6 +1959,70 @@ a.cast-tribe-label:hover {
   margin-left: 2px;
 }
 
+/* ─── Confessional Quote Bubbles ──────────────────── */
+.confessional-bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.confessional-bubble {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--bg-card);
+  border-left: 3px solid var(--tribe-color, #555);
+  border-radius: 6px;
+  padding: 12px 16px;
+}
+
+.confessional-bubble-avatar {
+  flex-shrink: 0;
+}
+
+.confessional-bubble-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.confessional-bubble-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.confessional-bubble-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+  text-decoration: none;
+}
+.confessional-bubble-name:hover {
+  text-decoration: underline;
+}
+
+.confessional-play-btn {
+  margin-left: 0;
+  width: 24px;
+  height: 24px;
+  font-size: 0.6rem;
+}
+
+.confessional-bubble-quote {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.85);
+  font-style: italic;
+}
+
+.confessional-bubble-empty {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 .tc-play-btn {
   margin-left: auto;
   background: rgba(255, 255, 255, 0.2);
@@ -2171,6 +2288,33 @@ a.cast-tribe-label:hover {
   font-weight: 700;
 }
 
+.ep-tbl-chal-type {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+  margin-right: 6px;
+}
+
+.ep-tbl-chal-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.ep-tbl-chal-row {
+  display: block;
+  padding: 6px 14px;
+  text-decoration: none;
+}
+.ep-tbl-chal-row + .ep-tbl-chal-row {
+  border-top: 1px solid rgba(0,0,0,0.25);
+}
+
+.ep-tbl-chal-multi {
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
 .ep-tbl-elim {
 }
 
@@ -2282,37 +2426,31 @@ a.cast-tribe-label:hover {
 .tp-title-select-wrap {
   position: relative;
 }
-.tp-title-select-wrap::after {
-  content: '▾';
-  position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.1rem;
-  color: var(--text-muted);
-  pointer-events: none;
-}
 .tp-title-select {
-  appearance: none;
-  -webkit-appearance: none;
-  background: transparent;
-  border: none;
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 2rem;
   font-weight: 700;
   color: var(--text-heading);
+  background: var(--bg-page);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
   cursor: pointer;
-  padding: 0 24px 0 0;
-  line-height: 1.2;
+  max-width: 100%;
+  appearance: auto;
+}
+.tp-title-select:hover {
+  border-color: var(--text-muted);
 }
 .tp-title-select:focus {
-  outline: none;
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 .tp-title-select option {
-  background: var(--bg-card);
-  color: var(--text);
   font-size: 1rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  background: #242424;
+  color: #e0e0e0;
 }
 .tp-subtitle {
   margin: 6px 0 0;
@@ -3081,26 +3219,104 @@ body.sidebar-open {
   }
 
   /* ─── TC Vote Cards ────────────────────────────── */
-  .tc-card {
-    max-width: 100%;
-  }
-
   .tc-cols-header,
   .tc-vote-row {
-    grid-template-columns: 130px 1fr;
+    grid-template-columns: 120px 1fr;
+  }
+
+  .tc-card-header {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+  }
+
+  .tc-card-note {
+    font-size: 0.72rem;
   }
 
   .tc-target-cell {
-    padding: 8px;
-    gap: 6px;
+    padding: 6px 8px;
+    gap: 5px;
+  }
+
+  .tc-target-name {
+    font-size: 0.72rem;
+  }
+
+  .tc-target-count {
+    font-size: 0.62rem;
+    padding: 0 5px;
+    min-width: 18px;
+    height: 18px;
   }
 
   .tc-voters-cell {
-    padding: 8px;
+    padding: 6px 8px;
+    gap: 4px;
   }
 
   .tc-voter-photos {
+    gap: 3px;
+  }
+
+  .tc-voter-names {
+    font-size: 0.65rem;
+  }
+
+  .tc-col-label {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+  }
+
+  .tc-vote-count {
+    font-size: 0.62rem;
+    padding: 0 5px;
+    min-width: 18px;
+  }
+
+  .tc-voted-out-footer {
+    padding: 10px;
     gap: 4px;
+  }
+
+  .tc-voted-out-label {
+    font-size: 0.58rem;
+  }
+
+  .tc-voted-out-name {
+    font-size: 0.85rem;
+  }
+
+  .tc-final-words {
+    padding: 10px 12px;
+  }
+
+  .tc-final-words-header {
+    font-size: 0.78rem;
+    margin-bottom: 8px;
+  }
+
+  .tc-final-words-quote {
+    font-size: 0.75rem;
+  }
+
+  .tc-target-cell .avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .tc-voter-photos .avatar {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .tc-voted-out-footer .avatar {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .tc-final-words-avatar .avatar {
+    width: 36px !important;
+    height: 36px !important;
   }
 
   /* ─── Episode Table (Season Overview) ──────── */
@@ -3389,32 +3605,107 @@ body.sidebar-open {
   /* ─── TC Vote Cards ─────────────────────────── */
   .tc-cols-header,
   .tc-vote-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100px 1fr;
   }
 
-  .tc-col-label:first-child {
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  .tc-card-header {
+    padding: 6px 8px;
+    font-size: 0.72rem;
+  }
+
+  .tc-card-note {
+    font-size: 0.65rem;
   }
 
   .tc-target-cell {
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 8px 10px;
+    padding: 5px 6px;
+    gap: 4px;
+  }
+
+  .tc-target-name {
+    font-size: 0.66rem;
+  }
+
+  .tc-target-count {
+    font-size: 0.58rem;
+    padding: 0 4px;
+    min-width: 16px;
+    height: 16px;
+  }
+
+  .tc-col-label {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+
+  .tc-vote-count {
+    font-size: 0.55rem;
+    padding: 0 4px;
+    min-width: 16px;
   }
 
   .tc-voters-cell {
-    padding: 8px 10px;
+    padding: 5px 6px;
+    gap: 3px;
   }
 
-  .tc-final-words-body {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
+  .tc-voter-names {
+    font-size: 0.6rem;
+  }
+
+  .tc-voted-out-footer {
+    padding: 8px;
+    gap: 3px;
+  }
+
+  .tc-voted-out-label {
+    font-size: 0.55rem;
+  }
+
+  .tc-voted-out-name {
+    font-size: 0.78rem;
   }
 
   .tc-final-words {
+    padding: 8px 10px;
+  }
+
+  .tc-final-words-header {
+    font-size: 0.72rem;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .tc-final-words-body {
+    gap: 10px;
+  }
+
+  .tc-final-words-quote {
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+
+  .tc-target-cell .avatar {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .tc-voter-photos .avatar {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .tc-voted-out-footer .avatar {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .tc-final-words-avatar .avatar {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .confessional-bubble {
     padding: 10px 12px;
   }
 

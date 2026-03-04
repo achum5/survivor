@@ -1,5 +1,5 @@
 // src/pages/EpisodePage.jsx
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, slugify, getYouTubeEmbedUrl } from '../utils/helpers';
@@ -265,18 +265,20 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
 
   return (
     <div className="episode-challenge-block">
-      <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Link to={`/season/${sid}/episode/${eid}/challenge/${ctype}`}
-          style={{ color: 'inherit', textDecoration: 'none' }}>
-          {label}
-        </Link>
-        {playUrl && (
-          <button className="tc-play-btn"
-            onClick={() => onPlay(playUrl, modalTitle)}
-            title={`Watch ${label.toLowerCase()}`}>
-            ▶
-          </button>
-        )}
+      <h3>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <Link to={`/season/${sid}/episode/${eid}/challenge/${ctype}`}
+            style={{ color: 'inherit', textDecoration: 'none' }}>
+            {label}
+          </Link>
+          {playUrl && (
+            <button className="tc-play-btn confessional-play-btn"
+              onClick={() => onPlay(playUrl, modalTitle)}
+              title={`Watch ${label.toLowerCase()}`}>
+              ▶
+            </button>
+          )}
+        </span>
       </h3>
       <table className="challenge-table episode-challenge-table">
         <tbody>
@@ -310,6 +312,7 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
 
 export default function EpisodePage() {
   const { sid, eid } = useParams();
+  const navigate = useNavigate();
   const [modal, setModal] = useState(null); // { src, title }
 
   const season = SEASONS.find((s) => s.sid === sid);
@@ -351,28 +354,129 @@ export default function EpisodePage() {
         ) : <span />}
       </div>
 
-      <h1>Episode {episode.number}</h1>
+      <div className="episode-header-row">
+        <h1>
+          <select
+            className="player-select"
+            style={{ width: 'auto' }}
+            value={eid}
+            onChange={(e) => navigate(`/season/${sid}/episode/${e.target.value}`)}
+          >
+            {season.episodes.map((ep) => (
+              <option key={ep.eid} value={ep.eid}>Episode {ep.number}</option>
+            ))}
+          </select>
+        </h1>
+        {(() => {
+          const sections = [];
+          if (hasReward || hasImmunity) sections.push({ id: 'challenges', label: 'Challenges' });
+          if (episode.journey) sections.push({ id: 'journey', label: 'Journey' });
+          if (tcs.some(tc => tc.confessionals?.length > 0)) sections.push({ id: 'confessionals', label: 'Confessionals' });
+          if (tcs.length > 0) sections.push({ id: 'tribal-council', label: 'Tribal Council' });
+          return sections.length > 1 ? (
+            <div className="season-quicknav" style={{ margin: 0 }}>
+              {sections.map((s) => (
+                <a key={s.id} href={`#${s.id}`} className="season-quicknav-btn">{s.label}</a>
+              ))}
+            </div>
+          ) : null;
+        })()}
+      </div>
 
       {/* Episode video — thumbnail + play button opens modal */}
       {embedUrl ? (() => {
-        const challengeThumb = episode.episodeImageUrl || episode.immunityChallenge?.imageUrl || episode.rewardChallenge?.imageUrl;
+        // Determine which image the main thumbnail uses, and whether IC is shown separately
+        const hasEpisodeImage = !!episode.episodeImageUrl;
+        const hasRewardImage = !!episode.rewardChallenge?.imageUrl;
+        const icImage = episode.immunityChallenge?.imageUrl;
+        const mainThumbIsIC = !hasEpisodeImage && !hasRewardImage && !!icImage;
         const videoId = getYouTubeVideoId(episode.videoUrl);
-        const thumb = challengeThumb || (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null);
+        const thumb = episode.episodeImageUrl || episode.rewardChallenge?.imageUrl || icImage || (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null);
         const modalSrc = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         const fmTc = tcs.find((tc) => tc.firemaking?.imageUrl);
         const fm = fmTc?.firemaking;
         const fmPlayUrl = fm?.videoTimestamp != null ? buildEmbedAt(episode.videoUrl, fm.videoTimestamp) : null;
+        // When main thumbnail IS the IC image, link its play button to the challenge timestamp
+        const mainPlaySrc = mainThumbIsIC && episode.immunityChallenge?.videoTimestamp != null
+          ? buildEmbedAt(episode.videoUrl, episode.immunityChallenge.videoTimestamp)
+          : modalSrc;
+        const mainPlayTitle = mainThumbIsIC
+          ? (episode.immunityChallenge?.name || 'Immunity Challenge')
+          : `Episode ${episode.number}`;
         return (
           <div className="episode-thumbs-row">
             <div>
-              <div className="episode-thumb-wrapper" onClick={() => setModal({ src: modalSrc, title: `Episode ${episode.number}` })}>
+              <div className="episode-thumb-wrapper" onClick={() => setModal({ src: mainPlaySrc, title: mainPlayTitle })}>
                 {thumb && <img src={thumb} alt={`Episode ${episode.number} thumbnail`} />}
                 <div className="episode-thumb-play">
                   <div className="episode-thumb-play-btn">▶</div>
                 </div>
               </div>
-              {!episode.episodeImageUrl && challengeThumb && <div className="episode-thumb-label">{episode.immunityChallenge?.name || episode.rewardChallenge?.name || 'Challenge'}</div>}
+              {episode.rewardChallenge?.name && <div className="episode-thumb-label">{episode.rewardChallenge.name}</div>}
+              {mainThumbIsIC && episode.immunityChallenge?.name && <div className="episode-thumb-label">{episode.immunityChallenge.name}</div>}
             </div>
+            {/* Show IC thumbnail separately only when it's NOT already the main thumbnail */}
+            {!mainThumbIsIC && icImage && (() => {
+              const icTs = episode.immunityChallenge.videoTimestamp;
+              const icEmbed = icTs != null ? buildEmbedAt(episode.videoUrl, icTs) : null;
+              return (
+                <div>
+                  <div className="episode-thumb-wrapper"
+                    onClick={icEmbed ? () => setModal({ src: icEmbed, title: episode.immunityChallenge.name || 'Immunity Challenge' }) : undefined}
+                    style={icEmbed ? undefined : { cursor: 'default' }}>
+                    <img src={icImage} alt={episode.immunityChallenge.name || 'Immunity Challenge'} />
+                    {icEmbed && (
+                      <div className="episode-thumb-play">
+                        <div className="episode-thumb-play-btn">▶</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="episode-thumb-label">{episode.immunityChallenge.name || 'Immunity'}</div>
+                </div>
+              );
+            })()}
+            {episode.journey?.imageUrl && (() => {
+              const jUrl = episode.journey.videoUrl;
+              const jEmbed = jUrl ? (() => { try { const u = new URL(jUrl); return buildEmbedAt(jUrl, u.searchParams.get('t') || 0); } catch { return null; } })() : null;
+              return (
+                <div>
+                  <div className="episode-thumb-wrapper"
+                    onClick={jEmbed ? () => setModal({ src: jEmbed, title: 'Journey' }) : undefined}
+                    style={jEmbed ? undefined : { cursor: 'default' }}>
+                    <img src={episode.journey.imageUrl} alt="Journey" />
+                    {jEmbed && (
+                      <div className="episode-thumb-play">
+                        <div className="episode-thumb-play-btn">▶</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="episode-thumb-label">Journey</div>
+                </div>
+              );
+            })()}
+            {(() => {
+              const tcWithImage = tcs.find(tc => tc.imageUrl);
+              if (!tcWithImage) return null;
+              const tcEmbed = tcWithImage.videoTimestamp != null
+                ? buildEmbedAt(episode.videoUrl, tcWithImage.videoTimestamp)
+                : null;
+              const tcTribe = tcWithImage.tid ? season.tribes.find(t => t.tid === tcWithImage.tid) : null;
+              return (
+                <div>
+                  <div className="episode-thumb-wrapper"
+                    onClick={tcEmbed ? () => setModal({ src: tcEmbed, title: `Tribal Council${tcTribe ? ' — ' + tcTribe.name : ''}` }) : undefined}
+                    style={tcEmbed ? undefined : { cursor: 'default' }}>
+                    <img src={tcWithImage.imageUrl} alt="Tribal Council" />
+                    {tcEmbed && (
+                      <div className="episode-thumb-play">
+                        <div className="episode-thumb-play-btn">▶</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="episode-thumb-label">Tribal Council</div>
+                </div>
+              );
+            })()}
             {fm && (
               <div>
                 <div className="episode-thumb-wrapper"
@@ -409,11 +513,115 @@ export default function EpisodePage() {
       {/* Challenges */}
       {(hasReward || hasImmunity) && (
         <>
-          <h2>Challenges</h2>
+          <h2 id="challenges">Challenges</h2>
           <ChallengeSection label="Reward Challenge"   challenge={episode.rewardChallenge}   season={season} sid={sid} eid={eid} ctype="reward"   episode={episode} onPlay={(src, title) => setModal({ src, title })} />
           <ChallengeSection label="Immunity Challenge" challenge={episode.immunityChallenge} season={season} sid={sid} eid={eid} ctype="immunity" episode={episode} onPlay={(src, title) => setModal({ src, title })} />
         </>
       )}
+
+      {/* Journey */}
+      {episode.journey && (() => {
+        const j = episode.journey;
+        return (
+          <>
+            <h2 id="journey">
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                Journey
+                {(() => {
+                  const jUrl = j.videoUrl;
+                  const jEmbed = jUrl ? (() => { try { const u = new URL(jUrl); return buildEmbedAt(jUrl, u.searchParams.get('t') || 0); } catch { return null; } })() : null;
+                  return jEmbed ? (
+                    <button className="tc-play-btn" onClick={() => setModal({ src: jEmbed, title: 'Journey' })} title="Watch journey">▶</button>
+                  ) : null;
+                })()}
+              </span>
+            </h2>
+            <div className="journey-section">
+              {j.description && <p className="journey-description">{j.description}</p>}
+              {j.participants && j.participants.length > 0 && (
+                <div className="journey-participants">
+                  {j.participants.map((p) => {
+                    const member = season.cast.find((c) => c.pid === p.pid);
+                    const tribe = member ? season.tribes.find((t) => t.tid === member.tid) : null;
+                    return member ? (
+                      <div key={p.pid} className="journey-participant">
+                        <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
+                          <Avatar name={member.name} color={tribe?.color || '#555'} size={42}
+                            photoUrl={member.photoUrl} imgStyle={member.photoStyle}
+                            pid={member.pid} noBorder />
+                        </Link>
+                        <div className="journey-participant-info">
+                          <Link to={`/season/${sid}/cast/${slugify(member.name)}`} className="journey-participant-name">{member.name}</Link>
+                          {tribe && <TribeBadge tribe={tribe} sid={sid} />}
+                          <span className="journey-participant-result">{p.result}</span>
+                        </div>
+                      </div>
+                    ) : null;
+                  })}
+                </div>
+              )}
+            </div>
+          </>
+        );
+      })()}
+
+      {/* Pre-Tribal Confessionals */}
+      {tcs.length > 0 && tcs.some(tc => tc.confessionals?.length > 0) && (() => {
+        // Collect all confessionals across TCs for this episode
+        const allConfessionals = tcs.flatMap(tc =>
+          (tc.confessionals || []).map(c => ({ ...c, tcid: tc.tcid, tid: tc.tid }))
+        );
+        if (allConfessionals.length === 0) return null;
+        return (
+          <>
+            <h2 id="confessionals">Confessionals</h2>
+            <div className="confessional-bubbles">
+              {allConfessionals.map((c) => {
+                const member = season.cast.find(p => p.pid === c.pid);
+                if (!member) return null;
+                const tribe = season.tribes.find(t => t.tid === member.tid);
+                const playUrl = (episode.videoUrl && c.timestamp != null)
+                  ? buildEmbedAt(episode.videoUrl, c.timestamp)
+                  : null;
+                return (
+                  <div key={c.pid} className="confessional-bubble" style={{ '--tribe-color': tribe?.color || '#555' }}>
+                    <div className="confessional-bubble-avatar">
+                      <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
+                        <Avatar name={member.name} color={tribe?.color || '#555'} size={48}
+                          photoUrl={member.photoUrl} imgStyle={member.photoStyle}
+                          pid={member.pid} noBorder />
+                      </Link>
+                    </div>
+                    <div className="confessional-bubble-content">
+                      <div className="confessional-bubble-header">
+                        <Link to={`/season/${sid}/cast/${slugify(member.name)}`} className="confessional-bubble-name">
+                          {member.name}
+                        </Link>
+                        {playUrl && (
+                          <button className="tc-play-btn confessional-play-btn"
+                            onClick={() => setModal({ src: playUrl, title: `${member.name} — Confessional` })}
+                            title={`Watch ${member.name}'s confessional`}>
+                            ▶
+                          </button>
+                        )}
+                      </div>
+                      {c.quote ? (
+                        <div className="confessional-bubble-quote">
+                          <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
+                          {c.quote}
+                          <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+                        </div>
+                      ) : (
+                        <div className="confessional-bubble-empty">No quote recorded.</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        );
+      })()}
 
       {/* Tribal Council(s) — group by tribe so tie+revote merges into one card */}
       {tcs.length > 0 && (() => {
@@ -426,7 +634,7 @@ export default function EpisodePage() {
         });
         return (
           <>
-            <h2>Tribal Council{tcGroups.length > 1 ? 's' : ''}</h2>
+            <h2 id="tribal-council">Tribal Council{tcGroups.length > 1 ? 's' : ''}</h2>
             {tcGroups.map((group, gi) => (
               <TribalCouncilCard key={gi} tcs={group} season={season} sid={sid} episode={episode} onPlay={(src, title) => setModal({ src, title })} />
             ))}

@@ -333,7 +333,6 @@ export default function TribePage() {
               className="tp-title-select"
               value={tid}
               onChange={(e) => navigate(`/season/${sid}/tribe/${e.target.value}`)}
-              style={{ color: tc }}
             >
               {allTribes.map((t) => (
                 <option key={t.tid} value={t.tid}>{t.name} Tribe</option>
