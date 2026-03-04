@@ -8,6 +8,61 @@ import { usePhotoEditor } from '../context/PhotoEditorContext';
 import TribeBadge from '../components/TribeBadge';
 import Avatar from '../components/Avatar';
 
+// ── Bio linkifier ──────────────────────────────────────────────────────────
+
+function linkifyBio(text, season, sid) {
+  const terms = [];
+
+  // Link season names ("Season 1", "Season 2", etc.)
+  SEASONS.forEach((s) => {
+    terms.push({ text: s.name, url: `/season/${s.sid}` });
+  });
+
+  // Link player names in this season
+  season.cast.forEach((p) => {
+    terms.push({ text: p.name, url: `/season/${sid}/cast/${slugify(p.name)}` });
+    if (p.fullName && p.fullName !== p.name) {
+      terms.push({ text: p.fullName, url: `/season/${sid}/cast/${slugify(p.name)}` });
+    }
+  });
+
+  // Link tribe names
+  season.tribes.forEach((t) => {
+    terms.push({ text: `${t.name} tribe`, url: `/season/${sid}/tribe/${t.tid}` });
+    terms.push({ text: t.name, url: `/season/${sid}/tribe/${t.tid}` });
+  });
+  if (season.mergeTribe) {
+    terms.push({ text: season.mergeTribe.name, url: `/season/${sid}/tribe/${season.mergeTribe.tid}` });
+  }
+
+  // Sort longest first so "Sam R." matches before "Sam", "Season 1" before "Season"
+  terms.sort((a, b) => b.text.length - a.text.length);
+
+  const termMap = {};
+  terms.forEach((t) => { if (!termMap[t.text]) termMap[t.text] = t.url; });
+
+  const escaped = Object.keys(termMap).map((t) => {
+    const e = t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const endB = /\w$/.test(t) ? '\\b' : '';
+    return `\\b${e}${endB}`;
+  });
+  const pattern = escaped.join('|');
+  if (!pattern) return [text];
+
+  const regex = new RegExp(pattern, 'g');
+  const parts = [];
+  let lastIdx = 0;
+
+  for (const m of text.matchAll(regex)) {
+    if (m.index > lastIdx) parts.push(text.slice(lastIdx, m.index));
+    const url = termMap[m[0]];
+    parts.push(url ? <Link key={m.index} to={url}>{m[0]}</Link> : m[0]);
+    lastIdx = m.index + m[0].length;
+  }
+  if (lastIdx < text.length) parts.push(text.slice(lastIdx));
+  return parts;
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function tribeRowBg(hex) {
@@ -607,6 +662,12 @@ export default function PlayerPage() {
   const tribeName = getTribeName(season, player.tid);
   const origTribe = season.tribes.find((t) => t.tid === player.tid);
 
+  // Cross-season appearances for returnees
+  const appearances = player.personId
+    ? SEASONS.filter(s => s.cast.some(c => c.personId === player.personId))
+        .map(s => ({ season: s, castMember: s.cast.find(c => c.personId === player.personId) }))
+    : [];
+
   const stats = computePlayerStats(player, season);
 
   const infoRows = [
@@ -662,6 +723,20 @@ export default function PlayerPage() {
         { label: player.name },
       ]} />
 
+      {appearances.length > 1 && (
+        <div className="player-season-tabs">
+          {appearances.map(({ season: s, castMember: cm }) => (
+            <Link
+              key={s.sid}
+              to={`/season/${s.sid}/cast/${slugify(cm.name)}`}
+              className={`player-season-tab${s.sid === sid ? ' active' : ''}`}
+            >
+              {s.name}
+            </Link>
+          ))}
+        </div>
+      )}
+
       <div className="player-page-name-row">
         <h1 className="player-page-name">
           <select
@@ -700,8 +775,8 @@ export default function PlayerPage() {
 
         {player.bio && (
           Array.isArray(player.bio)
-            ? player.bio.map((para, i) => <p key={i} className="player-bio">{para}</p>)
-            : <p className="player-bio">{player.bio}</p>
+            ? player.bio.map((para, i) => <p key={i} className="player-bio">{linkifyBio(para, season, sid)}</p>)
+            : <p className="player-bio">{linkifyBio(player.bio, season, sid)}</p>
         )}
 
         <h2 className="player-section-heading">Voting History</h2>

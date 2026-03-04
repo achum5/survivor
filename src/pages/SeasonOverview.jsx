@@ -1,5 +1,5 @@
 // src/pages/SeasonOverview.jsx
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -60,6 +60,7 @@ function linkifySummary(text, season, sid) {
 
 export default function SeasonOverview() {
   const { sid } = useParams();
+  const navigate = useNavigate();
   const seasonIdx = SEASONS.findIndex((s) => s.sid === sid);
   const season = SEASONS[seasonIdx];
   if (!season) return <div className="article"><p>Season not found.</p></div>;
@@ -121,7 +122,25 @@ export default function SeasonOverview() {
         { label: season.name },
       ]} />
 
-      <h1>{season.name}</h1>
+      <h1>
+        <select
+          className="season-select"
+          value={season.sid}
+          onChange={(e) => navigate(`/season/${e.target.value}`)}
+        >
+          {SEASONS.map((s) => (
+            <option key={s.sid} value={s.sid}>{s.name}</option>
+          ))}
+        </select>
+      </h1>
+
+      <nav className="season-quicknav">
+        {season.summary && <a href="#summary" className="season-quicknav-btn">Summary</a>}
+        {season.twists?.length > 0 && <a href="#twists" className="season-quicknav-btn">Twists</a>}
+        <a href="#castaways" className="season-quicknav-btn">Castaways</a>
+        <a href="#episodes" className="season-quicknav-btn">Episodes</a>
+        <a href="#voting-history" className="season-quicknav-btn">Voting History</a>
+      </nav>
 
       <div className="season-content">
         <div className="season-infobox-float">
@@ -138,13 +157,13 @@ export default function SeasonOverview() {
 
           <p>
             <strong>{season.name}</strong> is a season of 14508 Survivor
-            filmed on {season.filmingDates}.
+            {season.filmingDates && <> filmed on {season.filmingDates}</>}.
             {winner && <> The season was won by <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link>.</>}
           </p>
 
           {season.summary && (
             <>
-              <h2>Season Summary</h2>
+              <h2 id="summary">Season Summary</h2>
               {Array.isArray(season.summary)
                 ? season.summary.map((para, i) => <p key={i}>{linkifySummary(para, season, sid)}</p>)
                 : <p>{linkifySummary(season.summary, season, sid)}</p>
@@ -154,7 +173,7 @@ export default function SeasonOverview() {
 
           {season.twists && season.twists.length > 0 && (
             <>
-              <h2>Twists &amp; Gameplay</h2>
+              <h2 id="twists">Twists &amp; Gameplay</h2>
               <ul className="twists-list">
                 {season.twists.map((twist, i) => (
                   <li key={i}>{twist}</li>
@@ -164,7 +183,7 @@ export default function SeasonOverview() {
           )}
 
           {/* Castaways */}
-          <h2>Castaways</h2>
+          <h2 id="castaways">Castaways</h2>
           <div className="cast-table-wrap">
             <table className="cast-table">
               <thead>
@@ -240,9 +259,9 @@ export default function SeasonOverview() {
       </div>
 
       {/* Episodes */}
-      {season.episodes.length > 0 && (
+      <h2 id="episodes">Episodes</h2>
+      {season.episodes.length > 0 ? (
         <>
-          <h2>Episodes</h2>
           <div className="episode-table-wrap">
             <table className="episode-table">
               <thead>
@@ -315,6 +334,7 @@ export default function SeasonOverview() {
                     }
                     const elimTribe = tc
                       ? (tc.tid && season.tribes.find((t) => t.tid === tc.tid)) ||
+                        (!tc.tid && season.mergeTribe) ||
                         season.tribes.find((t) => t.tid === (elim?.switchedTid || elim?.tid))
                       : null;
                     // Anchor ID: for revotes use the tie TC (first in group), otherwise the TC itself
@@ -368,10 +388,13 @@ export default function SeasonOverview() {
             </table>
           </div>
         </>
+      ) : (
+        <p style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>No episode data yet.</p>
       )}
 
       {/* Voting History */}
-      {season.votingHistory.length > 0 && (() => {
+      <h2 id="voting-history">Voting History</h2>
+      {season.votingHistory.length > 0 ? (() => {
         const vhPlayers = [...season.cast].sort((a, b) => a.placement - b.placement);
         const vhTcs = season.votingHistory;
         const hasJury = season.juryVotes && season.juryVotes.length > 0;
@@ -443,7 +466,6 @@ export default function SeasonOverview() {
 
         return (
           <>
-            <h2>Voting History</h2>
             <div className="vh-table-wrap">
               <table className="vh-table">
                 <thead>
@@ -511,7 +533,6 @@ export default function SeasonOverview() {
 
                 <tbody>
                   {vhPlayers.map((p) => {
-                    const tribeColor = getPlayerTribeColor(p);
                     const isWinner = p.pid === season.winnerPid;
 
                     return (
@@ -552,13 +573,18 @@ export default function SeasonOverview() {
                             return <td key={tc.tcid} className="vh-cell vh-cell-dead" />;
                           }
 
+                          // Tribe color at time of this TC
+                          const cellColor = tc.tid
+                            ? (season.tribes.find((t) => t.tid === tc.tid)?.color || '#555')
+                            : (season.mergeTribe?.color || '#555');
+
                           // Did the player vote?
                           const vote = tc.votes.find((v) => v.voterPid === p.pid);
                           if (vote) {
                             const target = season.cast.find((pl) => pl.pid === vote.votedForPid)?.name ?? '?';
                             return (
                               <td key={tc.tcid} className="vh-cell"
-                                style={{ background: hexToRgba(tribeColor, 0.55) }}>
+                                style={{ background: hexToRgba(cellColor, 0.55) }}>
                                 <span className={vote.idolNullified ? 'vh-nullified' : ''}>
                                   {target}
                                 </span>
@@ -572,7 +598,7 @@ export default function SeasonOverview() {
                             if (tc.firemaking.loser === p.pid) {
                               return (
                                 <td key={tc.tcid} className="vh-cell vh-cell-fire-elim"
-                                  style={{ background: hexToRgba(tribeColor, 0.55) }}>
+                                  style={{ background: hexToRgba(cellColor, 0.55) }}>
                                   Eliminated
                                 </td>
                               );
@@ -580,7 +606,7 @@ export default function SeasonOverview() {
                             // Everyone else still in the game = No vote
                             return (
                               <td key={tc.tcid} className="vh-cell vh-cell-no-vote"
-                                style={{ background: hexToRgba(tribeColor, 0.55) }}>
+                                style={{ background: hexToRgba(cellColor, 0.55) }}>
                                 No vote<sup className="vh-footnote">*</sup>
                               </td>
                             );
@@ -642,7 +668,9 @@ export default function SeasonOverview() {
             })()}
           </>
         );
-      })()}
+      })() : (
+        <p style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>No voting data yet.</p>
+      )}
 
       </div>
 
