@@ -128,7 +128,7 @@ function TcTabs({ tcs, season, sid, tribeColor, onPlay }) {
           )}
         </div>
 
-        {activeTc.notes && <div className="tc-section-notes">— {activeTc.notes}</div>}
+        {activeTc.notes && <div className="tc-section-notes">{activeTc.notes}</div>}
 
         {activeTc.firemaking ? (
           <div className="tc-no-votes" style={{ padding: 16 }}>

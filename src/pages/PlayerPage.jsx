@@ -306,6 +306,14 @@ function ChallengeHistoryTab({ player, season, sid }) {
         }
       } else if (sitOut) {
         result = null;
+      } else if (ch.winner) {
+        // Fall back to winner field when no detailed results array
+        const isIndividual = !tribeId; // merge phase = individual challenge
+        if (isIndividual) {
+          result = ch.winner === player.pid ? 'Won' : 'Lost';
+        } else {
+          result = ch.winner === tribeId ? 'Won' : 'Lost';
+        }
       }
 
       rows.push({
@@ -690,14 +698,9 @@ export default function PlayerPage() {
     // ── Voting stats ──
     { section: 'Voting' },
     { label: 'Tribals Attended',  value: stats.tribalsAttended },
-    { label: 'Votes Cast',        value: stats.totalVotesCast },
+    { label: 'Votes Against',     value: stats.votesReceived },
     { label: 'In Majority',        value: stats.majorityVotes },
     { label: 'In Minority',        value: stats.minorityVotes },
-    // ── Survival stats ──
-    { section: 'Survival' },
-    { label: 'Votes Against',     value: stats.votesReceived },
-    { label: 'Survived Votes',    value: stats.timesReceivedButSurvived },
-    { label: 'Longest Streak',    value: stats.longestStreak },
     ...(stats.idolsPlayed > 0 ? [{ label: 'Idols Played', value: stats.idolsPlayed }] : []),
     ...(stats.votesNullifiedByIdol > 0 ? [{ label: 'Votes Nullified', value: stats.votesNullifiedByIdol }] : []),
     ...(stats.timesSavedByIdol > 0 ? [{ label: 'Saved by Idol', value: stats.timesSavedByIdol }] : []),

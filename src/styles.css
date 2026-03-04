@@ -1245,14 +1245,14 @@ a.cast-tribe-label:hover {
   display: block;
   font-size: 0.65rem;
   font-weight: 400;
-  color: var(--text-muted);
+  color: #fff;
   font-style: italic;
 }
 
 .pvote-cast-cell  { color: var(--text); }
 .pvote-against-cell { color: var(--text); }
 .pvote-against-list { display: flex; flex-wrap: wrap; gap: 1px 5px; }
-.pvote-empty { color: var(--text-muted); }
+.pvote-empty { color: #fff; text-align: center; display: block; }
 
 /* Immune rows — full tribe color background */
 .pvote-immune-row td {
@@ -1398,14 +1398,11 @@ a.cast-tribe-label:hover {
   text-align: left;
   padding: 5px 10px;
   font-weight: 500;
-  background: var(--bg-table-odd);
 }
 
-.vhist-player-name a { color: var(--link); text-decoration: none; }
-.vhist-player-name a:hover { color: var(--link-hover); }
-
-.vhist-winner-row .vhist-player-name { background: rgba(245,166,35,0.07); }
-.vhist-winner-star { color: var(--accent); font-weight: 700; }
+.vhist-player-name a { color: #fff; text-decoration: none; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+.vhist-player-name a:hover { color: #fff; opacity: 0.85; }
+.vhist-winner-star { color: #ffd700; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
 
 .vhist-cell-vote  { font-size: 0.72rem; color: var(--text); }
 .vhist-cell-absent { color: #3a3a3a; background: transparent !important; }

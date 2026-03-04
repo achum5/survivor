@@ -157,15 +157,15 @@ export default function VotingHistory() {
           <tbody>
             {players.map((p) => {
               const isWinner = p.pid === season.winnerPid;
-              const origTribeColor = getTribeById(p.tid)?.color || '#555';
+              const lastTribeColor = getTribeById(p.switchedTid || p.tid)?.color || '#555';
 
               return (
                 <tr key={p.pid} className={isWinner ? 'vhist-winner-row' : ''}>
                   <td className="vhist-player-name"
-                    style={{ borderLeft: `3px solid ${origTribeColor}` }}>
+                    style={{ background: hexToRgba(lastTribeColor, 0.55) }}>
                     <Link to={`/season/${sid}/cast/${slugify(p.name)}`}
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                      <Avatar name={p.name} color={origTribeColor} size={30} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#fff' }}>
+                      <Avatar name={p.name} color={lastTribeColor} size={30} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
                       {p.name}
                     </Link>
                     {isWinner && <span className="vhist-winner-star"> ★</span>}

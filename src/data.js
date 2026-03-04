@@ -350,7 +350,7 @@ export const SEASONS = [
       {
         tcid: "s1_tc10", eid: "s1_e10", episode: 10, tid: null, videoTimestamp: 7613, confessionalTimestamp: 8167,
         confessionalQuote: "I'm a little sad but it was a lot of fun playing. I was really close to making it to the final three. Came down to that campfire marshmallow thing and Jace's Plan B got me, you know, that's fair. I was really upset. I felt like I had a really good kind of speech I was going to give to the jury. Feel like I made some blindsides. I know that doesn't always help you win, but I took out my main alliance and then my other alliance too, because I knew my original alliance was going to beat me if it was him and I in the end. And maybe that's what led to my downfall, but I had a lot of fun.",
-        notes: "Olivia won immunity and chose Meredith for the final 3. Jace and Caroline competed in a Marshmallow & Stick Tower challenge (fire-making equivalent). Players had 5 minutes to build the tallest freestanding tower using only marshmallows and sticks. Jace won with his 'Plan B' structure, eliminating Caroline.",
+        notes: "Jace and Caroline competed in a Marshmallow & Stick Tower challenge (fire-making equivalent). Players had 5 minutes to build the tallest freestanding tower using only marshmallows and sticks. Jace won with his 'Plan B' structure, eliminating Caroline.",
         eliminatedPid: "s1_p04",
         firemaking: { winner: "s1_p01", loser: "s1_p04", challenge: "Marshmallow & Stick Tower", description: "5 minutes to build the tallest freestanding tower using only marshmallows and sticks. Tower had to stay standing for 15 seconds after time was called.", videoTimestamp: 7787, imageUrl: "https://i.imgur.com/4Z3wqoV.png" },
         votes: [],
@@ -381,11 +381,17 @@ export const SEASONS = [
       "Hidden Immunity Idols — must find clue bead + idol; both pieces required to play",
       "Snake Draft tribe selection — three colored-rock drawers each pick one, then their pick picks next",
     ],
-    mergeTribe: null,
+    mergeTribe: { tid: "s2_merged", name: "Merged", color: "#228B22" },
     juryVotes: [],
     advantages: [
-      { type: "Hidden Immunity Idol", holder: "s2_sean", foundEpisode: 1, playedEpisode: null, status: "held", notes: "Found at camp during Episode 1. Told his tribemates about it." },
+      { type: "Hidden Immunity Idol", holder: "s2_sean", foundEpisode: 1, playedEpisode: 5, status: "played", notes: "Found at camp during Episode 1. Told his tribemates about it. Played on himself at Episode 5 tribal council after using Shot in the Dark (not safe), nullifying 4 votes." },
       { type: "Safety Without Power", holder: "s2_samr", foundEpisode: 1, playedEpisode: null, status: "expired", notes: "Won at the Episode 1 journey (multiplication tables). Allows holder to leave tribal council before the vote for guaranteed safety, but forfeits their vote. Sam chose not to play it and was voted out." },
+      { type: "Hidden Immunity Idol", holder: "s2_caroline", foundEpisode: 2, playedEpisode: null, status: "expired", notes: "Found at camp. Caroline did not play it at Episode 7 tribal council and was voted out 4-1." },
+      { type: "Hidden Immunity Idol", holder: "s2_meredith", foundEpisode: 2, playedEpisode: 7, status: "played", notes: "Found at camp. Played on herself at Episode 7 tribal council, nullifying 4 votes. Alyssa was eliminated 1-0 as the only unprotected vote." },
+      { type: "Safety Without Power", holder: "s2_kelsey", foundEpisode: 3, playedEpisode: 6, status: "played", notes: "Won at the Episode 3 journey (prisoner's dilemma). Kelsey and Olivia agreed that Kelsey would choose Greedy and Olivia would choose Loyal, earning Kelsey the advantage. Played at Episode 6 merge tribal council — Kelsey left tribal before the vote for guaranteed safety, forfeiting her vote." },
+      { type: "Hidden Immunity Idol", holder: "s2_abdul", foundEpisode: 6, playedEpisode: null, status: "held", notes: "Found at camp during Episode 6 while the rest of the tribe competed in the immunity challenge. Abdul was the odd man out after Sean dropped him last second to pair with Ashton." },
+      { type: "Final 7 Advantage", holder: "s2_abdul", foundEpisode: 6, playedEpisode: null, status: "held", notes: "Found at camp during Episode 6 while the rest of the tribe competed in the immunity challenge." },
+      { type: "Hidden Immunity Idol", holder: "s2_meredith", foundEpisode: 8, playedEpisode: 8, status: "played", notes: "Found a clue hidden in the basement camp. The idol was placed in the mailbox between 2am and 5am. Meredith snuck out at 2:30am to retrieve it. Played on herself at Episode 8 tribal council, nullifying 1 vote." },
     ],
     episodes: [
       { eid: "s2_e01", number: 1, title: "Episode 1", videoUrl: "https://www.youtube.com/watch?v=KMz9zRmdb54", episodeImageUrl: "https://i.imgur.com/R8CX9ZG.png",
@@ -410,37 +416,153 @@ export const SEASONS = [
         },
         tribalCouncilUrl: "https://youtu.be/KMz9zRmdb54?t=1868",
       },
+      { eid: "s2_e02", number: 2, title: "Episode 2", videoUrl: "https://www.youtube.com/watch?v=N09g7JOZ0ZQ", episodeImageUrl: "https://i.imgur.com/orqvV32.png",
+        immunityChallenge: {
+          name: "Color Flip",
+          type: "Immunity",
+          description: "Round-based challenge played at a circular table with 60 two-sided tiles — 20 red/blue, 20 blue/yellow, and 20 yellow/red. Each round, one player from each tribe competed simultaneously. Players had one minute to flip as many tiles as possible to show their tribe's color. The tribe with the most tiles showing their color won the round. First tribe to four round wins earned immunity. The two losing tribes both went to tribal council.",
+          winner: "s2_yellow",
+          imageUrl: "https://i.imgur.com/orqvV32.png",
+          videoTimestamp: 1,
+          results: [
+            { id: "s2_yellow", place: 1 },
+            { id: "s2_blue", place: 2 },
+            { id: "s2_red", place: 2 },
+          ],
+          sitOuts: [],
+        },
+      },
+      { eid: "s2_e03", number: 3, title: "Episode 3", videoUrl: "https://www.youtube.com/watch?v=wgmusY6usMM", episodeImageUrl: "https://i.imgur.com/Zq5cR0x.png",
+        immunityChallenge: {
+          name: "Slingshot",
+          type: "Immunity",
+          description: "Players used a slingshot rocket to launch a projectile and knock a target off a stand. Each tribe member took turns shooting in order, first to five hits won immunity and first pick of camp. Ben C. hit the game-winning shot for Beige.",
+          winner: "s2_beige",
+          imageUrl: "https://i.imgur.com/Zq5cR0x.png",
+          videoTimestamp: 1,
+          results: [
+            { id: "s2_beige", place: 1 },
+            { id: "s2_purple", place: 2 },
+          ],
+          sitOuts: [],
+        },
+        journey: {
+          videoUrl: "https://youtu.be/wgmusY6usMM?t=1597",
+          imageUrl: "https://i.imgur.com/HwxaqmY.png",
+          description: "Beige sent Olivia and Purple sent Kelsey. They faced a prisoner's dilemma: secretly choose Loyal or Greedy. If both chose Loyal, nothing happened. If both chose Greedy, both lost their votes. If one chose Greedy and the other Loyal, the Greedy player won a game advantage. After discussing it together, they struck a deal — Kelsey would choose Greedy to win the advantage, and Olivia would choose Loyal. They agreed to tell their tribes they both chose Loyal so no one would know about the advantage.",
+          sentBy: "s2_beige",
+          participants: [
+            { pid: "s2_olivia", result: "Chose Loyal — nothing happened" },
+            { pid: "s2_kelsey", result: "Chose Greedy — won Safety Without Power" },
+          ],
+          dialogue: [
+            { pid: "s2_kelsey", quote: "I've not gotten a chance to really talk with anybody. I feel like the obvious vote is either going to be me or Ben, and he's there making bonds right now. At least you have some of your tribe." },
+            { pid: "s2_olivia", quote: "If you let me take Loyal, I'll give you solid information about my old tribe." },
+            { pid: "s2_kelsey", quote: "What do I say when I go back?" },
+            { pid: "s2_olivia", quote: "Just tell them we both chose Loyal, nothing happens — because we were scared to lose our votes." },
+            { pid: "s2_kelsey", quote: "I'm okay with doing that, but I really hope you don't backstab me. If we make it to the merge, you and I could both know things." },
+            { pid: "s2_olivia", quote: "To be completely honest, I haven't made a deal with anyone either. Our tribe just kind of was ours." },
+            { pid: "s2_kelsey", quote: "I'm willing to work with you in the merge. How do I know I can trust you?" },
+            { pid: "s2_olivia", quote: "I'm giving you this information. That's proof. And I can tell you if somebody brings up your name." },
+            { pid: "s2_kelsey", quote: "I can do that too. Let's do it." },
+            { pid: "s2_kelsey", quote: "What I was going to tell you — I saw when Sean went back inside, me and Savannah and Ashton looked the entire place. The clue is gone. When he went back inside, he had something in his pocket. I'm 99% sure he has the idol." },
+            { pid: "s2_kelsey", quote: "I had to make a move, a risk here. I'm going to go for it and choose Greedy." },
+          ],
+        },
+      },
+      { eid: "s2_e04", number: 4, title: "Episode 4", videoUrl: "https://www.youtube.com/watch?v=eKFGlT77tgM", episodeImageUrl: "https://i.imgur.com/Rs1wmMS.png",
+        immunityChallenge: {
+          name: "Blind Leading the Blind",
+          type: "Immunity",
+          description: "One tribe member acted as a shot caller while the rest were blindfolded and tied together in pairs. The pairs navigated through the yard and garage to find bags of puzzle pieces and bring them back to their tribe's basket. Once all bags were collected, one designated puzzle maker untied the bags and assembled a block puzzle. Olivia called for Beige and Abdul called for Purple. Jacob (Beige) and Madison (Purple) were the puzzle makers. Jacob's tribe gave him a head start on pieces, and he finished the puzzle before Madison to win immunity for Beige.",
+          winner: "s2_beige",
+          imageUrl: "https://i.imgur.com/Rs1wmMS.png",
+          videoTimestamp: 1,
+          results: [
+            { id: "s2_beige", place: 1 },
+            { id: "s2_purple", place: 2 },
+          ],
+          sitOuts: ["s2_benc"],
+        },
+      },
+      { eid: "s2_e05", number: 5, title: "Episode 5", videoUrl: "https://www.youtube.com/watch?v=rL_fAagLaTk", episodeImageUrl: "https://i.imgur.com/73JrtGM.png",
+        immunityChallenge: {
+          name: "Careful",
+          type: "Immunity",
+          description: "A Jenga-style tower game with colored sticks and a weighted bell on top. Players drew colored tiles from a sock to determine which color stick they had to remove from the tower using only their hands. Teams could strategize together and use both hands to steady the structure. If the tower fell on your turn, your tribe lost. The challenge lasted over an hour with increasingly tense removals. Purple's tower survived while Beige's eventually collapsed.",
+          winner: "s2_purple",
+          imageUrl: "https://i.imgur.com/73JrtGM.png",
+          videoTimestamp: 1,
+          results: [
+            { id: "s2_purple", place: 1 },
+            { id: "s2_beige", place: 2 },
+          ],
+          sitOuts: [],
+        },
+      },
+      { eid: "s2_e06", number: 6, title: "Episode 6", videoUrl: "https://www.youtube.com/watch?v=YbWHnEKZsSI", episodeImageUrl: "https://i.imgur.com/xVi4rRU.png",
+        immunityChallenge: {
+          name: "Domino Stacking",
+          type: "Immunity",
+          description: "Players paired up for a domino stacking challenge. Sean originally paired with Abdul but last second dropped him to pair with Ashton, leaving Abdul as the odd man out. Abdul went back to camp where he found advantages. Caroline won individual immunity.",
+          winner: "s2_caroline",
+          imageUrl: "https://i.imgur.com/xVi4rRU.png",
+          videoTimestamp: 922,
+          sitOuts: ["s2_abdul"],
+        },
+      },
+      { eid: "s2_e07", number: 7, title: "Episode 7", videoUrl: "https://www.youtube.com/watch?v=IAZgIVzhWNo", episodeImageUrl: "https://i.imgur.com/LsqL52w.png",
+        immunityChallenge: {
+          name: "Hold Your Breath",
+          type: "Immunity",
+          description: "Players were randomly split into two groups of five, each going to separate tribal councils. All ten competed simultaneously in a breath-holding challenge — face submerged in water, last person standing in each group won individual immunity. The overall last person standing also won a Papa John's pizza for their group. Abdul won immunity for his group, Ben W. won immunity for his group, and Caroline won the overall reward by outlasting everyone.",
+          winner: "s2_abdul",
+          imageUrl: "https://i.imgur.com/LsqL52w.png",
+          videoTimestamp: 464,
+        },
+      },
+      { eid: "s2_e08", number: 8, title: "Episode 8", videoUrl: "https://www.youtube.com/watch?v=WQkjtJWx7jg",
+        immunityChallenge: {
+          name: "Who Do You Think They Think?",
+          type: "Immunity",
+          description: "Jury perception quiz. The jury members answered 30 personality questions about the remaining players — contestants had to guess the jury's majority answer for each question. 20 regulation questions followed by tiebreaker rounds. Winner also received 4 bananas as a reward. Abdul won after a three-way tiebreaker with Ashton and Ben C.",
+          winner: "s2_abdul",
+          videoTimestamp: 1,
+        },
+      },
     ],
 
     tribes: [
       { tid: "s2_blue",   name: "Navy Blue", color: "#1a3c6e", phase: "original" },
       { tid: "s2_red",    name: "Red",       color: "#dc2626", phase: "original" },
       { tid: "s2_yellow", name: "Yellow",    color: "#e6b800", phase: "original" },
+      { tid: "s2_beige",  name: "Beige",     color: "#c9a96e", phase: "switched" },
+      { tid: "s2_purple", name: "Purple",    color: "#7b2d8e", phase: "switched" },
     ],
 
     cast: [
       // ── Navy Blue tribe (6) ──────────────────────────────────
-      { pid: "s2_caroline",  name: "Caroline",  fullName: "Caroline Kremer",   personId: "caroline_kremer", photoUrl: "https://i.imgur.com/Pq42UDY.png", photoStyle: { objectPosition: "50% -183%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_benw",      name: "Ben W.",    fullName: "Ben Williams",      photoUrl: "https://i.imgur.com/177kE7y.png", photoStyle: { objectPosition: "50% -10%", transformOrigin: "50% 20%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 5%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_benc",      name: "Ben C.",    fullName: "Ben Currey",        instagram: "https://www.instagram.com/ben_currey/", photoUrl: "https://i.imgur.com/zZ2Uskz.png", photoStyle: { objectPosition: "50% -30%", transformOrigin: "50% 30%", transform: "scale(1.4)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 15%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_jacob",     name: "Jacob",     fullName: "Jacob Williams",    personId: "jacob_williams", photoUrl: "https://i.imgur.com/IKBqmSa.png", photoStyle: { objectPosition: "50% -162%", transformOrigin: "49% 50%", transform: "scale(1.70)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_olivia",    name: "Olivia",    fullName: "Olivia Saylor",     personId: "olivia_saylor", photoUrl: "https://i.imgur.com/v15gL2S.png", portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_phil",      name: "Phil",      fullName: "Phil Johnson",      instagram: "https://www.instagram.com/phill_johnson/", photoUrl: "https://i.imgur.com/75A82Z1.png", photoStyle: { objectPosition: "50% -20%", transformOrigin: "50% 25%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_caroline",  name: "Caroline",  fullName: "Caroline Kremer",   personId: "caroline_kremer", photoUrl: "https://i.imgur.com/Pq42UDY.png", photoStyle: { objectPosition: "50% -183%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: 10, juryMember: true, votesAgainst: 4, switchedTid: "s2_beige", merged: true },
+      { pid: "s2_benw",      name: "Ben W.",    fullName: "Ben Williams",      photoUrl: "https://i.imgur.com/177kE7y.png", photoStyle: { objectPosition: "50% -10%", transformOrigin: "50% 20%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 5%" }, tid: "s2_blue",   placement: 8, juryMember: true, votesAgainst: 7, switchedTid: "s2_purple", merged: true },
+      { pid: "s2_benc",      name: "Ben C.",    fullName: "Ben Currey",        instagram: "https://www.instagram.com/ben_currey/", photoUrl: "https://i.imgur.com/zZ2Uskz.png", photoStyle: { objectPosition: "50% -30%", transformOrigin: "50% 30%", transform: "scale(1.4)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 15%" }, tid: "s2_blue",   placement: null, juryMember: false, votesAgainst: 0, switchedTid: "s2_beige", merged: true },
+      { pid: "s2_jacob",     name: "Jacob",     fullName: "Jacob Williams",    personId: "jacob_williams", photoUrl: "https://i.imgur.com/IKBqmSa.png", photoStyle: { objectPosition: "50% -162%", transformOrigin: "49% 50%", transform: "scale(1.70)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: 12, juryMember: false, votesAgainst: 5, switchedTid: "s2_beige", merged: false },
+      { pid: "s2_olivia",    name: "Olivia",    fullName: "Olivia Saylor",     personId: "olivia_saylor", photoUrl: "https://i.imgur.com/v15gL2S.png", portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_blue",   placement: 11, juryMember: true, votesAgainst: 7, switchedTid: "s2_beige", merged: true },
+      { pid: "s2_phil",      name: "Phil",      fullName: "Phil Johnson",      instagram: "https://www.instagram.com/phill_johnson/", photoUrl: "https://i.imgur.com/75A82Z1.png", photoStyle: { objectPosition: "50% -20%", transformOrigin: "50% 25%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_blue",   placement: 16, juryMember: false, votesAgainst: 5, switchedTid: null, merged: false },
 
       // ── Red tribe (6) ────────────────────────────────────────
-      { pid: "s2_alyssa",    name: "Alyssa",    fullName: "Alyssa French",     instagram: "https://www.instagram.com/alyssafrenchh/", photoUrl: "https://i.imgur.com/3u6Wor2.png", photoStyle: { objectPosition: "50% -10%", transformOrigin: "50% 22%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 5%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_kylea",     name: "Kylea",     fullName: "Kylea Dobson",      instagram: "https://www.instagram.com/kdobson_12/", photoUrl: "https://i.imgur.com/Ys122rX.png", photoStyle: { objectPosition: "50% -10%", transformOrigin: "50% 25%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_abdul",     name: "Abdul",     fullName: "Abdul Alwan",       personId: "abdul_alwan", photoUrl: "https://i.imgur.com/O18he6C.png", photoStyle: { objectPosition: "50% -91%", transformOrigin: "66% 50%", transform: "scale(1.65)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_madison",   name: "Madison",   fullName: "Madison Chumbler",  personId: "madison_chumbler", photoUrl: "https://i.imgur.com/VBmfwXj.png", photoStyle: { objectPosition: "50% -73%", transform: "scale(1.65)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_meredith",  name: "Meredith",  fullName: "Meredith Hogue",    personId: "meredith_hogue", photoUrl: "https://i.imgur.com/47WJZvC.png", photoStyle: { objectPosition: "50% -63%", transform: "scale(1.55)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%", transformOrigin: "47% 50%", transform: "scale(1.15)" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_samw",      name: "Sam W.",    fullName: "Sam Williams",      instagram: "https://www.instagram.com/sam.williams123/", photoUrl: "https://i.imgur.com/3J8BU5u.png", photoStyle: { objectPosition: "50% -5%", transformOrigin: "50% 25%", transform: "scale(1.25)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_alyssa",    name: "Alyssa",    fullName: "Alyssa French",     instagram: "https://www.instagram.com/alyssafrenchh/", photoUrl: "https://i.imgur.com/3u6Wor2.png", photoStyle: { objectPosition: "50% -10%", transformOrigin: "50% 22%", transform: "scale(1.3)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 5%" }, tid: "s2_red",    placement: 9, juryMember: true, votesAgainst: 1, switchedTid: "s2_purple", merged: true },
+      { pid: "s2_kylea",     name: "Kylea",     fullName: "Kylea Dobson",      instagram: "https://www.instagram.com/kdobson_12/", photoUrl: "https://i.imgur.com/Ys122rX.png", photoStyle: { objectPosition: "50% 20%", transformOrigin: "50% 25%", transform: "scale(1.15)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_red",    placement: 15, juryMember: false, votesAgainst: 4, switchedTid: null, merged: false },
+      { pid: "s2_abdul",     name: "Abdul",     fullName: "Abdul Alwan",       personId: "abdul_alwan", photoUrl: "https://i.imgur.com/O18he6C.png", photoStyle: { objectPosition: "50% -91%", transformOrigin: "66% 50%", transform: "scale(1.65)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: "s2_purple", merged: true },
+      { pid: "s2_madison",   name: "Madison",   fullName: "Madison Chumbler",  personId: "madison_chumbler", photoUrl: "https://i.imgur.com/VBmfwXj.png", photoStyle: { objectPosition: "50% -73%", transform: "scale(1.65)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_red",    placement: 13, juryMember: false, votesAgainst: 4, switchedTid: "s2_purple", merged: false },
+      { pid: "s2_meredith",  name: "Meredith",  fullName: "Meredith Hogue",    personId: "meredith_hogue", photoUrl: "https://i.imgur.com/47WJZvC.png", photoStyle: { objectPosition: "50% -63%", transform: "scale(1.55)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%", transformOrigin: "47% 50%", transform: "scale(1.15)" }, tid: "s2_red",    placement: null, juryMember: false, votesAgainst: 0, switchedTid: "s2_purple", merged: true },
+      { pid: "s2_samw",      name: "Sam W.",    fullName: "Sam Williams",      instagram: "https://www.instagram.com/sam.williams123/", photoUrl: "https://i.imgur.com/3J8BU5u.png", photoStyle: { objectPosition: "50% 15%", transformOrigin: "50% 25%", transform: "scale(1.15)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_red",    placement: 14, juryMember: false, votesAgainst: 6, switchedTid: "s2_purple", merged: false },
 
       // ── Yellow tribe (5) ─────────────────────────────────────
-      { pid: "s2_savannah",  name: "Savannah",  fullName: "Savannah Brinley",  personId: "savannah_brinley", photoUrl: "https://i.imgur.com/s9JnOdy.png", photoStyle: { objectPosition: "50% -22%", transformOrigin: "22% 50%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_savannah",  name: "Savannah",  fullName: "Savannah Brinley",  personId: "savannah_brinley", photoUrl: "https://i.imgur.com/s9JnOdy.png", photoStyle: { objectPosition: "50% -22%", transformOrigin: "22% 50%", transform: "scale(1.50)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: "s2_beige", merged: true },
       { pid: "s2_samr",      name: "Sam R.",    fullName: "Sam Roth",          personId: "sam_roth", photoUrl: "https://i.imgur.com/HfnY3vo.jpeg", photoStyle: { objectPosition: "50% -10%", transform: "scale(1.20)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: 17, juryMember: false, votesAgainst: 3, switchedTid: null, merged: false },
-      { pid: "s2_kelsey",    name: "Kelsey",    fullName: "Kelsey Brown",      personId: "kelsey_brown", photoUrl: "https://i.imgur.com/vb5oY6d.png", photoStyle: { objectPosition: "50% -11%", transform: "scale(1.05)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_sean",      name: "Sean",      fullName: "Sean Stephens",     personId: "sean_stephens", photoUrl: "https://i.imgur.com/VjBqAOH.png", photoStyle: { objectPosition: "50% 15%" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 15%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
-      { pid: "s2_ashton",    name: "Ashton",    fullName: "Ashton Sims",       instagram: "https://www.instagram.com/ashtonsims8/", photoUrl: "https://i.imgur.com/bZnfHyw.png", photoStyle: { objectPosition: "50% -15%", transformOrigin: "50% 25%", transform: "scale(1.35)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: null, merged: false },
+      { pid: "s2_kelsey",    name: "Kelsey",    fullName: "Kelsey Brown",      personId: "kelsey_brown", photoUrl: "https://i.imgur.com/vb5oY6d.png", photoStyle: { objectPosition: "50% -11%", transform: "scale(1.05)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 0%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: "s2_purple", merged: true },
+      { pid: "s2_sean",      name: "Sean",      fullName: "Sean Stephens",     personId: "sean_stephens", photoUrl: "https://i.imgur.com/VjBqAOH.png", photoStyle: { objectPosition: "50% 15%" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 15%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 5, switchedTid: "s2_beige", merged: true },
+      { pid: "s2_ashton",    name: "Ashton",    fullName: "Ashton Sims",       instagram: "https://www.instagram.com/ashtonsims8/", photoUrl: "https://i.imgur.com/bZnfHyw.png", photoStyle: { objectPosition: "50% -15%", transformOrigin: "50% 25%", transform: "scale(1.35)" }, portraitStyle: { objectFit: "cover", width: "100%", height: "230px", objectPosition: "50% 10%" }, tid: "s2_yellow", placement: null, juryMember: false, votesAgainst: 0, switchedTid: "s2_beige", merged: true },
     ],
 
     votingHistory: [
@@ -465,6 +587,265 @@ export const SEASONS = [
           { vid: "s2_tc01_v3", voterPid: "s2_kelsey",   votedForPid: "s2_samr" },   // Kelsey → Sam R.
           { vid: "s2_tc01_v4", voterPid: "s2_samr",     votedForPid: "s2_kelsey" }, // Sam R. → Kelsey
           { vid: "s2_tc01_v5", voterPid: "s2_ashton",   votedForPid: "s2_kelsey" }, // Ashton → Kelsey
+        ],
+      },
+      // ── TC 2: Phil eliminated (5-0) — Blue tribe ──────────────
+      {
+        tcid: "s2_tc02", eid: "s2_e02", episode: 2, tid: "s2_blue",
+        videoTimestamp: 1853, imageUrl: "https://i.imgur.com/9miZf3V.png",
+        notes: "Phil lost his vote at the Episode 1 journey. The foursome of Ben W., Caroline, Jacob, and Ben C. targeted Phil. Even Olivia, who was in the minority with Phil, voted for him. Caroline had a Hidden Immunity Idol but did not play it.",
+        confessionalTimestamp: 2019,
+        confessionalQuote: "I knew they were going to vote me out. Eye contact is important. I had zero. And now they're going to be starving while I drink my alcohol. So, congrats.",
+        confessionals: [
+          { pid: "s2_olivia", timestamp: 1695, quote: "[I think] it's going to really show who's aligned with who. Obviously, the two brothers are aligned together. So it's like do you work with them or do you work against them? Eventually they have to go out but do I do it now or do I do it later?" },
+          { pid: "s2_benw", timestamp: 1732, quote: "It sucks we have to go but I went to the bathroom right when we split off so that I could intentionally join the majority group. So I ended up in the foursome and now it's kind of a 4-2 split. The two are Olivia and Phil. So we're talking about voting one of them out. We considered a 2-2 split just in case Phil has an advantage, but that would leave us vulnerable to one person flipping and making it a 3-2-1." },
+          { pid: "s2_phil", timestamp: 1767, quote: "I think it's going to be crazy. I don't know what to expect. It's the first one, so we'll see. I'm confused right now, honestly. I feel like I need to have some more conversations. I feel like I might be the target." },
+          { pid: "s2_caroline", timestamp: 1788, quote: "[I think] it's going to be Phil, which I hate to say because I really love Phil. But yeah, I think he's going to go and I'm sad." },
+          { pid: "s2_jacob", timestamp: 1802, quote: "I feel pretty safe this tribal. I think we're deciding between Phil and whether he has an advantage after that little excursion. We totally told him a lie — we pretended like we're switching to someone. And I don't feel good about it." },
+          { pid: "s2_benc", timestamp: 1824, quote: "I like this tribal. We all get along well. We work together as a team. As far as picking somebody, it's tough because we all want to pick each other, but we sent him out to do that thing and we don't know what kind of advantages he has. That's something we're keeping in mind." },
+        ],
+        eliminatedPid: "s2_phil",
+        votes: [
+          { vid: "s2_tc02_v1", voterPid: "s2_benw",     votedForPid: "s2_phil" },     // Ben W. → Phil
+          { vid: "s2_tc02_v2", voterPid: "s2_jacob",    votedForPid: "s2_phil" },     // Jacob → Phil
+          { vid: "s2_tc02_v3", voterPid: "s2_benc",     votedForPid: "s2_phil" },     // Ben C. → Phil
+          { vid: "s2_tc02_v4", voterPid: "s2_olivia",   votedForPid: "s2_phil" },     // Olivia → Phil
+          { vid: "s2_tc02_v5", voterPid: "s2_caroline",  votedForPid: "s2_phil" },     // Caroline → Phil
+          // Phil: no vote (lost at Episode 1 journey)
+        ],
+      },
+      // ── TC 3: Kylea eliminated (4-1) — Red tribe ──────────────
+      {
+        tcid: "s2_tc03", eid: "s2_e02", episode: 2, tid: "s2_red",
+        videoTimestamp: 2197, imageUrl: "https://i.imgur.com/05lfsX0.png",
+        notes: "Abdul lost his vote at the Episode 1 journey. The returning players (Abdul, Madison, Meredith) along with Alyssa and Sam W. unanimously targeted Kylea. Kylea was blindsided — she thought the vote was for Sam. Meredith had a Hidden Immunity Idol but did not play it.",
+        confessionalTimestamp: 2382,
+        confessionalQuote: "I got voted out. I thought we were voting Sam, so I was a little bit bummed, but everybody lied to me.",
+        confessionals: [
+          { pid: "s2_meredith", timestamp: 2032, quote: "I'm feeling pretty confident. I feel safe right now. I think the group has come to a good consensus of who we want to get rid of. [Who is that?] I think Kylea." },
+          { pid: "s2_abdul", timestamp: 2046, quote: "It's pretty dirty in there, but I think Sam or Kylea is going to be the one to go, or myself. [Who are you voting for?] Kylea. I think she's very athletic, but she wants to play every single challenge and it sometimes brings us down." },
+          { pid: "s2_kylea", timestamp: 2076, quote: "I've never done a tribal council before. People are saying different things and I just feel bad. [Who do you think might be going?] I think unfortunately Sam." },
+          { pid: "s2_madison", timestamp: 2092, quote: "I'm scared because I just learned that Sam is trying to vote my ass out and I was about to go tell him that I wanted to work with him. [Are you targeting him?] That's the fake out vote, but I really want to go for Kylea." },
+          { pid: "s2_alyssa", timestamp: 2119, quote: "It's really intense. We have three really strong returning players and then outsiders. There are like three or four big threats. I might have to give in to the vote that everyone else is making. [Who is it?] I think it's Kylea." },
+          { pid: "s2_samw", timestamp: 2177, quote: "I'm very scared of Madison. I don't want to keep her in the game, but we do not have the manpower right now. She's the one I'm most scared of. I think it's either Madison or Meredith that has the idol right now." },
+        ],
+        eliminatedPid: "s2_kylea",
+        votes: [
+          { vid: "s2_tc03_v1", voterPid: "s2_madison",   votedForPid: "s2_kylea" },   // Madison → Kylea
+          { vid: "s2_tc03_v2", voterPid: "s2_alyssa",    votedForPid: "s2_kylea" },   // Alyssa → Kylea
+          { vid: "s2_tc03_v3", voterPid: "s2_meredith",  votedForPid: "s2_kylea" },   // Meredith → Kylea
+          { vid: "s2_tc03_v4", voterPid: "s2_samw",      votedForPid: "s2_kylea" },   // Sam W. → Kylea
+          { vid: "s2_tc03_v5", voterPid: "s2_kylea",     votedForPid: "s2_samw" },    // Kylea → Sam W.
+          // Abdul: no vote (lost at Episode 1 journey)
+        ],
+      },
+      // ── TC 4: Sam W. eliminated (5-2) — Purple tribe ──────────────
+      {
+        tcid: "s2_tc04", eid: "s2_e03", episode: 3, tid: "s2_purple",
+        videoTimestamp: 2070, imageUrl: "https://i.imgur.com/GhHmPDt.png",
+        notes: "Meredith had a Hidden Immunity Idol but did not play it. Kelsey had Safety Without Power (won at the journey) but did not play it. Sam W. was blindsided — he thought the vote was going to Abdul or Madison. The Williams brothers (Sam W. and Ben W.) voted together for Abdul but were outnumbered 5-2.",
+        confessionalTimestamp: 2292,
+        confessionalQuote: "In hindsight it makes sense because you have the three Williams brothers. I thought it was Abdul and Madison going for each other that whole time and I thought we had the numbers for Abdul. I guess that means Kelsey had to have gone me, which I regret. I should have made a tighter bond with Kelsey quicker because we didn't talk too much. Everyone I was talking to was going Abdul, literally everyone. And then Abdul said Madison. So from my point of view it looked like the two people going at it. No one tipped me off. They kept that sealed. I thought I had pretty good alliances with Alyssa but maybe not.",
+        confessionals: [
+          { pid: "s2_meredith", timestamp: 1892, quote: "[I'm feeling] good still. I have some strong alliances and I feel like we're going to try to break up the Williams brothers. [Which one are you going for?] Sam." },
+          { pid: "s2_samw", timestamp: 1905, quote: "[I'm feeling] not great. This is chaos. It's complete chaos. It's the most structured, ridiculous chaos I've ever seen. Abdul wants to spin a bottle to figure out who is going to talk to who and I'm trying to organize some stuff and he's very much strongarming everything so that there's only two groups of people. He's trying to line his ducks up. Hate it. We're talking about maybe him, maybe Madison." },
+          { pid: "s2_kelsey", timestamp: 1934, quote: "[I'm feeling] not good. Still I think everybody's scrambling. I have a Safety Without Power. We're still scrambling in there. Sounds like there's two groups kind of forming, but there's some slippage. [Who are you hoping goes?] Sam. I'm scared of him." },
+          { pid: "s2_madison", timestamp: 1974, quote: "Sam's being sneaky again. [Is that who you want to go?] Yeah, we just made a girl alliance. It's kind of fun." },
+          { pid: "s2_samw", timestamp: 1988, quote: "I don't think it's me, so I'm happy. Hopefully. I think it's between Madison and Abdul. Madison, I think it would be. So that's spicy." },
+          { pid: "s2_alyssa", timestamp: 2002, quote: "It's really intense. We got like a girl-boy situation going on and then we got like couples going on. It's going to be a tough one for sure. [Who are you voting with?] The girls. We've kind of grouped together. We're pretty set on [voting] Sam." },
+          { pid: "s2_abdul", timestamp: 2033, quote: "[I'm feeling] pretty good. Names being thrown out. The Williams brothers want Madison — they are gunning for her. Sam went to Kelsey when we were all scheming to get Kelsey out and told Kelsey to use her Shot in the Dark. She told me that and I was like yeah, don't. Sam is trying to jump alliances. He's just like his brother — little snake rascal." },
+        ],
+        eliminatedPid: "s2_samw",
+        votes: [
+          { vid: "s2_tc04_v1", voterPid: "s2_meredith",  votedForPid: "s2_samw" },    // Meredith → Sam W.
+          { vid: "s2_tc04_v2", voterPid: "s2_madison",   votedForPid: "s2_samw" },    // Madison → Sam W.
+          { vid: "s2_tc04_v3", voterPid: "s2_abdul",     votedForPid: "s2_samw" },    // Abdul → Sam W.
+          { vid: "s2_tc04_v4", voterPid: "s2_alyssa",    votedForPid: "s2_samw" },    // Alyssa → Sam W.
+          { vid: "s2_tc04_v5", voterPid: "s2_kelsey",    votedForPid: "s2_samw" },    // Kelsey → Sam W.
+          { vid: "s2_tc04_v6", voterPid: "s2_samw",      votedForPid: "s2_abdul" },   // Sam W. → Abdul
+          { vid: "s2_tc04_v7", voterPid: "s2_benw",      votedForPid: "s2_abdul" },   // Ben W. → Abdul
+        ],
+      },
+      {
+        tcid: "s2_tc05", eid: "s2_e04", episode: 4, tid: "s2_purple",
+        videoTimestamp: 621, imageUrl: "https://i.imgur.com/UySZo8f.png",
+        notes: "Abdul orchestrated the vote against Madison after she was unwilling to commit to a target. Meredith had a Hidden Immunity Idol but did not play it. Kelsey had Safety Without Power but did not play it. Madison thought the plan was to vote out Kelsey but got cold feet and voted Ben W. instead. Abdul flipped the vote to Madison.",
+        confessionalTimestamp: 878,
+        confessionalQuote: "I'm pretty sure [what happened], which is really rude, but also I literally don't think my heart can handle anymore, so I'm kind of glad. [How was the experience?] Way harder than last year. Really, because I actually know people and I actually care about people. [What happened with the vote?] I think I got cold feet and Abdul probably flipped on me because I was going to vote for Ben and not for Kelsey. But maybe the Kelsey plan was all a lie. I really don't know.",
+        confessionals: [
+          { pid: "s2_alyssa", timestamp: 446, quote: "[How are you feeling about this tribal?] I'm scared. I don't know. I feel like we're going to vote for Ben, but I'm scared that that's fake." },
+          { pid: "s2_meredith", timestamp: 477, quote: "[What's about to happen?] I honestly have no idea. We have not come to a consensus at all. Everyone is throwing out everyone's name, so I have no idea. [Who would you most want to go?] I think right now I would want Alyssa or Kelsey. I feel like Kelsey is dangerous when we get to the merge, and Alyssa just doesn't really have anybody." },
+          { pid: "s2_benw", timestamp: 503, quote: "I got blindsided the last vote. There were three layers of plans I was in on and there was a fourth layer on top of it. These guys are insane. Right now talking with Abdul about maybe [voting] Madison. Madison was unwilling to drop a name, so I don't trust her. I don't feel safe at all. I don't feel good." },
+          { pid: "s2_kelsey", timestamp: 532, quote: "Madison puts my name out there. It's going to be close. Just a matter of who I can trust. On the fence of using [my] advantage, but I think if we do that, then the votes will be split and we'll get nowhere. It's going to be risky, but hopefully I can trust two people." },
+          { pid: "s2_madison", timestamp: 556, quote: "[How are you feeling?] I'm unwell. [You want to vote Kelsey out?] I can't do it. At least when she sees this, she'll know that I was sad about it. She's scary when she gets back with the people from the other side. I don't know if that's going to happen, but if it doesn't, I'm sorry." },
+          { pid: "s2_abdul", timestamp: 582, quote: "I got my nail torn out and man did that hurt. I heard chatter about Meredith throwing it out there with the two brothers. I am playing the biggest game and I am trying to switch everyone to go Madison. I tried to make up lines with her, but I just cannot trust her. If this works, I pulled off the greatest [move] in Survivor history." },
+        ],
+        eliminatedPid: "s2_madison",
+        votes: [
+          { vid: "s2_tc05_v1", voterPid: "s2_abdul",     votedForPid: "s2_madison" },   // Abdul → Madison
+          { vid: "s2_tc05_v2", voterPid: "s2_kelsey",    votedForPid: "s2_madison" },   // Kelsey → Madison
+          { vid: "s2_tc05_v3", voterPid: "s2_benw",      votedForPid: "s2_madison" },   // Ben W. → Madison
+          { vid: "s2_tc05_v4", voterPid: "s2_alyssa",    votedForPid: "s2_madison" },   // Alyssa → Madison
+          { vid: "s2_tc05_v5", voterPid: "s2_madison",   votedForPid: "s2_benw" },      // Madison → Ben W.
+          { vid: "s2_tc05_v6", voterPid: "s2_meredith",  votedForPid: "s2_benw" },      // Meredith → Ben W.
+        ],
+      },
+      // ── TC 6a: Tie vote (1-1) — Beige, Ep5 — idol play + SITD ─
+      {
+        tcid: "s2_tc06a", eid: "s2_e05", episode: 5, tid: "s2_beige",
+        videoTimestamp: 3886, imageUrl: "https://i.imgur.com/DXSJqhN.png",
+        notes: "Sean used his Shot in the Dark (not safe). After seeing it miss, he got up and played his Hidden Immunity Idol on himself, nullifying all four votes against him. With Sean's vote forfeited to the Shot in the Dark, only Ashton's vote for Jacob and Savannah's vote for Olivia counted, resulting in a 1-1 tie.",
+        confessionals: [
+          { pid: "s2_benc", timestamp: 3661, quote: "We were all talking. It's a lot going on at once. I think we all agreed that Sean kind of poses a threat, especially him and Savannah later on. They're like a dynamic duo that we kind of want to separate. I heard Jacob's name being thrown around too because of his brother. [Who would you rather go?] I think I'm going to go with Sean." },
+          { pid: "s2_caroline", timestamp: 3691, quote: "I'm very stressed. I think it's going to be Jacob or Sean. We think Sean has an idol. So, we're going to try and flush it. And then if Sean flushes it, then maybe Jacob will go home." },
+          { pid: "s2_olivia", timestamp: 3706, quote: "Terrible. Every room I go to, different name. Different name. Different name. So now I think I'm in trouble. Anybody but me, I'll be fine. [Who are you hearing?] Jacob, Sean, Ashton is what I'm hearing, but I think people are just throwing names out so I feel comfortable. [Who are you voting?] Sean, I think." },
+          { pid: "s2_savannah", timestamp: 3741, quote: "I have a meeting with everybody pretty much. At first it was like we're going to do Ashton, but then we think he's kind of followed our votes since the very beginning. Now I think it's [Sean] but we shall see. I might be going home." },
+          { pid: "s2_ashton", timestamp: 3767, quote: "[How are you feeling?] Nervous. There's been like four different conversations and the name changes every time. [Who do you think you might write down?] I'm honestly not sure. [Who are the names?] Literally everyone." },
+          { pid: "s2_sean", timestamp: 3793, quote: "There's a lot going on. Everybody's throwing everybody's name out. I have an idol. May play it. Don't know yet. May play a shot in the dark. A couple people know about the idol but everybody still has everybody's name out. The only person I haven't heard is my name. I'm kind of in line with Savannah and Ashton. I think it'll probably be Olivia or Jacob tonight." },
+          { pid: "s2_jacob", timestamp: 3828, quote: "Seven lies in a row. It's really confusing and I've been so confusing who I've told what. I'm a little dizzy in my head. I think we're good with Ben, Caroline... talking with Sean and we're talking about Olivia even though I know Sean's name." },
+        ],
+        eliminatedPid: null,
+        votes: [
+          { vid: "s2_tc06a_v1", voterPid: "s2_ashton",    votedForPid: "s2_jacob" },     // Ashton → Jacob
+          { vid: "s2_tc06a_v2", voterPid: "s2_benc",      votedForPid: "s2_sean", idolNullified: true },     // Ben C. → Sean (nullified)
+          { vid: "s2_tc06a_v3", voterPid: "s2_jacob",     votedForPid: "s2_sean", idolNullified: true },     // Jacob → Sean (nullified)
+          { vid: "s2_tc06a_v4", voterPid: "s2_caroline",  votedForPid: "s2_sean", idolNullified: true },     // Caroline → Sean (nullified)
+          { vid: "s2_tc06a_v5", voterPid: "s2_olivia",    votedForPid: "s2_sean", idolNullified: true },     // Olivia → Sean (nullified)
+          { vid: "s2_tc06a_v6", voterPid: "s2_savannah",  votedForPid: "s2_olivia" },    // Savannah → Olivia
+          // Sean: used Shot in the Dark (not safe) — no vote cast
+        ],
+      },
+      // ── TC 6b: Revote — Jacob eliminated (4-0) — Beige, Ep5 ─
+      {
+        tcid: "s2_tc06b", eid: "s2_e05", episode: 5, tid: "s2_beige",
+        confessionalTimestamp: 4523,
+        confessionalQuote: "10 minutes before tribal, Olivia and I sat down and we knew Sean had an idol. Someone caught him a long time ago. So, we knew we could be the collateral tonight. I'm a little shocked that on the revote that I got out. I wish I played my shot in the dark because my vote didn't really matter on Sean there and I didn't realize that until I walked out of the voting room.",
+        notes: "Revote. Jacob and Olivia were immune as the tied players. Sean had no vote (used Shot in the Dark). Savannah, Caroline, Ben C., and Ashton revoted — all four voted Jacob.",
+        eliminatedPid: "s2_jacob",
+        votes: [
+          { vid: "s2_tc06b_v1", voterPid: "s2_savannah",  votedForPid: "s2_jacob" },    // Savannah → Jacob
+          { vid: "s2_tc06b_v2", voterPid: "s2_caroline",  votedForPid: "s2_jacob" },    // Caroline → Jacob
+          { vid: "s2_tc06b_v3", voterPid: "s2_benc",      votedForPid: "s2_jacob" },    // Ben C. → Jacob
+          { vid: "s2_tc06b_v4", voterPid: "s2_ashton",    votedForPid: "s2_jacob" },    // Ashton → Jacob
+        ],
+      },
+      // ── TC 7: Olivia eliminated (6-4) — Merged, Ep6 ────────
+      {
+        tcid: "s2_tc07", eid: "s2_e06", episode: 6, tid: null,
+        videoTimestamp: 1,
+        imageUrl: "https://i.imgur.com/xydjof2.png",
+        notes: "Kelsey played her Safety Without Power, leaving tribal before the vote and forfeiting her vote.",
+        confessionalTimestamp: 2408,
+        confessionalQuote: "I think Kelsey playing her Safety Without Power really messed us up because we had the votes for Sean. We had a 6-5 vote, but then she used that. So then we had a 5-5. Well, I thought we would have a 5-5. So, somebody flipped. I think it was Alyssa because I didn't get to talk to her at the end. But it's fine. I mean, you come second last season, the first place winner is not here. You automatically know you're a threat.",
+        confessionals: [
+          { pid: "s2_meredith", timestamp: 1660, quote: "[I'm feeling] good. I'm feeling a little nervous this time. I feel like Kelsey, Abdul, and Alyssa have some sort of alliance after they all voted Madison out without telling me. I feel like they're trying to get people to put me out, so I'm a little nervous." },
+          { pid: "s2_benw", timestamp: 1673, quote: "I'm the rat right now a little bit. The guys all want to get Olivia. They said walking down, don't tell anybody, we're going to try to flip Savannah. Savannah seemed down. It's all good, but I don't trust them long term. And the connections I have with Kelsey and Alyssa and Caroline. So, I told Kelsey and Alyssa what the plan was, and I said I wanted to work with them. They seem like they're okay with getting rid of Olivia for this vote so that we kind of settle the waters and then I might end up going with them." },
+          { pid: "s2_olivia", timestamp: 1710, quote: "[I'm feeling] okay. I think I'm okay this round, but I'm in trouble. I know people are saying my name, but I think I have enough votes to get me through. [Who are you going for?] It depends on if I want to stick with the girls or not. The girls want to vote either Sean or Ben W., but then all the guys want to vote Alyssa. So, it's like I have to go with one of the majorities. It's just who do I find is a bigger threat." },
+          { pid: "s2_abdul", timestamp: 1751, quote: "[How did you feel about not getting paired up?] I was kind of upset. Sean snaked me pretty quick. But after getting back to camp, I was pretty happy with what I found. I got an idol and an advantage in the final seven should I make it that far. But if I don't, I can use it strategically because I can hand it off to another person if I get voted out. So hopefully this will help me forge my alliances. [How you feeling about this tribal?] Pretty good. Don't know if I should use mine or not." },
+          { pid: "s2_caroline", timestamp: 1791, quote: "[I'm feeling] great this round. However, I don't know how this vote is going to go. There have been multiple names brought up. I think we're definitely testing some alliances. People are starting to piece together who's working with who. Should be interesting." },
+          { pid: "s2_kelsey", timestamp: 1815, quote: "Literally every conversation has been confusing. I'm really debating playing my [Safety Without Power]. Nobody's showing their loyalty. I've heard just about every name tonight. It's looking like there may be a guys alliance, but we just don't know who to trust." },
+          { pid: "s2_alyssa", timestamp: 1837, quote: "[I'm feeling] crazy. There's crazy stuff going on in there right now. It's all snakes. Everybody's a snake. I don't know who to trust. I don't trust anyone actually. And everybody's got that look in their eyes and I'm really scared. [Who are you hoping goes home?] Olivia. [Who's going to be with you in that vote?] Sean, Savannah, Kelsey, Caroline." },
+          { pid: "s2_ashton", timestamp: 1864, quote: "[I'm feeling] good. Everybody's going around talking to everybody. Nobody's really sure. [Who do you think you might vote for?] Probably Olivia. [Who are you voting with?] I think as the guys, we kind of decided that there are more girls and if we let them stay in the game, it's kind of over for us." },
+          { pid: "s2_savannah", timestamp: 1891, quote: "[I'm] not feeling too bad. But I am still a little bit confused about who I'm going to write down, but not really at the same time because I really want to vote Olivia out for last tribal, but there are like two alliances going on and I am kind of in between both of them. I am going with my gut and writing Olivia down." },
+          { pid: "s2_sean", timestamp: 1919, quote: "We're boys and girls right now. The boys have been able to pull Alyssa and Savannah over with us. But now we find out that one of the boys is a snake in the grass. [Who's that?] Ben Williams, the brother. Little bit of a snake. We might flip to him. We might vote Olivia. We might do something else. Haven't decided yet, but we'll figure it out before tribal. [You look a little tired.] I'm so tired. It's actually insane." },
+          { pid: "s2_benc", timestamp: 1968, quote: "Classic just boys and girls separated immediately. We've realized especially after Jacob getting voted out that we probably need to go with a girl for sure. Someone who has a lot of pull. I'm thinking Olivia. Especially with what she has with Caroline. There was no convincing Caroline to vote for Jacob last round." },
+        ],
+        eliminatedPid: "s2_olivia",
+        votes: [
+          { vid: "s2_tc07_v01", voterPid: "s2_sean",      votedForPid: "s2_olivia" },   // Sean → Olivia
+          { vid: "s2_tc07_v02", voterPid: "s2_caroline",   votedForPid: "s2_sean" },     // Caroline → Sean
+          { vid: "s2_tc07_v03", voterPid: "s2_olivia",     votedForPid: "s2_sean" },     // Olivia → Sean
+          { vid: "s2_tc07_v04", voterPid: "s2_alyssa",     votedForPid: "s2_olivia" },   // Alyssa → Olivia
+          { vid: "s2_tc07_v05", voterPid: "s2_ashton",     votedForPid: "s2_olivia" },   // Ashton → Olivia
+          { vid: "s2_tc07_v06", voterPid: "s2_savannah",   votedForPid: "s2_olivia" },   // Savannah → Olivia
+          { vid: "s2_tc07_v07", voterPid: "s2_abdul",      votedForPid: "s2_olivia" },   // Abdul → Olivia
+          { vid: "s2_tc07_v08", voterPid: "s2_benc",       votedForPid: "s2_olivia" },   // Ben C. → Olivia
+          { vid: "s2_tc07_v09", voterPid: "s2_meredith",   votedForPid: "s2_sean" },     // Meredith → Sean
+          { vid: "s2_tc07_v10", voterPid: "s2_benw",       votedForPid: "s2_sean" },     // Ben W. → Sean
+        ],
+      },
+      // ── TC 8: Caroline eliminated (4-1) — Merged, Ep7 (Group 1: upstairs) ──
+      {
+        tcid: "s2_tc08", eid: "s2_e07", episode: 7, tid: null,
+        videoTimestamp: 719,
+        imageUrl: "https://i.imgur.com/lcWtwep.png",
+        notes: "Caroline had a Hidden Immunity Idol but did not play it.",
+        confessionalTimestamp: 863,
+        confessionalQuote: "I'm so stupid. I had an idol and I didn't play it. My own fault. I have no words. It's so much fun. I'm so excited to play this. I'm gonna be thinking about this for a while. But I had fun. Damn it. I'm so upset.",
+        confessionals: [
+          { pid: "s2_abdul", timestamp: 604, quote: "[I'm] back into familiar territory. Won a challenge every single year. Same thing. Feeling good, feel safe now. I'm kind of just controlling. Everybody's like real puppets in my hands. And I think Caroline [is going home] and that's from what she did to me last year. Revenge is a bitch." },
+          { pid: "s2_caroline", timestamp: 626, quote: "Paranoia's starting to set in. Everyone's hanging with Ashton. I feel like it could be me. Trying to decide if I want to play my idol or not. Leaning towards no, but I'm going to be so upset if I don't play it." },
+          { pid: "s2_savannah", timestamp: 641, quote: "[I'm feeling] okay. I am really tired and hungry and I'm really upset that I didn't get a pizza. I think this will go the way that we want it to. And if that's the case, Caroline will be going home tonight." },
+          { pid: "s2_ashton", timestamp: 657, quote: "[I'm] a little nervous. I've heard my name got passed around and Caroline's name. So, we'll see. [Are you going for Caroline?] Most likely." },
+          { pid: "s2_kelsey", timestamp: 679, quote: "I evidently didn't really need to use my [Safety Without Power], but it was too risky. I had heard my name too many times. Now somebody's going to be betrayed, so I'm hoping it's not me. I'm so sorry, Caroline. We only formed together this past time, so I just don't feel like we had a long-standing alliance that I can trust." },
+        ],
+        eliminatedPid: "s2_caroline",
+        votes: [
+          { vid: "s2_tc08_v1", voterPid: "s2_abdul",     votedForPid: "s2_caroline" },   // Abdul → Caroline
+          { vid: "s2_tc08_v2", voterPid: "s2_savannah",   votedForPid: "s2_caroline" },   // Savannah → Caroline
+          { vid: "s2_tc08_v3", voterPid: "s2_caroline",   votedForPid: "s2_ashton" },     // Caroline → Ashton
+          { vid: "s2_tc08_v4", voterPid: "s2_kelsey",     votedForPid: "s2_caroline" },   // Kelsey → Caroline
+          { vid: "s2_tc08_v5", voterPid: "s2_ashton",     votedForPid: "s2_caroline" },   // Ashton → Caroline
+        ],
+      },
+      // ── TC 9: Alyssa eliminated (1-0) — Merged, Ep7 (Group 2: basement) ──
+      {
+        tcid: "s2_tc09", eid: "s2_e07", episode: 7, tid: null,
+        videoTimestamp: 1024,
+        imageUrl: "https://i.imgur.com/3qo9foF.png",
+        notes: "Meredith played her Hidden Immunity Idol on herself, nullifying all 4 votes against her. Only Meredith's vote for Alyssa counted.",
+        confessionalTimestamp: 1229,
+        confessionalQuote: "I blew it. I blew my cover and she knew I was snaking because I admitted to voting Olivia out. I'm just disappointed that she didn't believe that I found the other idol. I've had a much better run than I anticipated.",
+        confessionals: [
+          { pid: "s2_benw", timestamp: 884, quote: "The Denver lungs bought me another day. I have a lot of power right now. I really want to keep Ben C. with me and possibly use him down the road and then it's kind of between Sean and Meredith in my mind. I'm leaning Meredith, but it's kind of in the air. I think people will target Sean later and that can be good for me." },
+          { pid: "s2_meredith", timestamp: 918, quote: "[I'm feeling] not good at all. Two of my main alliances are gone and the girls are outnumbered by the boys. I feel like one of the girls is gonna go home. Me or Alyssa." },
+          { pid: "s2_sean", timestamp: 943, quote: "The biggest bullseye ever is right on my back. We have Alyssa and Ben as our two swing votes and they will determine if I go home tonight or if Meredith goes home tonight. I might have something in my pocket to help out with this situation." },
+          { pid: "s2_alyssa", timestamp: 976, quote: "I don't know. I did find the clue, so I prepared it and people think that I probably have the idol. I'm nervous and I think we're voting Meredith." },
+          { pid: "s2_benc", timestamp: 1001, quote: "[I'm feeling] good. It's kind of a Sean vs. Meredith situation. I'm leaning Meredith because Sean definitely has a target on his back, so I'd be okay leaving him in the field. And Meredith's a good player." },
+        ],
+        idols: [
+          { playerPid: "s2_meredith", playedOn: "s2_meredith" },
+        ],
+        eliminatedPid: "s2_alyssa",
+        votes: [
+          { vid: "s2_tc09_v1", voterPid: "s2_benw",      votedForPid: "s2_meredith", idolNullified: true },   // Ben W. → Meredith (nullified)
+          { vid: "s2_tc09_v2", voterPid: "s2_alyssa",     votedForPid: "s2_meredith", idolNullified: true },   // Alyssa → Meredith (nullified)
+          { vid: "s2_tc09_v3", voterPid: "s2_meredith",   votedForPid: "s2_alyssa" },                         // Meredith → Alyssa
+          { vid: "s2_tc09_v4", voterPid: "s2_benc",       votedForPid: "s2_meredith", idolNullified: true },   // Ben C. → Meredith (nullified)
+          { vid: "s2_tc09_v5", voterPid: "s2_sean",       votedForPid: "s2_meredith", idolNullified: true },   // Sean → Meredith (nullified)
+        ],
+      },
+      // ── TC 10: Ben W. eliminated (5-1) — Merged, Ep8 ────────
+      {
+        tcid: "s2_tc10", eid: "s2_e08", episode: 8, tid: null,
+        videoTimestamp: 1815,
+        imageUrl: "https://i.imgur.com/HXRaZpG.png",
+        notes: "Meredith played her Hidden Immunity Idol on herself, nullifying 1 vote. Ben W. used his Shot in the Dark (not safe) and forfeited his vote. Abdul had a Hidden Immunity Idol and the Final 7 Advantage but did not play either.",
+        confessionalTimestamp: 2031,
+        confessionalQuote: "I kind of flipped on the guys. I didn't want to but they went after Kelsey and that was the problem. I was on board the Olivia boat. They flip on Kelsey and I was aligned with Kelsey. So I told her to play her advantage and then I ended up voting Sean because I thought they might be voting for me. None of the guys trusted me. I asked Ben C. very directly, 'Has my name come up?' And he said no. And I knew they had thrown my name out. At one point there's three people in one room, three people in the other. I try to join both and they both push me away. I've torched everything. I needed Alyssa or Caroline in the game. Them going home really shot me.",
+        confessionals: [
+          { pid: "s2_meredith", timestamp: 1503, quote: "I woke up right at 2:30 and made it out [to the mailbox] without anyone seeing me. When I came back, I'm pretty sure Kelsey saw me. [I'm] obviously really nervous after last tribal getting voted by everybody. I think Sean is coming for me. I think him and Abdul have some sort of alliance now. So I think either they're going to vote me or Ben Williams." },
+          { pid: "s2_benc", timestamp: 1569, quote: "Very confusing because I think we figured out that Meredith has an [idol], so we kind of want her to get rid of it. We'd like her to think we're voting her out, but not voting her out. [Our alliance is] pretty much the guys minus Ben [W.]. So we're thinking about Ben out, but I haven't made a decision yet." },
+          { pid: "s2_kelsey", timestamp: 1598, quote: "There's obviously a tight little alliance, probably Sean being the leader. And then there's kind of a few stragglers trying to team up against Sean. [Am I a straggler?] I don't know. I really don't know." },
+          { pid: "s2_sean", timestamp: 1634, quote: "This one don't feel good about. I think my alliance of five is flipping up pretty quick. Abdul has immunity. Apparently Meredith has an immunity idol that we are going to try to flush today, but getting the votes is going to be harder than I thought." },
+          { pid: "s2_savannah", timestamp: 1675, quote: "I can't wait till Sean sees [what's coming] because he's freaking crazy and being psychotic. Everybody wants to vote for him but they also don't. I think we know Meredith has an idol because she found it yesterday. We're trying to have her think [she's the target] and hopefully flush it out." },
+          { pid: "s2_abdul", timestamp: 1702, quote: "I won. It's pretty easy. I just had to guess myself basically 80% of the time. We found out that Meredith has an idol and we want her to play it. So we're trying to mislead her into thinking we're voting her so we can get Ben out. And then next round, we would target the big alpha tyrant Sean because he's been running the game from behind the scenes. I thought I had a loud voice, but Sean speaks over me and I sit down and listen. We got to get that man out of here." },
+          { pid: "s2_ashton", timestamp: 1741, quote: "We know people have idols, so we got to bring those out. The plan is actually to get [Meredith] to think we're voting her out so she uses her idol or her Shot in the Dark, and then we flip and get somebody else out." },
+          { pid: "s2_benw", timestamp: 1780, quote: "We feel very endangered right now. I know my name is spreading like wildfire. My biggest alliances were Alyssa and Caroline and they both went home last time. I think it sounds like it's between Meredith and Sean, but I know my name's out there too. I think I want to go for Sean this time." },
+        ],
+        idols: [
+          { playerPid: "s2_meredith", playedOn: "s2_meredith" },
+        ],
+        eliminatedPid: "s2_benw",
+        votes: [
+          { vid: "s2_tc10_v1", voterPid: "s2_benc",      votedForPid: "s2_benw" },                          // Ben C. → Ben W.
+          { vid: "s2_tc10_v2", voterPid: "s2_ashton",    votedForPid: "s2_benw" },                           // Ashton → Ben W.
+          { vid: "s2_tc10_v3", voterPid: "s2_meredith",  votedForPid: "s2_sean" },                           // Meredith → Sean
+          // Ben W. used Shot in the Dark (not safe) — vote forfeited
+          { vid: "s2_tc10_v4", voterPid: "s2_sean",      votedForPid: "s2_benw" },                           // Sean → Ben W.
+          { vid: "s2_tc10_v5", voterPid: "s2_kelsey",    votedForPid: "s2_meredith", idolNullified: true },   // Kelsey → Meredith (nullified)
+          { vid: "s2_tc10_v6", voterPid: "s2_abdul",     votedForPid: "s2_benw" },                           // Abdul → Ben W.
+          { vid: "s2_tc10_v7", voterPid: "s2_savannah",  votedForPid: "s2_benw" },                           // Savannah → Ben W.
         ],
       },
     ],

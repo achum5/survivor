@@ -187,7 +187,7 @@ function TribalCouncilCard({ tcs, season, sid, episode, onPlay }) {
       {tcs.map((tc, i) => (
         <div key={tc.tcid}>
           {i > 0 && <div className="tc-revote-divider">↩ Revote</div>}
-          {tc.notes && <div className="tc-section-notes">— {tc.notes}</div>}
+          {tc.notes && <div className="tc-section-notes">{tc.notes}</div>}
           {tc.votes.length > 0
             ? renderVoteGroups(tc, season, sid, elimTc?.eliminatedPid)
             : <div className="tc-no-votes">No votes recorded.</div>
@@ -195,7 +195,7 @@ function TribalCouncilCard({ tcs, season, sid, episode, onPlay }) {
         </div>
       ))}
 
-      {eliminated && (
+      {eliminated && !elimTc?.confessionalQuote && (
         <div className="tc-voted-out-footer">
           <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`} style={{ filter: 'grayscale(1)', flexShrink: 0 }}>
             <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)}
@@ -314,6 +314,7 @@ export default function EpisodePage() {
   const { sid, eid } = useParams();
   const navigate = useNavigate();
   const [modal, setModal] = useState(null); // { src, title }
+  const [activeTabKey, setActiveTabKey] = useState(null);
 
   const season = SEASONS.find((s) => s.sid === sid);
   if (!season) return <div className="article"><p>Season not found.</p></div>;
@@ -322,7 +323,40 @@ export default function EpisodePage() {
   if (!episode) return <div className="article"><p>Episode not found.</p></div>;
 
   const tcs = season.votingHistory.filter((tc) => tc.episode === episode.number);
+
+  // Group TCs for tabbing — group by tid, but split into separate groups when
+  // multiple TCs share the same tid (e.g. double merged tribals)
+  const tcGroups = [];
+  const tidCount = new Map();
+  tcs.forEach((tc) => { const k = tc.tid ?? '__merged__'; tidCount.set(k, (tidCount.get(k) || 0) + 1); });
+  const tidMap = new Map();
+  tcs.forEach((tc) => {
+    const tidKey = tc.tid ?? '__merged__';
+    const hasDupes = tidCount.get(tidKey) > 1;
+    const key = hasDupes ? tc.tcid : tidKey;  // use tcid when multiple TCs share a tid
+    if (!tidMap.has(key)) { tidMap.set(key, []); tcGroups.push({ key, tcs: tidMap.get(key) }); }
+    tidMap.get(key).push(tc);
+  });
+  const isMultiTc = tcGroups.length > 1;
+  const resolvedKey = (isMultiTc && activeTabKey && tcGroups.some(g => g.key === activeTabKey))
+    ? activeTabKey : tcGroups[0]?.key;
   const embedUrl = getYouTubeEmbedUrl(episode.videoUrl, episode.videoEndTime);
+
+  // Hash-based TC tab switching: #tribal-<tcid> → switch to that TC's tab & scroll
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash || !isMultiTc) return;
+    const m = hash.match(/^#tribal-(.+)/);
+    if (!m) return;
+    const tcid = m[1];
+    const group = tcGroups.find(g => g.tcs.some(t => t.tcid === tcid));
+    if (group) {
+      setActiveTabKey(group.key);
+      setTimeout(() => {
+        document.getElementById('tribal-council')?.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    }
+  }, [eid]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const idx = season.episodes.findIndex((e) => e.eid === eid);
   const prev = season.episodes[idx - 1];
@@ -383,40 +417,34 @@ export default function EpisodePage() {
         })()}
       </div>
 
-      {/* Episode video — thumbnail + play button opens modal */}
+      {/* Episode thumbnails — one per section (challenges, journey, TC, firemaking) */}
       {embedUrl ? (() => {
-        // Determine which image the main thumbnail uses, and whether IC is shown separately
-        const hasEpisodeImage = !!episode.episodeImageUrl;
-        const hasRewardImage = !!episode.rewardChallenge?.imageUrl;
         const icImage = episode.immunityChallenge?.imageUrl;
-        const mainThumbIsIC = !hasEpisodeImage && !hasRewardImage && !!icImage;
-        const videoId = getYouTubeVideoId(episode.videoUrl);
-        const thumb = episode.episodeImageUrl || episode.rewardChallenge?.imageUrl || icImage || (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null);
-        const modalSrc = embedUrl.includes('?') ? embedUrl + '&autoplay=1' : embedUrl + '?autoplay=1';
         const fmTc = tcs.find((tc) => tc.firemaking?.imageUrl);
         const fm = fmTc?.firemaking;
         const fmPlayUrl = fm?.videoTimestamp != null ? buildEmbedAt(episode.videoUrl, fm.videoTimestamp) : null;
-        // When main thumbnail IS the IC image, link its play button to the challenge timestamp
-        const mainPlaySrc = mainThumbIsIC && episode.immunityChallenge?.videoTimestamp != null
-          ? buildEmbedAt(episode.videoUrl, episode.immunityChallenge.videoTimestamp)
-          : modalSrc;
-        const mainPlayTitle = mainThumbIsIC
-          ? (episode.immunityChallenge?.name || 'Immunity Challenge')
-          : `Episode ${episode.number}`;
         return (
           <div className="episode-thumbs-row">
-            <div>
-              <div className="episode-thumb-wrapper" onClick={() => setModal({ src: mainPlaySrc, title: mainPlayTitle })}>
-                {thumb && <img src={thumb} alt={`Episode ${episode.number} thumbnail`} />}
-                <div className="episode-thumb-play">
-                  <div className="episode-thumb-play-btn">▶</div>
+            {episode.rewardChallenge?.imageUrl && (() => {
+              const rcTs = episode.rewardChallenge.videoTimestamp;
+              const rcEmbed = rcTs != null ? buildEmbedAt(episode.videoUrl, rcTs) : null;
+              return (
+                <div>
+                  <div className="episode-thumb-wrapper"
+                    onClick={rcEmbed ? () => setModal({ src: rcEmbed, title: episode.rewardChallenge.name || 'Reward Challenge' }) : undefined}
+                    style={rcEmbed ? undefined : { cursor: 'default' }}>
+                    <img src={episode.rewardChallenge.imageUrl} alt={episode.rewardChallenge.name || 'Reward Challenge'} />
+                    {rcEmbed && (
+                      <div className="episode-thumb-play">
+                        <div className="episode-thumb-play-btn">▶</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="episode-thumb-label">{episode.rewardChallenge.name || 'Reward'}</div>
                 </div>
-              </div>
-              {episode.rewardChallenge?.name && <div className="episode-thumb-label">{episode.rewardChallenge.name}</div>}
-              {mainThumbIsIC && episode.immunityChallenge?.name && <div className="episode-thumb-label">{episode.immunityChallenge.name}</div>}
-            </div>
-            {/* Show IC thumbnail separately only when it's NOT already the main thumbnail */}
-            {!mainThumbIsIC && icImage && (() => {
+              );
+            })()}
+            {icImage && (() => {
               const icTs = episode.immunityChallenge.videoTimestamp;
               const icEmbed = icTs != null ? buildEmbedAt(episode.videoUrl, icTs) : null;
               return (
@@ -454,29 +482,29 @@ export default function EpisodePage() {
                 </div>
               );
             })()}
-            {(() => {
-              const tcWithImage = tcs.find(tc => tc.imageUrl);
-              if (!tcWithImage) return null;
-              const tcEmbed = tcWithImage.videoTimestamp != null
-                ? buildEmbedAt(episode.videoUrl, tcWithImage.videoTimestamp)
+            {tcs.filter(tc => tc.imageUrl).map((tc) => {
+              const tcEmbed = tc.videoTimestamp != null
+                ? buildEmbedAt(episode.videoUrl, tc.videoTimestamp)
                 : null;
-              const tcTribe = tcWithImage.tid ? season.tribes.find(t => t.tid === tcWithImage.tid) : null;
+              const tcTribe = tc.tid ? season.tribes.find(t => t.tid === tc.tid) : null;
+              const label = tcs.filter(t => t.imageUrl).length > 1 && tcTribe
+                ? `TC — ${tcTribe.name}` : 'Tribal Council';
               return (
-                <div>
+                <div key={tc.tcid}>
                   <div className="episode-thumb-wrapper"
                     onClick={tcEmbed ? () => setModal({ src: tcEmbed, title: `Tribal Council${tcTribe ? ' — ' + tcTribe.name : ''}` }) : undefined}
                     style={tcEmbed ? undefined : { cursor: 'default' }}>
-                    <img src={tcWithImage.imageUrl} alt="Tribal Council" />
+                    <img src={tc.imageUrl} alt={label} />
                     {tcEmbed && (
                       <div className="episode-thumb-play">
                         <div className="episode-thumb-play-btn">▶</div>
                       </div>
                     )}
                   </div>
-                  <div className="episode-thumb-label">Tribal Council</div>
+                  <div className="episode-thumb-label">{label}</div>
                 </div>
               );
-            })()}
+            })}
             {fm && (
               <div>
                 <div className="episode-thumb-wrapper"
@@ -560,6 +588,38 @@ export default function EpisodePage() {
                   })}
                 </div>
               )}
+              {j.dialogue && j.dialogue.length > 0 && (
+                <div className="confessional-bubbles" style={{ marginTop: 16 }}>
+                  {j.dialogue.map((d, i) => {
+                    const member = season.cast.find((c) => c.pid === d.pid);
+                    if (!member) return null;
+                    const tribe = member ? season.tribes.find((t) => t.tid === member.tid) : null;
+                    return (
+                      <div key={i} className="confessional-bubble" style={{ '--tribe-color': tribe?.color || '#555' }}>
+                        <div className="confessional-bubble-avatar">
+                          <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
+                            <Avatar name={member.name} color={tribe?.color || '#555'} size={48}
+                              photoUrl={member.photoUrl} imgStyle={member.photoStyle}
+                              pid={member.pid} noBorder />
+                          </Link>
+                        </div>
+                        <div className="confessional-bubble-content">
+                          <div className="confessional-bubble-header">
+                            <Link to={`/season/${sid}/cast/${slugify(member.name)}`} className="confessional-bubble-name">
+                              {member.name}
+                            </Link>
+                          </div>
+                          <div className="confessional-bubble-quote">
+                            <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
+                            {d.quote}
+                            <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </>
         );
@@ -567,27 +627,53 @@ export default function EpisodePage() {
 
       {/* Pre-Tribal Confessionals */}
       {tcs.length > 0 && tcs.some(tc => tc.confessionals?.length > 0) && (() => {
-        // Collect all confessionals across TCs for this episode
-        const allConfessionals = tcs.flatMap(tc =>
+        // Collect confessionals — filter by active tab for multi-TC episodes
+        const activeGroup = tcGroups.find(g => g.key === resolvedKey);
+        const sourceTcs = isMultiTc && activeGroup ? activeGroup.tcs : tcs;
+        const allConfessionals = sourceTcs.flatMap(tc =>
           (tc.confessionals || []).map(c => ({ ...c, tcid: tc.tcid, tid: tc.tid }))
         );
-        if (allConfessionals.length === 0) return null;
+        if (allConfessionals.length === 0 && !isMultiTc) return null;
         return (
           <>
             <h2 id="confessionals">Confessionals</h2>
+            {isMultiTc && (
+              <div className="tp-tc-tabs" style={{ marginBottom: 12 }}>
+                {tcGroups.map((group, gi) => {
+                  const tc0 = group.tcs[0];
+                  const tribe = season.tribes.find(t => t.tid === tc0.tid);
+                  const isActive = group.key === resolvedKey;
+                  const label = tribe?.name || (tcGroups.length > 1 ? `Tribal ${gi + 1}` : 'Tribal');
+                  const color = tribe?.color || season.mergeTribe?.color;
+                  return (
+                    <button
+                      key={group.key}
+                      className={`tp-tc-tab${isActive ? ' active' : ''}`}
+                      style={isActive ? { borderBottomColor: color } : undefined}
+                      onClick={() => setActiveTabKey(group.key)}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <div className="confessional-bubbles">
               {allConfessionals.map((c) => {
                 const member = season.cast.find(p => p.pid === c.pid);
                 if (!member) return null;
-                const tribe = season.tribes.find(t => t.tid === member.tid);
+                const isMergedTc = sourceTcs.some(tc => !tc.tid);
+                const tribeColor = isMergedTc
+                  ? (season.mergeTribe?.color || '#555')
+                  : (season.tribes.find(t => t.tid === member.tid)?.color || '#555');
                 const playUrl = (episode.videoUrl && c.timestamp != null)
                   ? buildEmbedAt(episode.videoUrl, c.timestamp)
                   : null;
                 return (
-                  <div key={c.pid} className="confessional-bubble" style={{ '--tribe-color': tribe?.color || '#555' }}>
+                  <div key={c.pid} className="confessional-bubble" style={{ '--tribe-color': tribeColor }}>
                     <div className="confessional-bubble-avatar">
                       <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
-                        <Avatar name={member.name} color={tribe?.color || '#555'} size={48}
+                        <Avatar name={member.name} color={tribeColor} size={48}
                           photoUrl={member.photoUrl} imgStyle={member.photoStyle}
                           pid={member.pid} noBorder />
                       </Link>
@@ -623,20 +709,16 @@ export default function EpisodePage() {
         );
       })()}
 
-      {/* Tribal Council(s) — group by tribe so tie+revote merges into one card */}
+      {/* Tribal Council(s) — filter by active tribe tab for multi-TC episodes */}
       {tcs.length > 0 && (() => {
-        const tcGroups = [];
-        const tidMap = new Map();
-        tcs.forEach((tc) => {
-          const key = tc.tid ?? '__merged__';
-          if (!tidMap.has(key)) { tidMap.set(key, []); tcGroups.push(tidMap.get(key)); }
-          tidMap.get(key).push(tc);
-        });
+        const visibleGroups = isMultiTc
+          ? tcGroups.filter(g => g.key === resolvedKey)
+          : tcGroups;
         return (
           <>
             <h2 id="tribal-council">Tribal Council{tcGroups.length > 1 ? 's' : ''}</h2>
-            {tcGroups.map((group, gi) => (
-              <TribalCouncilCard key={gi} tcs={group} season={season} sid={sid} episode={episode} onPlay={(src, title) => setModal({ src, title })} />
+            {visibleGroups.map((group, gi) => (
+              <TribalCouncilCard key={gi} tcs={group.tcs} season={season} sid={sid} episode={episode} onPlay={(src, title) => setModal({ src, title })} />
             ))}
           </>
         );
