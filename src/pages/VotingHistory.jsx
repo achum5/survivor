@@ -36,8 +36,17 @@ export default function VotingHistory() {
 
   // Players sorted best to worst (winner first, first boot last)
   const players = [...season.cast].sort((a, b) => a.placement - b.placement);
-  const tcs = season.votingHistory;
+  // Exclude FTC entries (no votes, no elimination) — jury votes have their own column
+  const tcs = season.votingHistory.filter(tc => !(tc.eliminatedPid === null && tc.votes.length === 0));
   const hasJury = season.juryVotes && season.juryVotes.length > 0;
+
+  // Build footnotes for non-vote TCs (fire-making, etc.)
+  const footnotes = [];
+  tcs.forEach((tc, idx) => {
+    if (tc.votes.length === 0 && tc.eliminatedPid) {
+      footnotes.push({ tcid: tc.tcid, idx, note: tc.notes });
+    }
+  });
 
   function getTribeById(tid) {
     return season.tribes.find((t) => t.tid === tid) || null;
@@ -55,7 +64,11 @@ export default function VotingHistory() {
   }
 
   function getVoteCount(tc) {
-    if (tc.votes.length === 0) return 'No vote';
+    if (tc.votes.length === 0) {
+      const fn = footnotes.find(f => f.tcid === tc.tcid);
+      if (fn) return <span>No vote<sup>{fn.idx + 1}</sup></span>;
+      return 'No vote';
+    }
     const counts = {};
     tc.votes.forEach((v) => { counts[v.votedForPid] = (counts[v.votedForPid] || 0) + 1; });
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
@@ -162,7 +175,7 @@ export default function VotingHistory() {
               return (
                 <tr key={p.pid} className={isWinner ? 'vhist-winner-row' : ''}>
                   <td className="vhist-player-name"
-                    style={{ background: hexToRgba(lastTribeColor, 0.55) }}>
+                    style={{ background: `linear-gradient(${hexToRgba(lastTribeColor, 0.55)}, ${hexToRgba(lastTribeColor, 0.55)}), var(--bg)` }}>
                     <Link to={`/season/${sid}/cast/${slugify(p.name)}`}
                       style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#fff' }}>
                       <Avatar name={p.name} color={lastTribeColor} size={30} photoUrl={p.photoUrl} imgStyle={p.photoStyle} pid={p.pid} noBorder />
@@ -231,6 +244,9 @@ export default function VotingHistory() {
                     if (p.pid === season.runnerUpPid) {
                       return <td className="vhist-cell-finalist">Runner-Up</td>;
                     }
+                    if (p.pid === season.secondRunnerUpPid) {
+                      return <td className="vhist-cell-finalist">2nd Runner-Up</td>;
+                    }
                     return <td className="vhist-cell-dead" />;
                   })()}
                 </tr>
@@ -239,6 +255,16 @@ export default function VotingHistory() {
           </tbody>
         </table>
       </div>
+
+      {footnotes.length > 0 && (
+        <div style={{ marginTop: 14 }}>
+          {footnotes.map((fn) => (
+            <p key={fn.tcid} style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '4px 0' }}>
+              <sup>{fn.idx + 1}</sup> {fn.note}
+            </p>
+          ))}
+        </div>
+      )}
 
       <p style={{ marginTop: 12, fontSize: '0.78rem', color: 'var(--text-muted)' }}>
         🔦 voted out &nbsp;|&nbsp; — did not attend tribal council &nbsp;|&nbsp; 🛡️ vote nullified by idol

@@ -459,11 +459,20 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
 
     const episodeTcs = tcsByEp[epNum] ?? [];
     const playerTcs = isMerged
-      ? episodeTcs
+      ? episodeTcs.filter((tc) =>
+          tc.votes.length === 0 || // fire-making / no-vote TC — all remaining players
+          tc.eliminatedPid === player.pid ||
+          tc.votes.some((v) => v.voterPid === player.pid || v.votedForPid === player.pid)
+        )
       : episodeTcs.filter((tc) => tc.tid === tribeId);
 
     if (playerTcs.length === 0) {
-      const immuneLabel = tribe ? `${tribe.name} Tribe Immune` : 'Tribe Immune';
+      const usedSwp = (season.advantages ?? []).some(
+        (a) => a.type === 'Safety Without Power' && a.holder === player.pid && a.playedEpisode === epNum
+      );
+      const immuneLabel = usedSwp
+        ? 'Safety Without Power'
+        : tribe ? `${tribe.name} Tribe Immune` : 'Tribe Immune';
       tableRows.push({ type: 'immune', epNum, eid: ep.eid, tribe, immuneLabel, phase });
       return;
     }
@@ -486,7 +495,8 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
     });
 
     if (eliminatedEp === epNum) {
-      tableRows.push({ type: 'votedOut' });
+      const isFireMaking = ep.fireMakingChallenge && ep.fireMakingChallenge.loser === player.pid;
+      tableRows.push({ type: 'votedOut', isFireMaking });
       playerOut = true;
     }
   });
@@ -536,7 +546,7 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
             if (row.type === 'votedOut') {
               return (
                 <tr key={i} className="pvote-votedout">
-                  <td colSpan={3}>Voted Out</td>
+                  <td colSpan={3}>{row.isFireMaking ? 'Eliminated (Fire-Making)' : 'Voted Out'}</td>
                 </tr>
               );
             }
@@ -605,7 +615,9 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
                   {isTie    && <span className="pvote-revote-tag"> Tie</span>}
                 </td>
                 <td className="pvote-cast-cell">
-                  {myVote ? (
+                  {tc.votes.length === 0 ? (
+                    <em className="pvote-no-vote">No Vote</em>
+                  ) : myVote ? (
                     votedForPlayer ? (
                       <Link to={`/season/${sid}/cast/${slugify(votedForPlayer.name)}`}
                         className="pvote-vote-chip">
@@ -630,7 +642,7 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
                               <Link to={`/season/${sid}/cast/${slugify(voter.name)}`}
                                 style={{
                                   display: 'inline-flex', alignItems: 'center', gap: 4,
-                                  color: v.idolNullified ? 'var(--text-muted)' : 'var(--link)',
+                                  color: v.idolNullified ? 'rgba(255,255,255,0.7)' : 'var(--link)',
                                   textDecoration: v.idolNullified ? 'line-through' : 'none',
                                 }}>
                                 <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={24} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />

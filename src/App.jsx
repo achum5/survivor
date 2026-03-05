@@ -49,15 +49,6 @@ function AppInner() {
         </footer>
       </div>
 
-      <button
-        className={`photo-edit-toggle${editMode ? ' active' : ''}`}
-        onClick={() => { setEditMode((v) => !v); setEditing(null); }}
-        title="Toggle photo edit mode (press E)"
-      >
-        ✏️ {editMode ? 'Editing On' : 'Edit Photos'}
-      </button>
-
-      {editing && <PhotoEditorPanel editing={editing} onClose={() => setEditing(null)} />}
     </div>
   );
 }

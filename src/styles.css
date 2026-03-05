@@ -750,23 +750,35 @@ a.cast-tribe-label:hover {
 }
 
 .vh-table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 0.78rem;
   min-width: 100%;
 }
 
 .vh-table th,
 .vh-table td {
-  border: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
   padding: 4px 6px;
   text-align: center;
   white-space: nowrap;
+}
+.vh-table th:first-child,
+.vh-table td:first-child {
+  border-left: 1px solid var(--border);
+}
+.vh-table thead tr:first-child th {
+  border-top: 1px solid var(--border);
 }
 
 /* Corner cell — top-left, spans 3 header rows */
 .vh-corner {
   background: var(--bg-card);
   min-width: 90px;
+  position: sticky;
+  left: 0;
+  z-index: 4;
 }
 
 /* Episode number header */
@@ -837,42 +849,32 @@ a.cast-tribe-label:hover {
   color: #e8c86a;
 }
 
-/* Tribe indicator column */
-.vh-tribe-pips {
-  padding: 0 !important;
-  border-right: none !important;
-  white-space: nowrap;
-  width: 20px;
-  min-width: 20px;
-  text-align: center;
-  vertical-align: middle;
-  position: relative;
-}
-.vh-tribe-pips-link {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+/* Tribe arrows inline with player name */
+.vh-tribe-pips-inline {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
 }
 .vh-tribe-arrow {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   line-height: 1;
   display: inline-block;
   margin: 0 -1px;
   filter: drop-shadow(1px 0 1px rgba(0,0,0,0.4));
   vertical-align: middle;
-  position: relative;
-  z-index: 1;
   text-decoration: none;
 }
 
-/* Player name cell */
+/* Player name cell (single sticky column) */
 .vh-player-cell {
   text-align: left !important;
   padding: 5px 8px 5px 4px !important;
-  background: var(--bg-card);
   white-space: nowrap;
-  min-width: 80px;
-  border-left: none !important;
+  min-width: 90px;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.3);
 }
 
 .vh-player-link {
@@ -910,7 +912,7 @@ a.cast-tribe-label:hover {
 
 .vh-nullified {
   text-decoration: line-through;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 /* Jury vote cell */
@@ -1345,16 +1347,24 @@ a.cast-tribe-label:hover {
 
 /* ── New Voting History Table ────────────────────────── */
 .vhist-table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 0.78rem;
   min-width: 100%;
 }
 
 .vhist-table th, .vhist-table td {
-  border: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
   padding: 4px 7px;
   text-align: center;
   white-space: nowrap;
+}
+.vhist-table th:first-child, .vhist-table td:first-child {
+  border-left: 1px solid var(--border);
+}
+.vhist-table thead tr:first-child th {
+  border-top: 1px solid var(--border);
 }
 
 .vhist-player-header {
@@ -1365,6 +1375,9 @@ a.cast-tribe-label:hover {
   text-align: left !important;
   padding: 5px 10px !important;
   min-width: 110px;
+  position: sticky;
+  left: 0;
+  z-index: 3;
 }
 
 .vhist-phase-header {
@@ -1398,6 +1411,10 @@ a.cast-tribe-label:hover {
   text-align: left;
   padding: 5px 10px;
   font-weight: 500;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.3);
 }
 
 .vhist-player-name a { color: #fff; text-decoration: none; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
@@ -1669,12 +1686,17 @@ a.cast-tribe-label:hover {
 
 .episode-header-row {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 .episode-header-row h1 { margin-bottom: 0; }
+.ep-select-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
 .episode-no-video {
   padding: 20px;
@@ -2053,8 +2075,10 @@ a.cast-tribe-label:hover {
 }
 
 .video-modal-content {
-  width: 90vw;
-  max-width: 1100px;
+  width: 85vw;
+  max-width: 960px;
+  max-height: 90vh;
+  margin: 16px;
 }
 
 .video-modal-content iframe {
@@ -2063,6 +2087,28 @@ a.cast-tribe-label:hover {
   aspect-ratio: 16 / 9;
   border: none;
   border-radius: 8px;
+}
+
+.video-modal-image {
+  max-width: 550px;
+  background: #1a1a2e;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.video-modal-image img {
+  border-radius: 0 0 8px 8px;
+}
+
+.challenge-results-link {
+  color: #7eb8da;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.challenge-results-link:hover {
+  color: #aed4ee;
 }
 
 .video-modal-close {
@@ -2203,6 +2249,42 @@ a.cast-tribe-label:hover {
   background: var(--bg-hover, var(--border));
   border-color: var(--link);
   color: var(--link-hover);
+}
+
+/* Episode arrow nav (below dropdown) */
+.ep-arrow-nav {
+  display: flex;
+}
+.ep-arrow-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.75rem;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+.ep-arrow-btn:first-child {
+  border-radius: 3px 0 0 3px;
+}
+.ep-arrow-btn:last-child {
+  border-radius: 0 3px 3px 0;
+  border-left: none;
+}
+.ep-arrow-btn:hover:not(.disabled) {
+  background: var(--border);
+  color: var(--link);
+  text-decoration: none;
+}
+.ep-arrow-btn.disabled {
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* ── Season Overview Episode Table ──────────────────────────── */

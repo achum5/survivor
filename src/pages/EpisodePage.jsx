@@ -1,6 +1,6 @@
 // src/pages/EpisodePage.jsx
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, slugify, getYouTubeEmbedUrl } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -22,7 +22,7 @@ function buildEmbedAt(videoUrl, startSeconds) {
   return `https://www.youtube.com/embed/${videoId}?start=${Math.round(startSeconds)}&autoplay=1`;
 }
 
-function VideoModal({ src, title, onClose }) {
+function VideoModal({ src, title, onClose, isImage }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
@@ -31,16 +31,20 @@ function VideoModal({ src, title, onClose }) {
 
   return (
     <div className="video-modal-backdrop" onClick={onClose}>
-      <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className={`video-modal-content${isImage ? ' video-modal-image' : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="video-modal-bar">
           {title && <span className="video-modal-title">{title}</span>}
           <button className="video-modal-close" onClick={onClose} title="Close (Esc)">✕</button>
         </div>
-        <iframe
-          src={src}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+        {isImage ? (
+          <img src={src} alt={title || 'Results'} style={{ width: '100%', display: 'block' }} />
+        ) : (
+          <iframe
+            src={src}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        )}
       </div>
     </div>
   );
@@ -97,7 +101,7 @@ function renderVoteGroups(tc, season, sid, eliminatedPid) {
             <div className="tc-target-cell">
               {group.target && (
                 <Link to={`/season/${sid}/cast/${slugify(group.target.name)}`}>
-                  <Avatar name={group.target.name} color={getTribeColor(season, group.target.tid)}
+                  <Avatar name={group.target.name} color={getTribeColor(season, tc.tid || group.target.tid)}
                     size={48} photoUrl={group.target.photoUrl} imgStyle={group.target.photoStyle}
                     pid={group.target.pid} noBorder />
                 </Link>
@@ -119,7 +123,7 @@ function renderVoteGroups(tc, season, sid, eliminatedPid) {
                   return voter ? (
                     <Link key={v.vid} to={`/season/${sid}/cast/${slugify(voter.name)}`}
                       style={{ opacity: v.idolNullified ? 0.45 : 1 }}>
-                      <Avatar name={voter.name} color={getTribeColor(season, voter.tid)}
+                      <Avatar name={voter.name} color={getTribeColor(season, tc.tid || voter.tid)}
                         size={38} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle}
                         pid={voter.pid} noBorder />
                     </Link>
@@ -198,7 +202,7 @@ function TribalCouncilCard({ tcs, season, sid, episode, onPlay }) {
       {eliminated && !elimTc?.confessionalQuote && (
         <div className="tc-voted-out-footer">
           <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`} style={{ filter: 'grayscale(1)', flexShrink: 0 }}>
-            <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)}
+            <Avatar name={eliminated.name} color={getTribeColor(season, tc0.tid || eliminated.tid)}
               size={36} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle}
               pid={eliminated.pid} noBorder />
           </Link>
@@ -230,7 +234,7 @@ function TribalCouncilCard({ tcs, season, sid, episode, onPlay }) {
             <div className="tc-final-words-body">
               <div className="tc-final-words-avatar" style={{ filter: 'grayscale(1)' }}>
                 <Link to={`/season/${sid}/cast/${slugify(eliminated.name)}`}>
-                  <Avatar name={eliminated.name} color={getTribeColor(season, eliminated.tid)}
+                  <Avatar name={eliminated.name} color={getTribeColor(season, tc0.tid || eliminated.tid)}
                     size={56} photoUrl={eliminated.photoUrl} imgStyle={eliminated.photoStyle}
                     pid={eliminated.pid} noBorder />
                 </Link>
@@ -304,6 +308,19 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
           {challenge.reward && (
             <tr><th>Reward</th><td>{challenge.reward}</td></tr>
           )}
+          {challenge.secondaryImageUrl && (
+            <tr>
+              <th>Results</th>
+              <td>
+                <span
+                  className="challenge-results-link"
+                  onClick={() => onPlay(challenge.secondaryImageUrl, `${challenge.name || label} — Results`, true)}
+                >
+                  View Results
+                </span>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
@@ -313,8 +330,12 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
 export default function EpisodePage() {
   const { sid, eid } = useParams();
   const navigate = useNavigate();
-  const [modal, setModal] = useState(null); // { src, title }
+  const [modal, setModal] = useState(null); // { src, title, isImage? }
   const [activeTabKey, setActiveTabKey] = useState(null);
+  const prevEid = useRef(eid);
+  useEffect(() => {
+    if (prevEid.current !== eid) { setActiveTabKey(null); prevEid.current = eid; }
+  }, [eid]);
 
   const season = SEASONS.find((s) => s.sid === sid);
   if (!season) return <div className="article"><p>Season not found.</p></div>;
@@ -322,7 +343,7 @@ export default function EpisodePage() {
   const episode = season.episodes.find((e) => e.eid === eid);
   if (!episode) return <div className="article"><p>Episode not found.</p></div>;
 
-  const tcs = season.votingHistory.filter((tc) => tc.episode === episode.number);
+  const tcs = season.votingHistory.filter((tc) => tc.episode === episode.number && !(tc.eliminatedPid === null && tc.votes.length === 0));
 
   // Group TCs for tabbing — group by tid, but split into separate groups when
   // multiple TCs share the same tid (e.g. double merged tribals)
@@ -367,7 +388,7 @@ export default function EpisodePage() {
 
   return (
     <div className="article">
-      {modal && <VideoModal src={modal.src} title={modal.title} onClose={() => setModal(null)} />}
+      {modal && <VideoModal src={modal.src} title={modal.title} isImage={modal.isImage} onClose={() => setModal(null)} />}
       <Breadcrumbs crumbs={[
         { label: 'Main Page', to: '/' },
         { label: season.name, to: `/season/${sid}` },
@@ -375,32 +396,33 @@ export default function EpisodePage() {
         { label: `Episode ${episode.number}` },
       ]} />
 
-      <div className="episode-nav episode-nav-top">
-        {prev ? (
-          <Link to={`/season/${sid}/episode/${prev.eid}`} className="episode-nav-btn episode-nav-btn-sm">
-            ← Episode {prev.number}
-          </Link>
-        ) : <span />}
-        {next ? (
-          <Link to={`/season/${sid}/episode/${next.eid}`} className="episode-nav-btn episode-nav-btn-sm">
-            Episode {next.number} →
-          </Link>
-        ) : <span />}
-      </div>
-
       <div className="episode-header-row">
-        <h1>
-          <select
-            className="player-select"
-            style={{ width: 'auto' }}
-            value={eid}
-            onChange={(e) => navigate(`/season/${sid}/episode/${e.target.value}`)}
-          >
-            {season.episodes.map((ep) => (
-              <option key={ep.eid} value={ep.eid}>Episode {ep.number}</option>
-            ))}
-          </select>
-        </h1>
+        <div className="ep-select-col">
+          <h1>
+            <select
+              className="player-select"
+              style={{ width: 'auto' }}
+              value={eid}
+              onChange={(e) => navigate(`/season/${sid}/episode/${e.target.value}`)}
+            >
+              {season.episodes.map((ep) => (
+                <option key={ep.eid} value={ep.eid}>Episode {ep.number}</option>
+              ))}
+            </select>
+          </h1>
+          <div className="ep-arrow-nav">
+            {prev ? (
+              <Link to={`/season/${sid}/episode/${prev.eid}`} className="ep-arrow-btn" title={`Episode ${prev.number}`}>←</Link>
+            ) : (
+              <span className="ep-arrow-btn disabled">←</span>
+            )}
+            {next ? (
+              <Link to={`/season/${sid}/episode/${next.eid}`} className="ep-arrow-btn" title={`Episode ${next.number}`}>→</Link>
+            ) : (
+              <span className="ep-arrow-btn disabled">→</span>
+            )}
+          </div>
+        </div>
         {(() => {
           const sections = [];
           if (hasReward || hasImmunity) sections.push({ id: 'challenges', label: 'Challenges' });
@@ -542,8 +564,8 @@ export default function EpisodePage() {
       {(hasReward || hasImmunity) && (
         <>
           <h2 id="challenges">Challenges</h2>
-          <ChallengeSection label="Reward Challenge"   challenge={episode.rewardChallenge}   season={season} sid={sid} eid={eid} ctype="reward"   episode={episode} onPlay={(src, title) => setModal({ src, title })} />
-          <ChallengeSection label="Immunity Challenge" challenge={episode.immunityChallenge} season={season} sid={sid} eid={eid} ctype="immunity" episode={episode} onPlay={(src, title) => setModal({ src, title })} />
+          <ChallengeSection label="Reward Challenge"   challenge={episode.rewardChallenge}   season={season} sid={sid} eid={eid} ctype="reward"   episode={episode} onPlay={(src, title, isImage) => setModal({ src, title, isImage })} />
+          <ChallengeSection label="Immunity Challenge" challenge={episode.immunityChallenge} season={season} sid={sid} eid={eid} ctype="immunity" episode={episode} onPlay={(src, title, isImage) => setModal({ src, title, isImage })} />
         </>
       )}
 
@@ -663,9 +685,10 @@ export default function EpisodePage() {
                 const member = season.cast.find(p => p.pid === c.pid);
                 if (!member) return null;
                 const isMergedTc = sourceTcs.some(tc => !tc.tid);
+                const tcTid = c.tid || sourceTcs[0]?.tid;
                 const tribeColor = isMergedTc
                   ? (season.mergeTribe?.color || '#555')
-                  : (season.tribes.find(t => t.tid === member.tid)?.color || '#555');
+                  : (season.tribes.find(t => t.tid === tcTid)?.color || '#555');
                 const playUrl = (episode.videoUrl && c.timestamp != null)
                   ? buildEmbedAt(episode.videoUrl, c.timestamp)
                   : null;
@@ -685,7 +708,7 @@ export default function EpisodePage() {
                         </Link>
                         {playUrl && (
                           <button className="tc-play-btn confessional-play-btn"
-                            onClick={() => setModal({ src: playUrl, title: `${member.name} — Confessional` })}
+                            onClick={() => setModal({ src: playUrl, title: `${member.name} — Confessional (Ep. ${episode.number})` })}
                             title={`Watch ${member.name}'s confessional`}>
                             ▶
                           </button>
@@ -833,19 +856,6 @@ export default function EpisodePage() {
         );
       })()}
 
-      {/* Prev / Next */}
-      <div className="episode-nav">
-        {prev ? (
-          <Link to={`/season/${sid}/episode/${prev.eid}`} className="episode-nav-btn">
-            ← Episode {prev.number}
-          </Link>
-        ) : <span />}
-        {next ? (
-          <Link to={`/season/${sid}/episode/${next.eid}`} className="episode-nav-btn">
-            Episode {next.number} →
-          </Link>
-        ) : <span />}
-      </div>
     </div>
   );
 }

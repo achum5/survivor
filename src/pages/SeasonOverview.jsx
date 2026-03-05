@@ -436,7 +436,7 @@ export default function SeasonOverview() {
       <h2 id="voting-history">Voting History</h2>
       {season.votingHistory.length > 0 ? (() => {
         const vhPlayers = [...season.cast].sort((a, b) => a.placement - b.placement);
-        const vhTcs = season.votingHistory;
+        const vhTcs = season.votingHistory.filter(tc => !(tc.eliminatedPid === null && tc.votes.length === 0));
         const hasJury = season.juryVotes && season.juryVotes.length > 0;
 
         // Track at which TC index each player was eliminated
@@ -511,7 +511,7 @@ export default function SeasonOverview() {
                 <thead>
                   {/* Row 1: Episode numbers */}
                   <tr>
-                    <th className="vh-corner" rowSpan={3} colSpan={2}></th>
+                    <th className="vh-corner" rowSpan={3}></th>
                     {episodeSpans.map((es, i) => (
                       <th key={i} colSpan={es.span} className="vh-ep-header">
                         {es.eid
@@ -591,19 +591,20 @@ export default function SeasonOverview() {
                           const lastColor = lastTribe?.color || '#333';
                           const prevTribes = tribeObjs.slice(0, -1);
                           return (
-                            <td className="vh-tribe-pips" style={{ background: lastColor }}>
-                              {lastTribe && <Link to={`/season/${sid}/tribe/${lastTribe.tid}`} className="vh-tribe-pips-link" />}
-                              {prevTribes.map((t, i) => (
-                                <Link key={i} to={`/season/${sid}/tribe/${t.tid}`} className="vh-tribe-arrow" style={{ color: t.color }}>▶</Link>
-                              ))}
+                            <td className="vh-player-cell" style={{ background: lastColor }}>
+                              {prevTribes.length > 0 && (
+                                <span className="vh-tribe-pips-inline">
+                                  {prevTribes.map((t, i) => (
+                                    <Link key={i} to={`/season/${sid}/tribe/${t.tid}`} className="vh-tribe-arrow" style={{ color: t.color }}>▶</Link>
+                                  ))}
+                                </span>
+                              )}
+                              <Link to={`/season/${sid}/cast/${slugify(p.name)}`} className="vh-player-link">
+                                {p.name}
+                              </Link>
                             </td>
                           );
                         })()}
-                        <td className="vh-player-cell">
-                          <Link to={`/season/${sid}/cast/${slugify(p.name)}`} className="vh-player-link">
-                            {p.name}
-                          </Link>
-                        </td>
 
                         {vhTcs.map((tc, tcIdx) => {
                           const alreadyElim = eliminatedAtIdx[p.pid] !== undefined
@@ -624,7 +625,7 @@ export default function SeasonOverview() {
                             const target = season.cast.find((pl) => pl.pid === vote.votedForPid)?.name ?? '?';
                             return (
                               <td key={tc.tcid} className="vh-cell"
-                                style={{ background: hexToRgba(cellColor, 0.55) }}>
+                                style={{ background: cellColor }}>
                                 <span className={vote.idolNullified ? 'vh-nullified' : ''}>
                                   {target}
                                 </span>
@@ -638,7 +639,7 @@ export default function SeasonOverview() {
                             if (tc.firemaking.loser === p.pid) {
                               return (
                                 <td key={tc.tcid} className="vh-cell vh-cell-fire-elim"
-                                  style={{ background: hexToRgba(cellColor, 0.55) }}>
+                                  style={{ background: cellColor }}>
                                   Eliminated
                                 </td>
                               );
@@ -646,7 +647,7 @@ export default function SeasonOverview() {
                             // Everyone else still in the game = No vote
                             return (
                               <td key={tc.tcid} className="vh-cell vh-cell-no-vote"
-                                style={{ background: hexToRgba(cellColor, 0.55) }}>
+                                style={{ background: cellColor }}>
                                 No vote<sup className="vh-footnote">*</sup>
                               </td>
                             );
