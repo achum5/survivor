@@ -1293,14 +1293,13 @@ a.cast-tribe-label:hover {
 
 /* ─── Player Voting History ─────────────────────────── */
 
-.pvote-wrap { overflow-x: auto; }
+.pvote-wrap { overflow-x: auto; max-width: 700px; }
 
 .pvote-table {
   border-collapse: collapse;
   font-size: 0.82rem;
   table-layout: fixed;
   width: 100%;
-  max-width: 700px;
 }
 
 .pvote-table th {
@@ -1419,7 +1418,13 @@ a.cast-tribe-label:hover {
   font-size: 0.72rem;
 }
 .pvote-jury-voters {
-  white-space: normal;
+  white-space: normal !important;
+  overflow: hidden;
+}
+.pvote-jury-voters-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
 }
 .pvote-jury-voters a {
   display: inline-flex;
@@ -1428,7 +1433,7 @@ a.cast-tribe-label:hover {
   color: #fff;
   text-decoration: none;
   font-size: 0.82rem;
-  margin-right: 10px;
+  white-space: nowrap;
 }
 .pvote-chose-f3 {
   font-size: 0.82rem;
