@@ -873,7 +873,7 @@ export default function PlayerPage() {
         <Infobox
           headerContent={
             <div className="infobox-header-player">
-              <span className="infobox-player-name">{player.name}</span>
+              <span className="infobox-player-name">{player.fullName || player.name}</span>
               {(() => {
                 const ig = player.instagram || appearances.find(a => a.castMember.instagram)?.castMember.instagram;
                 return ig ? (

@@ -35,12 +35,16 @@ export default function TopHeader() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [seasonDropOpen, setSeasonDropOpen] = useState(false);
   const mobileNavRef = useRef(null);
+  const seasonDropRef = useRef(null);
 
   useClickOutside(mobileNavRef, () => setMobileNavOpen(false));
+  useClickOutside(seasonDropRef, () => setSeasonDropOpen(false));
 
   useEffect(() => {
     setMobileNavOpen(false);
+    setSeasonDropOpen(false);
   }, [location.pathname, location.hash]);
 
   const parsedSid = parseSid(location.pathname);
@@ -81,18 +85,27 @@ export default function TopHeader() {
 
       {/* Center: season select + nav items */}
       <div className="top-header-center">
-        <select
-          className="top-header-season-select"
-          value={sid || ''}
-          onChange={(e) => {
-            if (e.target.value) navigate(`/season/${e.target.value}`);
-          }}
-        >
-  {!sid && <option value="" disabled>Season</option>}
-          {SEASONS.map((s) => (
-            <option key={s.sid} value={s.sid}>{s.name}</option>
-          ))}
-        </select>
+        <div className="top-header-season-drop" ref={seasonDropRef}>
+          <button
+            className={`top-header-season-btn${seasonDropOpen ? ' open' : ''}`}
+            onClick={() => setSeasonDropOpen((v) => !v)}
+          >
+            {season ? season.name : 'Season'} {seasonDropOpen ? '\u25B4' : '\u25BE'}
+          </button>
+          {seasonDropOpen && (
+            <div className="top-header-season-dropdown">
+              {SEASONS.map((s) => (
+                <button
+                  key={s.sid}
+                  className={`top-header-season-dropdown-item${s.sid === sid ? ' active' : ''}`}
+                  onClick={() => { navigate(`/season/${s.sid}`); setSeasonDropOpen(false); }}
+                >
+                  {s.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Desktop: inline section links */}
         {sid && sections.length > 0 && (

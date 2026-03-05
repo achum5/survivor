@@ -86,28 +86,56 @@ body {
   gap: 4px;
 }
 
-/* Season select in header */
-.top-header-season-select {
-  appearance: none;
-  -webkit-appearance: none;
+/* Season dropdown in header */
+.top-header-season-drop {
+  position: relative;
+}
+.top-header-season-btn {
   background: var(--bg-card);
   color: #fff;
   border: 1px solid var(--border);
   border-radius: 5px;
-  padding: 6px 30px 6px 12px;
+  padding: 6px 10px;
   font-size: 0.88rem;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
   outline: none;
-  transition: border-color 0.15s;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
+  transition: background 0.15s;
 }
-.top-header-season-select:hover,
-.top-header-season-select:focus {
-  border-color: #aaa;
+.top-header-season-btn:hover,
+.top-header-season-btn.open {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+.top-header-season-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 200;
+  min-width: 120px;
+}
+.top-header-season-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 0.82rem;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.top-header-season-dropdown-item:hover,
+.top-header-season-dropdown-item.active {
+  background: rgba(255,255,255,0.1);
 }
 
 /* Desktop inline nav */
@@ -3360,10 +3388,10 @@ a.cast-tribe-label:hover {
   .top-header-title {
     font-size: 0.78rem;
   }
-  .top-header-season-select {
+  .top-header-season-btn {
     font-size: 0.78rem;
-    padding: 6px 26px 6px 10px;
     height: 32px;
+    padding: 0 10px;
   }
   .top-header-nav-toggle {
     height: 32px;
@@ -3861,9 +3889,9 @@ a.cast-tribe-label:hover {
   .top-header-title {
     font-size: 0.68rem;
   }
-  .top-header-season-select {
+  .top-header-season-btn {
     font-size: 0.7rem;
-    padding: 4px 5px;
+    padding: 4px 7px;
   }
   .top-header-nav-toggle {
     font-size: 0.7rem;
