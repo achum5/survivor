@@ -345,18 +345,27 @@ export default function EpisodePage() {
 
   const tcs = season.votingHistory.filter((tc) => tc.episode === episode.number && !(tc.eliminatedPid === null && tc.votes.length === 0));
 
-  // Group TCs for tabbing — group by tid, but split into separate groups when
-  // multiple TCs share the same tid (e.g. double merged tribals)
+  // Group TCs for tabbing — group by tid, keeping tie+revote pairs together
+  // but splitting truly separate tribals (e.g. two different tribe TCs in same episode)
   const tcGroups = [];
-  const tidCount = new Map();
-  tcs.forEach((tc) => { const k = tc.tid ?? '__merged__'; tidCount.set(k, (tidCount.get(k) || 0) + 1); });
-  const tidMap = new Map();
-  tcs.forEach((tc) => {
+  tcs.forEach((tc, i) => {
     const tidKey = tc.tid ?? '__merged__';
-    const hasDupes = tidCount.get(tidKey) > 1;
-    const key = hasDupes ? tc.tcid : tidKey;  // use tcid when multiple TCs share a tid
-    if (!tidMap.has(key)) { tidMap.set(key, []); tcGroups.push({ key, tcs: tidMap.get(key) }); }
-    tidMap.get(key).push(tc);
+    // Check if this TC is a revote of the previous one (same tid, prev had no elimination)
+    const prev = i > 0 ? tcs[i - 1] : null;
+    const isRevote = prev && (prev.tid ?? '__merged__') === tidKey && !prev.eliminatedPid;
+    if (isRevote && tcGroups.length > 0) {
+      // Append to previous group
+      tcGroups[tcGroups.length - 1].tcs.push(tc);
+    } else {
+      // Check if this tid already has a group (different tribal, same tribe)
+      const existing = tcGroups.find(g => g.key === tidKey);
+      if (existing) {
+        // Different tribal for same tribe — use tcid as unique key
+        tcGroups.push({ key: tc.tcid, tcs: [tc] });
+      } else {
+        tcGroups.push({ key: tidKey, tcs: [tc] });
+      }
+    }
   });
   const isMultiTc = tcGroups.length > 1;
   const resolvedKey = (isMultiTc && activeTabKey && tcGroups.some(g => g.key === activeTabKey))
@@ -412,14 +421,14 @@ export default function EpisodePage() {
           </h1>
           <div className="ep-arrow-nav">
             {prev ? (
-              <Link to={`/season/${sid}/episode/${prev.eid}`} className="ep-arrow-btn" title={`Episode ${prev.number}`}>←</Link>
+              <Link to={`/season/${sid}/episode/${prev.eid}`} className="ep-arrow-btn">&#8249; Ep {prev.number}</Link>
             ) : (
-              <span className="ep-arrow-btn disabled">←</span>
+              <span className="ep-arrow-btn disabled">&#8249; Ep</span>
             )}
             {next ? (
-              <Link to={`/season/${sid}/episode/${next.eid}`} className="ep-arrow-btn" title={`Episode ${next.number}`}>→</Link>
+              <Link to={`/season/${sid}/episode/${next.eid}`} className="ep-arrow-btn">Ep {next.number} &#8250;</Link>
             ) : (
-              <span className="ep-arrow-btn disabled">→</span>
+              <span className="ep-arrow-btn disabled">Ep &#8250;</span>
             )}
           </div>
         </div>
@@ -430,9 +439,9 @@ export default function EpisodePage() {
           if (tcs.some(tc => tc.confessionals?.length > 0)) sections.push({ id: 'confessionals', label: 'Confessionals' });
           if (tcs.length > 0) sections.push({ id: 'tribal-council', label: 'Tribal Council' });
           return sections.length > 1 ? (
-            <div className="season-quicknav" style={{ margin: 0 }}>
+            <div className="ep-quicknav">
               {sections.map((s) => (
-                <a key={s.id} href={`#${s.id}`} className="season-quicknav-btn">{s.label}</a>
+                <a key={s.id} href={`#${s.id}`} className="ep-quicknav-btn">{s.label}</a>
               ))}
             </div>
           ) : null;

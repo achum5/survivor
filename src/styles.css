@@ -1695,7 +1695,36 @@ a.cast-tribe-label:hover {
 .ep-select-col {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
+}
+.ep-select-col .player-select {
+  border-color: var(--accent-dim);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.ep-select-col .player-select:hover {
+  border-color: var(--accent);
+}
+.ep-select-col .ep-arrow-btn {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+.ep-select-col .ep-arrow-btn:first-child {
+  border-radius: 0 0 0 5px;
+  border-top: none;
+}
+.ep-select-col .ep-arrow-btn:last-child {
+  border-radius: 0 0 5px 0;
+  border-top: none;
+  border-left-color: var(--accent-dim);
+}
+.ep-select-col .ep-arrow-btn:hover:not(.disabled) {
+  background: var(--accent);
+  color: #000;
+}
+.ep-select-col .ep-arrow-btn.disabled {
+  color: var(--text-muted);
+  opacity: 0.3;
 }
 
 .episode-no-video {
@@ -2252,6 +2281,30 @@ a.cast-tribe-label:hover {
 }
 
 /* Episode arrow nav (below dropdown) */
+/* Episode quicknav buttons */
+.ep-quicknav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.ep-quicknav-btn {
+  padding: 4px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent-dim);
+  border-radius: 20px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.ep-quicknav-btn:hover {
+  background: var(--accent);
+  color: #000;
+  text-decoration: none;
+}
+
 .ep-arrow-nav {
   display: flex;
 }
@@ -2261,11 +2314,12 @@ a.cast-tribe-label:hover {
   justify-content: center;
   flex: 1;
   height: 20px;
+  padding: 0 8px;
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-muted);
   text-decoration: none;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   line-height: 1;
   transition: background 0.15s, color 0.15s;
 }
