@@ -1,16 +1,19 @@
 // src/components/Infobox.jsx
 import { Link } from 'react-router-dom';
 
-export default function Infobox({ title, headerColor = '#e74c3c', rows = [], logo, logoSubHeader, logoStyle, castPhoto, chronology, onLogoClick }) {
+export default function Infobox({ title, headerContent, headerColor = '#e74c3c', rows = [], logo, logoSubHeader, logoStyle, castPhoto, chronology, onLogoClick }) {
+  const showHeader = title || headerContent;
   return (
     <table className="infobox">
-      <thead>
-        <tr>
-          <th colSpan={2} className="infobox-header" style={{ background: headerColor }}>
-            {title}
-          </th>
-        </tr>
-      </thead>
+      {showHeader && (
+        <thead>
+          <tr>
+            <th colSpan={2} className="infobox-header" style={{ background: headerColor }}>
+              {headerContent || title}
+            </th>
+          </tr>
+        </thead>
+      )}
       <tbody>
         {/* Logo */}
         {logo && (

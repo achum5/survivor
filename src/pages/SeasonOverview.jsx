@@ -1,5 +1,5 @@
 // src/pages/SeasonOverview.jsx
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -60,7 +60,6 @@ function linkifySummary(text, season, sid) {
 
 export default function SeasonOverview() {
   const { sid } = useParams();
-  const navigate = useNavigate();
   const seasonIdx = SEASONS.findIndex((s) => s.sid === sid);
   const season = SEASONS[seasonIdx];
   if (!season) return <div className="article"><p>Season not found.</p></div>;
@@ -118,35 +117,9 @@ export default function SeasonOverview() {
 
   return (
     <div className="article">
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name },
-      ]} />
-
-      <h1>
-        <select
-          className="season-select"
-          value={season.sid}
-          onChange={(e) => navigate(`/season/${e.target.value}`)}
-        >
-          {SEASONS.map((s) => (
-            <option key={s.sid} value={s.sid}>{s.name}</option>
-          ))}
-        </select>
-      </h1>
-
-      <nav className="season-quicknav">
-        {season.summary && <a href="#summary" className="season-quicknav-btn">Summary</a>}
-        {season.twists?.length > 0 && <a href="#twists" className="season-quicknav-btn">Twists</a>}
-        <a href="#castaways" className="season-quicknav-btn">Castaways</a>
-        <a href="#episodes" className="season-quicknav-btn">Episodes</a>
-        <a href="#voting-history" className="season-quicknav-btn">Voting History</a>
-      </nav>
-
       <div className="season-content">
         <div className="season-infobox-float">
           <Infobox
-            title={season.name}
             headerColor={season.tribes[0]?.color || '#8b0000'}
             rows={infoRows}
             logo={season.logoPath}

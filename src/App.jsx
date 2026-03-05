@@ -15,7 +15,7 @@ function ScrollToTop() {
   }, [pathname, hash]);
   return null;
 }
-import Sidebar from './components/Sidebar';
+import TopHeader from './components/TopHeader';
 import Home from './pages/Home';
 import SeasonOverview from './pages/SeasonOverview';
 import PlayerPage from './pages/PlayerPage';
@@ -23,17 +23,14 @@ import EpisodeList from './pages/EpisodeList';
 import EpisodePage from './pages/EpisodePage';
 import ChallengePage from './pages/ChallengePage';
 import TribePage from './pages/TribePage';
-import { PhotoEditorProvider, usePhotoEditor } from './context/PhotoEditorContext';
-import PhotoEditorPanel from './components/PhotoEditorPanel';
+import { PhotoEditorProvider } from './context/PhotoEditorContext';
 import './styles.css';
 
 function AppInner() {
-  const { editMode, setEditMode, editing, setEditing } = usePhotoEditor();
-
   return (
     <div className="layout">
       <ScrollToTop />
-      <Sidebar />
+      <TopHeader />
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -48,7 +45,6 @@ function AppInner() {
           14508 Survivor Wiki
         </footer>
       </div>
-
     </div>
   );
 }

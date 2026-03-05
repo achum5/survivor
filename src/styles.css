@@ -7,6 +7,7 @@ html { scroll-behavior: smooth; }
 
 :root {
   --sidebar-width: 220px;
+  --header-height: 56px;
   --bg-page:     #1b1b1b;
   --bg-sidebar:  #151515;
   --bg-card:     #242424;
@@ -34,135 +35,167 @@ body {
   line-height: 1.6;
 }
 
+/* ─── Top Header ───────────────────────────────────── */
+
+.top-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  z-index: 200;
+}
+
+
+.top-header-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-decoration: none;
+}
+
+.top-header-title:hover {
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+/* Header left group */
+.top-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Center group: season select + nav */
+.top-header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Season select in header */
+.top-header-season-select {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.top-header-season-select:hover,
+.top-header-season-select:focus {
+  border-color: #aaa;
+}
+
+/* Desktop inline nav */
+.top-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.top-header-nav-item {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.top-header-nav-item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Mobile nav toggle — hidden on desktop */
+.top-header-nav-mobile {
+  display: none;
+  position: relative;
+}
+
+.top-header-nav-toggle {
+  background: var(--bg-card);
+  color: #fff;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.top-header-nav-toggle:hover,
+.top-header-nav-toggle.open {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.top-header-nav-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  min-width: 160px;
+  padding: 4px 0;
+  z-index: 300;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.top-header-nav-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.top-header-nav-dropdown-item:hover {
+  background: var(--accent);
+  color: #000;
+}
+
 /* ─── Layout ───────────────────────────────────────── */
 
 .layout {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-/* ─── Sidebar ──────────────────────────────────────── */
-
-.sidebar {
-  width: var(--sidebar-width);
-  background: var(--bg-sidebar);
-  border-right: 1px solid var(--border);
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 100;
-  padding-bottom: 32px;
-}
-
-/* Brand bar */
-.sb-brand {
-  display: block;
-  text-decoration: none;
-  border-bottom: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.sb-brand-img {
-  display: block;
-  width: 100%;
-  height: 80px;
-  object-fit: cover;
-  object-position: 55% 45%;
-}
-
-.sb-brand-text {
-  display: block;
-  padding: 6px 12px 8px;
-  font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--accent);
-  text-align: center;
-}
-
-/* Navigation list */
-.sb-nav {
-  padding: 4px 0 20px;
-}
-
-/* Section headers (season names) */
-.sb-section-hdr {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 12px 10px 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--accent);
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  text-align: left;
-}
-
-.sb-section-hdr:hover { color: #fff; }
-
-.sb-arrow {
-  font-size: 0.55rem;
-  width: 10px;
-  flex-shrink: 0;
-  text-align: center;
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-
-.sb-arrow.open {
-  transform: rotate(90deg);
-}
-
-/* Expandable section */
-.sb-expand {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.2s ease;
-}
-
-.sb-expand.open {
-  grid-template-rows: 1fr;
-}
-
-.sb-expand-inner {
-  overflow: hidden;
-}
-
-/* All nav items — flat list */
-.sb-item {
-  display: block;
-  padding: 2px 10px 2px 24px;
-  color: var(--sidebar-link);
-  text-decoration: none;
-  font-size: 0.87rem;
-  line-height: 1.7;
-  transition: color 0.1s;
-}
-
-.sb-item:hover { color: #fff; }
-
-.sb-item.active { color: var(--accent); }
-
-/* Episode sub-items — slightly muted */
-.sb-ep-num {
-  color: var(--text-muted);
-  font-size: 0.82rem;
-}
-
-.sb-item:hover .sb-ep-num { color: #fff; }
-.sb-item.active .sb-ep-num { color: var(--accent); }
 
 /* ─── Main Content ─────────────────────────────────── */
 
 .main-content {
-  margin-left: var(--sidebar-width);
+  margin-top: var(--header-height);
   flex: 1;
   min-width: 0;
 }
@@ -170,7 +203,7 @@ body {
 .article {
   max-width: 960px;
   margin: 0 auto;
-  padding: 28px 36px 60px;
+  padding: 24px 36px 60px;
   overflow-x: hidden;
 }
 
@@ -320,6 +353,43 @@ body {
   font-weight: bold;
   color: #fff;
   text-align: center;
+}
+
+/* Player dropdown + IG inside infobox header */
+.infobox-header-player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.infobox-player-select {
+  background: transparent;
+  color: #fff;
+  border: none;
+  font-family: Georgia, serif;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+}
+
+.infobox-player-select option {
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+.infobox-player-ig {
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.infobox-player-ig:hover {
+  color: #fff;
 }
 
 .infobox-row.even td { background: var(--bg-table-even); }
@@ -3039,44 +3109,6 @@ a.cast-tribe-label:hover {
    MOBILE LAYOUT
    ═══════════════════════════════════════════════════ */
 
-/* ─── Mobile Menu Button ──────────────────────────── */
-
-.mobile-menu-btn {
-  display: none;
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 200;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-size: 1.4rem;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.mobile-menu-btn:hover {
-  background: #2f2f2f;
-  border-color: var(--accent);
-}
-
-/* ─── Sidebar Overlay ─────────────────────────────── */
-
-.sidebar-overlay {
-  display: none;
-}
-
-/* ─── Body scroll lock when sidebar open ──────────── */
-
-body.sidebar-open {
-  overflow: hidden;
-}
 
 /* ─── Responsive Tables Wrapper ───────────────────── */
 
@@ -3091,49 +3123,35 @@ body.sidebar-open {
 
 @media (max-width: 768px) {
 
-  /* ─── Show mobile menu button ─────────────────── */
-  .mobile-menu-btn {
-    display: flex;
-    top: 8px;
-    left: 8px;
-    width: 36px;
-    height: 36px;
-    font-size: 1.2rem;
+  /* ─── Header: linearize on mobile ────────────── */
+  .top-header-center {
+    position: static;
+    transform: none;
+    margin-left: auto;
   }
-
-  /* Hide burger when sidebar is open — overlay handles close */
-  body.sidebar-open .mobile-menu-btn {
+  .top-header-nav {
     display: none;
   }
-
-  /* ─── Sidebar: hidden by default, slide in ────── */
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    z-index: 150;
-  }
-
-  .sidebar.sidebar--open {
-    transform: translateX(0);
-  }
-
-  /* ─── Sidebar overlay ─────────────────────────── */
-  .sidebar-overlay {
+  .top-header-nav-mobile {
     display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 140;
+  }
+  .top-header-title {
+    font-size: 0.78rem;
+  }
+  .top-header-season-select {
+    font-size: 0.78rem;
+    padding: 6px 8px;
+    height: 32px;
+  }
+  .top-header-nav-toggle {
+    height: 32px;
+    padding: 0 10px;
+    font-size: 0.78rem;
   }
 
-  /* ─── Main Content: full width ────────────────── */
-  .main-content {
-    margin-left: 0;
-  }
-
-  /* ─── Article: reduce padding, add top space ──── */
+  /* ─── Article: reduce padding ────────────────── */
   .article {
-    padding: 60px 16px 40px;
+    padding: 16px 14px 40px;
     max-width: 100%;
   }
 
@@ -3168,12 +3186,13 @@ body.sidebar-open {
   .season-infobox-float {
     float: none;
     width: 100%;
-    margin: 0 0 20px 0;
+    margin: 0 0 16px 0;
   }
 
   .infobox {
     width: 100%;
-    margin: 0 0 20px 0;
+    max-width: 340px;
+    margin: 0 auto 16px;
   }
 
   /* ─── Season Cards (Home page) ───────────────── */
@@ -3474,17 +3493,6 @@ body.sidebar-open {
   }
 
   /* ─── Touch Targets ─────────────────────────── */
-  .sb-item {
-    padding: 8px 10px 8px 24px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-
-  .sb-section-hdr {
-    min-height: 44px;
-  }
-
   .episode-nav-btn {
     min-height: 44px;
   }
@@ -3603,9 +3611,29 @@ body.sidebar-open {
 
 @media (max-width: 480px) {
 
+  /* ─── Header: compact on small screens ─────── */
+  .top-header {
+    gap: 6px;
+    padding: 0 8px;
+  }
+  .top-header-left {
+    gap: 6px;
+  }
+  .top-header-title {
+    font-size: 0.68rem;
+  }
+  .top-header-season-select {
+    font-size: 0.7rem;
+    padding: 4px 5px;
+  }
+  .top-header-nav-toggle {
+    font-size: 0.7rem;
+    padding: 4px 7px;
+  }
+
   /* ─── Article ───────────────────────────────── */
   .article {
-    padding: 52px 10px 28px;
+    padding: 12px 10px 28px;
   }
 
   .article h1 {
@@ -3663,6 +3691,10 @@ body.sidebar-open {
   .infobox-header {
     font-size: 0.9rem;
     padding: 8px 10px;
+  }
+
+  .infobox-player-select {
+    font-size: 0.85rem;
   }
 
   .infobox-label,

@@ -3,10 +3,9 @@ import { useState, useEffect } from 'react';
 import { NavLink, useParams, useLocation } from 'react-router-dom';
 import { SEASONS } from '../data';
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const { sid } = useParams();
   const location = useLocation();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [seasonExpanded, setSeasonExpanded] = useState({});
 
   // Auto-expand the current season
@@ -16,18 +15,18 @@ export default function Sidebar() {
 
   // Close sidebar on navigation
   useEffect(() => {
-    setMobileOpen(false);
+    onClose();
   }, [location.pathname]);
 
-  // Prevent body scroll when mobile sidebar is open
+  // Prevent body scroll when sidebar is open
   useEffect(() => {
-    if (mobileOpen) {
+    if (isOpen) {
       document.body.classList.add('sidebar-open');
     } else {
       document.body.classList.remove('sidebar-open');
     }
     return () => document.body.classList.remove('sidebar-open');
-  }, [mobileOpen]);
+  }, [isOpen]);
 
   const toggleSeason = (seasonSid) => {
     setSeasonExpanded((prev) => ({ ...prev, [seasonSid]: !prev[seasonSid] }));
@@ -37,19 +36,11 @@ export default function Sidebar() {
 
   return (
     <>
-      <button
-        className="mobile-menu-btn"
-        onClick={() => setMobileOpen((v) => !v)}
-        aria-label="Toggle navigation menu"
-      >
-        {mobileOpen ? '\u2715' : '\u2630'}
-      </button>
-
-      {mobileOpen && (
-        <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />
+      {isOpen && (
+        <div className="sidebar-overlay" onClick={onClose} />
       )}
 
-      <nav className={`sidebar${mobileOpen ? ' sidebar--open' : ''}`}>
+      <nav className={`sidebar${isOpen ? ' sidebar--open' : ''}`}>
         <NavLink to="/" className="sb-brand">
           <img src="/logos/season-1.png" alt="" className="sb-brand-img" />
           <span className="sb-brand-text">14508 Survivor Wiki</span>
@@ -67,7 +58,7 @@ export default function Sidebar() {
                   className="sb-section-hdr"
                   onClick={() => hasCast && toggleSeason(s.sid)}
                 >
-                  {hasCast && <span className={`sb-arrow${isExpanded ? ' open' : ''}`}>▸</span>}
+                  {hasCast && <span className={`sb-arrow${isExpanded ? ' open' : ''}`}>&#9656;</span>}
                   {s.name}
                 </button>
 
