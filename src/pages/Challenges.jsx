@@ -2,7 +2,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, slugify } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
 import TribeBadge from '../components/TribeBadge';
 import Avatar from '../components/Avatar';
 
@@ -27,11 +26,6 @@ export default function Challenges() {
   if (rows.length === 0) {
     return (
       <div className="article">
-        <Breadcrumbs crumbs={[
-          { label: 'Main Page', to: '/' },
-          { label: season.name, to: `/season/${sid}` },
-          { label: 'Challenges' },
-        ]} />
         <h1>Challenges — {season.name}</h1>
         <p className="empty-state">No challenge data yet.</p>
       </div>
@@ -55,12 +49,6 @@ export default function Challenges() {
 
   return (
     <div className="article">
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name, to: `/season/${sid}` },
-        { label: 'Challenges' },
-      ]} />
-
       <h1>Challenges — {season.name}</h1>
 
       <table className="challenge-table">

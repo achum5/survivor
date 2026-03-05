@@ -2,7 +2,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
+import { linkify } from '../utils/linkify';
 import Infobox from '../components/Infobox';
 import Avatar from '../components/Avatar';
 import TribeBadgeComp from '../components/TribeBadge';
@@ -15,48 +15,6 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-// Turn plain-text paragraphs into React nodes with player/tribe names as <Link>s
-function linkifySummary(text, season, sid) {
-  const terms = [];
-
-  season.cast.forEach((p) => {
-    terms.push({ text: p.name, url: `/season/${sid}/cast/${slugify(p.name)}` });
-  });
-  season.tribes.forEach((t) => {
-    terms.push({ text: t.name, url: `/season/${sid}/tribe/${t.tid}` });
-  });
-  if (season.mergeTribe) {
-    terms.push({ text: season.mergeTribe.name, url: `/season/${sid}/tribe/${season.mergeTribe.tid}` });
-  }
-
-  // Sort longest first so "Sam R." matches before "Sam"
-  terms.sort((a, b) => b.text.length - a.text.length);
-
-  const termMap = {};
-  terms.forEach((t) => { termMap[t.text] = t.url; });
-
-  // Build regex: \b at start, \b at end only if term ends with a word char
-  const escaped = terms.map((t) => {
-    const e = t.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const endB = /\w$/.test(t.text) ? '\\b' : '';
-    return `\\b${e}${endB}`;
-  });
-  const pattern = escaped.join('|');
-  if (!pattern) return [text];
-
-  const regex = new RegExp(pattern, 'g');
-  const parts = [];
-  let lastIdx = 0;
-
-  for (const m of text.matchAll(regex)) {
-    if (m.index > lastIdx) parts.push(text.slice(lastIdx, m.index));
-    const url = termMap[m[0]];
-    parts.push(url ? <Link key={m.index} to={url}>{m[0]}</Link> : m[0]);
-    lastIdx = m.index + m[0].length;
-  }
-  if (lastIdx < text.length) parts.push(text.slice(lastIdx));
-  return parts;
-}
 
 export default function SeasonOverview() {
   const { sid } = useParams();
@@ -129,109 +87,15 @@ export default function SeasonOverview() {
           />
         </div>
 
-          <p>
-            <strong>{season.name}</strong> is a season of 14508 Survivor
-            {season.filmingDates && <> filmed on {season.filmingDates}</>}.
-            {winner && <> The season was won by <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link>.</>}
-          </p>
-
           {season.summary && (
             <>
               <h2 id="summary">Season Summary</h2>
               {Array.isArray(season.summary)
-                ? season.summary.map((para, i) => <p key={i}>{linkifySummary(para, season, sid)}</p>)
-                : <p>{linkifySummary(season.summary, season, sid)}</p>
+                ? season.summary.map((para, i) => <p key={i}>{linkify(para, [{ season, sid }])}</p>)
+                : <p>{linkify(season.summary, [{ season, sid }])}</p>
               }
             </>
           )}
-
-          {season.twists && season.twists.length > 0 && (
-            <>
-              <h2 id="twists">Twists &amp; Gameplay</h2>
-              <ul className="twists-list">
-                {season.twists.map((twist, i) => (
-                  <li key={i}>{twist}</li>
-                ))}
-              </ul>
-            </>
-          )}
-
-          {/* Castaways */}
-          <h2 id="castaways">Castaways</h2>
-          <div className="cast-table-wrap">
-            <table className="cast-table">
-              <thead>
-                <tr>
-                  <th colSpan={2} className="cast-th-contestant">Contestant</th>
-                  <th className="cast-th-tribe">Original Tribe</th>
-                  {hasSwitch && <th className="cast-th-tribe">Switched Tribe</th>}
-                  {hasMerge  && <th className="cast-th-tribe">Merged Tribe</th>}
-                  <th className="cast-th-finish">Finish</th>
-                  <th className="cast-th-votes">Votes Against</th>
-                </tr>
-              </thead>
-          <tbody>
-            {sorted.map((p) => {
-              const origTribe = getTribeObj(p.tid);
-              const switchTribe = p.switchedTid ? getTribeObj(p.switchedTid) : null;
-              const mergeTribe = p.merged ? season.mergeTribe : null;
-              const votesAgainst = season.votingHistory.reduce(
-                (sum, tc) => sum + tc.votes.filter((v) => v.votedForPid === p.pid).length, 0
-              );
-              const isWinner = p.pid === season.winnerPid;
-              const isRunnerUp = p.pid === season.runnerUpPid;
-
-              return (
-                <tr key={p.pid} className={isWinner ? 'cast-row-winner' : isRunnerUp ? 'cast-row-runnerup' : ''}>
-                  <td className="cast-cell-photo">
-                    <Link to={`/season/${sid}/cast/${slugify(p.name)}`}>
-                      <div className="cast-photo-frame">
-                        {p.photoUrl && (
-                          <img src={p.photoUrl} alt={p.name} style={{
-                            objectPosition: p.portraitStyle?.objectPosition ?? '50% 0%',
-                            transform: p.portraitStyle?.transform,
-                            transformOrigin: p.portraitStyle?.transformOrigin,
-                          }} />
-                        )}
-                      </div>
-                    </Link>
-                  </td>
-                  <td className="cast-cell-info">
-                    <Link to={`/season/${sid}/cast/${slugify(p.name)}`} className="cast-player-name">
-                      {p.name}
-                    </Link>
-                  </td>
-                  <td className="cast-cell-tribe" style={{ background: origTribe?.color ?? 'transparent' }}>
-                    {origTribe && <Link to={`/season/${sid}/tribe/${origTribe.tid}`} className="cast-tribe-label">{origTribe.name}</Link>}
-                  </td>
-                  {hasSwitch && (
-                    <td className="cast-cell-tribe" style={{ background: switchTribe?.color ?? 'transparent' }}>
-                      {switchTribe && <Link to={`/season/${sid}/tribe/${switchTribe.tid}`} className="cast-tribe-label">{switchTribe.name}</Link>}
-                    </td>
-                  )}
-                  {hasMerge && (
-                    <td className="cast-cell-tribe" style={{ background: mergeTribe?.color ?? 'transparent' }}>
-                      {mergeTribe && <Link to={`/season/${sid}/tribe/${season.mergeTribe.tid}`} className="cast-tribe-label">{mergeTribe.name}</Link>}
-                    </td>
-                  )}
-                  <td className="cast-cell-finish">
-                    {(() => {
-                      const info = getFinishInfo(p);
-                      const lines = info.text.split('\n').map((line, i) => <div key={i}>{line}</div>);
-                      if (info.eid) {
-                        const hash = info.tcid ? `#tribal-${info.tcid}` : '#tribal-council';
-                        return <Link to={`/season/${sid}/episode/${info.eid}${hash}`} className="cast-finish-link">{lines}</Link>;
-                      }
-                      return lines;
-                    })()}
-                  </td>
-                  <td className="cast-cell-votes">{votesAgainst}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
 
       {/* Episodes */}
       <h2 id="episodes">Episodes</h2>
@@ -389,9 +253,21 @@ export default function SeasonOverview() {
                               {voteNote && <span className="ep-tbl-elim-note"> ({voteNote})</span>}
                             </Link>
                           )}
-                          {!elim && isFinale && (
-                            <span className="ep-tbl-finale-label">Jury Vote</span>
-                          )}
+                          {!elim && isFinale && (() => {
+                            const juryCounts = {};
+                            season.juryVotes.forEach((jv) => {
+                              juryCounts[jv.votedForPid] = (juryCounts[jv.votedForPid] || 0) + 1;
+                            });
+                            const sorted = Object.entries(juryCounts).sort((a, b) => b[1] - a[1]);
+                            const winnerPid = sorted[0]?.[0];
+                            const winnerPlayer = season.cast.find((p) => p.pid === winnerPid);
+                            const tally = sorted.map(([, count]) => count).join('-');
+                            return (
+                              <span className="ep-tbl-finale-label">
+                                {winnerPlayer?.name} wins ({tally})
+                              </span>
+                            );
+                          })()}
                         </td>
                       </tr>
                     );
@@ -685,6 +561,101 @@ export default function SeasonOverview() {
       })() : (
         <p style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>No voting data yet.</p>
       )}
+
+          {/* Castaways */}
+          <h2 id="castaways">Castaways</h2>
+          <div className="cast-table-wrap">
+            <table className="cast-table">
+              <thead>
+                <tr>
+                  <th colSpan={2} className="cast-th-contestant">Contestant</th>
+                  <th className="cast-th-tribe">Original Tribe</th>
+                  {hasSwitch && <th className="cast-th-tribe">Switched Tribe</th>}
+                  {hasMerge  && <th className="cast-th-tribe">Merged Tribe</th>}
+                  <th className="cast-th-finish">Finish</th>
+                  <th className="cast-th-votes">Votes Against</th>
+                </tr>
+              </thead>
+          <tbody>
+            {sorted.map((p) => {
+              const origTribe = getTribeObj(p.tid);
+              const switchTribe = p.switchedTid ? getTribeObj(p.switchedTid) : null;
+              const mergeTribe = p.merged ? season.mergeTribe : null;
+              const votesAgainst = season.votingHistory.reduce(
+                (sum, tc) => sum + tc.votes.filter((v) => v.votedForPid === p.pid).length, 0
+              );
+              const isWinner = p.pid === season.winnerPid;
+              const isRunnerUp = p.pid === season.runnerUpPid;
+
+              return (
+                <tr key={p.pid} className={isWinner ? 'cast-row-winner' : isRunnerUp ? 'cast-row-runnerup' : ''}>
+                  <td className="cast-cell-photo">
+                    <Link to={`/season/${sid}/cast/${slugify(p.name)}`}>
+                      <div className="cast-photo-frame">
+                        {p.photoUrl && (
+                          <img src={p.photoUrl} alt={p.name} style={{
+                            objectPosition: p.portraitStyle?.objectPosition ?? '50% 0%',
+                            transform: p.portraitStyle?.transform,
+                            transformOrigin: p.portraitStyle?.transformOrigin,
+                          }} />
+                        )}
+                      </div>
+                    </Link>
+                  </td>
+                  <td className="cast-cell-info">
+                    <Link to={`/season/${sid}/cast/${slugify(p.name)}`} className="cast-player-name">
+                      {p.name}
+                    </Link>
+                  </td>
+                  <td className="cast-cell-tribe" style={{ background: origTribe?.color ?? 'transparent' }}>
+                    {origTribe && <Link to={`/season/${sid}/tribe/${origTribe.tid}`} className="cast-tribe-label">{origTribe.name}</Link>}
+                  </td>
+                  {hasSwitch && (
+                    <td className="cast-cell-tribe" style={{ background: switchTribe?.color ?? 'transparent' }}>
+                      {switchTribe && <Link to={`/season/${sid}/tribe/${switchTribe.tid}`} className="cast-tribe-label">{switchTribe.name}</Link>}
+                    </td>
+                  )}
+                  {hasMerge && (
+                    <td className="cast-cell-tribe" style={{ background: mergeTribe?.color ?? 'transparent' }}>
+                      {mergeTribe && <Link to={`/season/${sid}/tribe/${season.mergeTribe.tid}`} className="cast-tribe-label">{mergeTribe.name}</Link>}
+                    </td>
+                  )}
+                  <td className="cast-cell-finish">
+                    {(() => {
+                      const info = getFinishInfo(p);
+                      const lines = info.text.split('\n').map((line, i) => <div key={i}>{line}</div>);
+                      if (info.eid) {
+                        const hash = info.tcid ? `#tribal-${info.tcid}` : '#tribal-council';
+                        return <Link to={`/season/${sid}/episode/${info.eid}${hash}`} className="cast-finish-link">{lines}</Link>;
+                      }
+                      return lines;
+                    })()}
+                  </td>
+                  <td className="cast-cell-votes">{votesAgainst}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+          {season.twists && season.twists.length > 0 && (
+            <>
+              <h2 id="twists">Twists &amp; Gameplay</h2>
+              <ul className="twists-list">
+                {season.twists.map((twist, i) => {
+                  const name = twist.split(' — ')[0].trim();
+                  const desc = twist.includes(' — ') ? ' — ' + twist.split(' — ').slice(1).join(' — ').trim() : '';
+                  return (
+                    <li key={i}>
+                      <Link to={`/twist/${slugify(name)}`} className="twist-name-link">{name}</Link>
+                      {desc}
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
 
       </div>
 

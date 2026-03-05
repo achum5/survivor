@@ -8,7 +8,12 @@ function ScrollToTop() {
     if (hash) {
       setTimeout(() => {
         const el = document.getElementById(hash.slice(1));
-        if (el) { el.scrollIntoView({ behavior: 'smooth' }); return; }
+        if (el) {
+          const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 56;
+          const top = el.getBoundingClientRect().top + window.scrollY - headerH - 16;
+          window.scrollTo({ top, behavior: 'smooth' });
+          return;
+        }
       }, 100);
     }
     window.scrollTo(0, 0);
@@ -23,6 +28,7 @@ import EpisodeList from './pages/EpisodeList';
 import EpisodePage from './pages/EpisodePage';
 import ChallengePage from './pages/ChallengePage';
 import TribePage from './pages/TribePage';
+import TwistPage from './pages/TwistPage';
 import { PhotoEditorProvider } from './context/PhotoEditorContext';
 import './styles.css';
 
@@ -40,6 +46,7 @@ function AppInner() {
           <Route path="/season/:sid/episode/:eid" element={<EpisodePage />} />
           <Route path="/season/:sid/episode/:eid/challenge/:ctype" element={<ChallengePage />} />
           <Route path="/season/:sid/tribe/:tid" element={<TribePage />} />
+          <Route path="/twist/:slug" element={<TwistPage />} />
         </Routes>
         <footer className="wiki-footer">
           14508 Survivor Wiki

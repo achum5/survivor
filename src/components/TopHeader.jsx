@@ -19,35 +19,15 @@ function parseSid(pathname) {
   return m ? m[1] : null;
 }
 
-function parseEid(pathname) {
-  const m = pathname.match(/\/season\/[^/]+\/episode\/([^/]+)$/);
-  return m ? m[1] : null;
-}
-
-function getQuickNavSections(season, location) {
+function getQuickNavSections(season) {
   if (!season) return [];
 
-  const eid = parseEid(location.pathname);
-  if (eid) {
-    const episode = season.episodes.find((e) => e.eid === eid);
-    if (episode) {
-      const tcs = season.votingHistory.filter(
-        (tc) => tc.episode === episode.number && !(tc.eliminatedPid === null && tc.votes.length === 0)
-      );
-      const sections = [];
-      if (episode.rewardChallenge || episode.immunityChallenge) sections.push({ id: 'challenges', label: 'Challenges' });
-      if (episode.journey) sections.push({ id: 'journey', label: 'Journey' });
-      if (tcs.some((tc) => tc.confessionals?.length > 0)) sections.push({ id: 'confessionals', label: 'Confessionals' });
-      if (tcs.length > 0) sections.push({ id: 'tribal-council', label: 'Tribal Council' });
-      return sections;
-    }
-  }
-
-  const sections = [{ id: '__home__', label: 'Overview' }];
-  if (season.twists?.length > 0) sections.push({ id: 'twists', label: 'Twists' });
-  sections.push({ id: 'castaways', label: 'Castaways' });
+  const sections = [];
+  if (season.summary) sections.push({ id: 'summary', label: 'Summary' });
   sections.push({ id: 'episodes', label: 'Episodes' });
   sections.push({ id: 'voting-history', label: 'Voting History' });
+  sections.push({ id: 'castaways', label: 'Castaways' });
+  if (season.twists?.length > 0) sections.push({ id: 'twists', label: 'Twists' });
   return sections;
 }
 
@@ -63,23 +43,26 @@ export default function TopHeader() {
     setMobileNavOpen(false);
   }, [location.pathname, location.hash]);
 
-  const sid = parseSid(location.pathname);
+  const parsedSid = parseSid(location.pathname);
+  // Remember last viewed season so twist pages etc. keep the header intact
+  useEffect(() => {
+    if (parsedSid) sessionStorage.setItem('lastSid', parsedSid);
+  }, [parsedSid]);
+  const sid = parsedSid || sessionStorage.getItem('lastSid') || null;
   const season = sid ? SEASONS.find((s) => s.sid === sid) : null;
-  const sections = getQuickNavSections(season, location);
-
-  const isEpisodePage = !!parseEid(location.pathname);
-  const isSeasonOverviewPage = /^\/season\/[^/]+$/.test(location.pathname);
+  const sections = season ? getQuickNavSections(season) : [];
 
   function handleNav(section) {
-    if (section.id === '__home__') {
-      navigate(`/season/${sid}`);
-      setMobileNavOpen(false);
-      return;
-    }
-    if (isEpisodePage || isSeasonOverviewPage) {
+    // Only scroll in-page if we're on the season overview page itself
+    const onSeasonPage = location.pathname === `/season/${sid}` || location.pathname === `/season/${sid}/`;
+    if (onSeasonPage) {
       const el = document.getElementById(section.id);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
+        const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 56;
+        const subheader = document.querySelector('.ep-subheader');
+        const offset = headerH + (subheader ? subheader.offsetHeight : 0) + 16;
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
         setMobileNavOpen(false);
         return;
       }

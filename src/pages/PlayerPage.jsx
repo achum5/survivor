@@ -2,7 +2,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getPlayerBySlug, getTribeColor, getTribeName, getPlayerName, ordinal, slugify } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
 import Infobox from '../components/Infobox';
 import { usePhotoEditor } from '../context/PhotoEditorContext';
 import TribeBadge from '../components/TribeBadge';
@@ -34,6 +33,27 @@ function linkifyBio(text, season, sid) {
   if (season.mergeTribe) {
     terms.push({ text: season.mergeTribe.name, url: `/season/${sid}/tribe/${season.mergeTribe.tid}` });
   }
+
+  // Link episode references ("Episode 1", "Episode 10", etc.)
+  season.episodes.forEach((ep) => {
+    terms.push({ text: `Episode ${ep.number}`, url: `/season/${sid}/episode/${ep.eid}` });
+    // Link challenge names to their challenge pages
+    if (ep.immunityChallenge?.name) {
+      terms.push({ text: ep.immunityChallenge.name, url: `/season/${sid}/episode/${ep.eid}/challenge/immunity` });
+    }
+    if (ep.rewardChallenge?.name) {
+      terms.push({ text: ep.rewardChallenge.name, url: `/season/${sid}/episode/${ep.eid}/challenge/reward` });
+    }
+  });
+
+  // Link twist names
+  SEASONS.forEach((s) => {
+    if (!s.twists) return;
+    s.twists.forEach((twist) => {
+      const name = twist.split(' — ')[0].trim();
+      terms.push({ text: name, url: `/twist/${slugify(name)}` });
+    });
+  });
 
   // Sort longest first so "Sam R." matches before "Sam", "Season 1" before "Season"
   terms.sort((a, b) => b.text.length - a.text.length);
@@ -478,11 +498,33 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
     }
 
     playerTcs.forEach((tc) => {
+      // FTC for finalist: show jury votes received instead of normal row
+      const isFinalist = player.pid === season.winnerPid || player.pid === season.runnerUpPid || player.pid === season.secondRunnerUpPid;
+      if (isFinalist && season.juryVotes?.length > 0 && tc.votes.length === 0 && !ep.fireMakingChallenge) {
+        const votersForPlayer = season.juryVotes
+          .filter(jv => jv.votedForPid === player.pid)
+          .map(jv => season.cast.find(p => p.pid === jv.jurorPid))
+          .filter(Boolean);
+        tableRows.push({
+          type: 'juryVotesReceived',
+          epNum, eid: ep.eid, voters: votersForPlayer,
+        });
+        return;
+      }
+
       const myVote = tc.votes.find((v) => v.voterPid === player.pid);
       const votedForPlayer = myVote ? season.cast.find((p) => p.pid === myVote.votedForPid) : null;
       const votesAgainst = tc.votes.filter((v) => v.votedForPid === player.pid);
       const isRevote = tc.notes?.toLowerCase().includes('revote');
       const isTie = tc.notes?.toLowerCase().includes('tie vote');
+
+      // Fire-making episode: compute who the immunity winner chose for F3
+      let chosenForF3 = null;
+      if (tc.votes.length === 0 && ep.fireMakingChallenge && ep.immunityChallenge?.winner === player.pid) {
+        const finalThree = [season.winnerPid, season.runnerUpPid, season.secondRunnerUpPid].filter(Boolean);
+        const chosenPid = finalThree.find(pid => pid !== player.pid && pid !== ep.fireMakingChallenge.winner);
+        if (chosenPid) chosenForF3 = season.cast.find(p => p.pid === chosenPid);
+      }
 
       tableRows.push({
         type: 'vote',
@@ -491,6 +533,7 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
         isElimHere: tc.eliminatedPid === player.pid,
         indivImmune,
         isRevote, isTie,
+        chosenForF3,
       });
     });
 
@@ -569,6 +612,27 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
               );
             }
 
+            // ── Jury votes received (FTC for finalists) ────────────────
+            if (row.type === 'juryVotesReceived') {
+              const mergeColor = season.mergeTribe?.color ?? '#228B22';
+              const bg = tribeRowBg(mergeColor);
+              return (
+                <tr key={i} className="pvote-jury-received">
+                  <td className="pvote-jury-recv-label" style={{ background: bg, color: '#fff', borderColor: bg }}>
+                    Jury Votes<br />for {player.name}
+                  </td>
+                  <td colSpan={2} className="pvote-jury-voters" style={{ background: bg, color: '#fff', borderColor: bg }}>
+                    {row.voters.length > 0 ? row.voters.map((voter) => (
+                      <Link key={voter.pid} to={`/season/${sid}/cast/${slugify(voter.name)}`}>
+                        <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={24} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />
+                        {voter.name}
+                      </Link>
+                    )) : <em>No votes</em>}
+                  </td>
+                </tr>
+              );
+            }
+
             // ── Winner / finalist footer ──────────────────────────────
             if (row.type === 'winner') {
               return (
@@ -615,7 +679,16 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
                   {isTie    && <span className="pvote-revote-tag"> Tie</span>}
                 </td>
                 <td className="pvote-cast-cell">
-                  {tc.votes.length === 0 ? (
+                  {row.chosenForF3 ? (
+                    <span className="pvote-chose-f3">
+                      Took{' '}
+                      <Link to={`/season/${sid}/cast/${slugify(row.chosenForF3.name)}`} className="pvote-vote-chip">
+                        <Avatar name={row.chosenForF3.name} color={getTribeColor(season, row.chosenForF3.tid)} size={24} photoUrl={row.chosenForF3.photoUrl} imgStyle={row.chosenForF3.photoStyle} pid={row.chosenForF3.pid} noBorder />
+                        {row.chosenForF3.name}
+                      </Link>
+                      {' '}to Final 3
+                    </span>
+                  ) : tc.votes.length === 0 ? (
                     <em className="pvote-no-vote">No Vote</em>
                   ) : myVote ? (
                     votedForPlayer ? (
@@ -730,14 +803,56 @@ export default function PlayerPage() {
     ] : []),
   ];
 
-  return (
-    <div className="article">
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name, to: `/season/${sid}` },
-        { label: player.name },
-      ]} />
+  // Build section nav links
+  const sections = [];
+  if (player.bio) sections.push({ id: 'bio', label: 'Bio' });
+  sections.push({ id: 'voting-history', label: 'Voting History' });
+  sections.push({ id: 'challenge-history', label: 'Challenge History' });
 
+  // Sorted cast for prev/next navigation
+  const sortedCast = [...season.cast].sort((a, b) => a.name.localeCompare(b.name));
+  const castIdx = sortedCast.findIndex(p => p.pid === player.pid);
+  const prevPlayer = sortedCast[castIdx - 1];
+  const nextPlayer = sortedCast[castIdx + 1];
+
+  return (
+    <>
+    <div className="ep-subheader">
+      <div className="ep-subheader-inner">
+        <div className="ep-header-nav-row">
+          {prevPlayer ? (
+            <Link to={`/season/${sid}/cast/${slugify(prevPlayer.name)}`} className="ep-nav-arrow" title={prevPlayer.name}>&lsaquo;</Link>
+          ) : (
+            <span className="ep-nav-arrow disabled">&lsaquo;</span>
+          )}
+          <select
+            className="ep-select"
+            value={player.pid}
+            onChange={(e) => {
+              const p = season.cast.find((c) => c.pid === e.target.value);
+              if (p) navigate(`/season/${sid}/cast/${slugify(p.name)}`);
+            }}
+          >
+            {sortedCast.map((p) => (
+              <option key={p.pid} value={p.pid}>{p.name}</option>
+            ))}
+          </select>
+          {nextPlayer ? (
+            <Link to={`/season/${sid}/cast/${slugify(nextPlayer.name)}`} className="ep-nav-arrow" title={nextPlayer.name}>&rsaquo;</Link>
+          ) : (
+            <span className="ep-nav-arrow disabled">&rsaquo;</span>
+          )}
+        </div>
+        {sections.length > 0 && (
+          <nav className="ep-section-nav">
+            {sections.map((s) => (
+              <a key={s.id} href={`#${s.id}`} className="ep-section-link">{s.label}</a>
+            ))}
+          </nav>
+        )}
+      </div>
+    </div>
+    <div className="article ep-article">
       {appearances.length > 1 && (
         <div className="player-season-tabs">
           {appearances.map(({ season: s, castMember: cm }) => (
@@ -756,20 +871,7 @@ export default function PlayerPage() {
         <Infobox
           headerContent={
             <div className="infobox-header-player">
-              <select
-                className="infobox-player-select"
-                value={player.pid}
-                onChange={(e) => {
-                  const p = season.cast.find((c) => c.pid === e.target.value);
-                  if (p) navigate(`/season/${sid}/cast/${slugify(p.name)}`);
-                }}
-              >
-                {[...season.cast].sort((a, b) => (a.name).localeCompare(b.name)).map((p) => (
-                  <option key={p.pid} value={p.pid}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+              <span className="infobox-player-name">{player.name}</span>
               {(() => {
                 const ig = player.instagram || appearances.find(a => a.castMember.instagram)?.castMember.instagram;
                 return ig ? (
@@ -790,17 +892,61 @@ export default function PlayerPage() {
         />
 
         {player.bio && (
-          Array.isArray(player.bio)
-            ? player.bio.map((para, i) => <p key={i} className="player-bio">{linkifyBio(para, season, sid)}</p>)
-            : <p className="player-bio">{linkifyBio(player.bio, season, sid)}</p>
+          <>
+            <h2 id="bio" className="player-section-heading">Bio</h2>
+            {(Array.isArray(player.bio) ? player.bio : [player.bio]).map((item, i) => {
+              // String items render as narrative paragraphs
+              if (typeof item === 'string') {
+                return <p key={i} className="player-bio">{linkifyBio(item, season, sid)}</p>;
+              }
+              // Quote objects render as confessional-style bubbles
+              if (item && item.type === 'quote') {
+                const speaker = season.cast.find(p => p.pid === item.pid);
+                if (!speaker) return null;
+                const speakerColor = getTribeColor(season, speaker.tid) || '#555';
+                const epLabel = item.episode ? `Ep. ${item.episode}` : '';
+                const contextLabel = item.context || '';
+                return (
+                  <div key={i} className="confessional-bubble bio-quote-bubble" style={{ '--tribe-color': speakerColor }}>
+                    <div className="confessional-bubble-avatar">
+                      <Link to={`/season/${sid}/cast/${slugify(speaker.name)}`}>
+                        <Avatar name={speaker.name} color={speakerColor} size={40}
+                          photoUrl={speaker.photoUrl} imgStyle={speaker.photoStyle}
+                          pid={speaker.pid} noBorder />
+                      </Link>
+                    </div>
+                    <div className="confessional-bubble-content">
+                      <div className="confessional-bubble-header">
+                        <Link to={`/season/${sid}/cast/${slugify(speaker.name)}`} className="confessional-bubble-name">
+                          {speaker.name}
+                        </Link>
+                        {(epLabel || contextLabel) && (
+                          <span className="bio-quote-context">
+                            {[contextLabel, epLabel].filter(Boolean).join(' — ')}
+                          </span>
+                        )}
+                      </div>
+                      <div className="confessional-bubble-quote">
+                        <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
+                        {linkifyBio(item.quote, season, sid)}
+                        <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </>
         )}
 
-        <h2 className="player-section-heading">Voting History</h2>
+        <h2 id="voting-history" className="player-section-heading">Voting History</h2>
         <VotingHistoryTab player={player} season={season} sid={sid} navigate={navigate} />
 
-        <h2 className="player-section-heading">Challenge History</h2>
+        <h2 id="challenge-history" className="player-section-heading">Challenge History</h2>
         <ChallengeHistoryTab player={player} season={season} sid={sid} />
       </div>
     </div>
+    </>
   );
 }

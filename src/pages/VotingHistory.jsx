@@ -2,7 +2,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { slugify, getTribeColor } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
 
 function hexToRgba(hex, alpha) {
@@ -23,11 +22,6 @@ export default function VotingHistory() {
   if (season.votingHistory.length === 0) {
     return (
       <div className="article">
-        <Breadcrumbs crumbs={[
-          { label: 'Main Page', to: '/' },
-          { label: season.name, to: `/season/${sid}` },
-          { label: 'Voting History' },
-        ]} />
         <h1>Voting History — {season.name}</h1>
         <p className="empty-state">No voting data yet.</p>
       </div>
@@ -104,12 +98,6 @@ export default function VotingHistory() {
 
   return (
     <div className="article">
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name, to: `/season/${sid}` },
-        { label: 'Voting History' },
-      ]} />
-
       <h1>Voting History — {season.name}</h1>
 
       <div className="voting-grid-wrapper">

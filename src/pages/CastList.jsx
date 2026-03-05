@@ -2,7 +2,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
 import TribeBadge from '../components/TribeBadge';
 
@@ -15,12 +14,6 @@ export default function CastList() {
 
   return (
     <div className="article">
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name, to: `/season/${sid}` },
-        { label: 'Cast' },
-      ]} />
-
       <h1>Cast — {season.name}: {season.subtitle}</h1>
       <p style={{ color: 'var(--text-muted)', marginBottom: 20 }}>
         {season.cast.length} castaways competed in {season.name}.

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { slugify, ordinal, getTribeColor, getYouTubeEmbedUrl } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
+import { linkify } from '../utils/linkify';
 import Avatar from '../components/Avatar';
 import TribeBadge from '../components/TribeBadge';
 
@@ -88,7 +88,18 @@ function TcTabs({ tcs, season, sid, tribeColor, onPlay }) {
 
   return (
     <>
-      <h2 className="tp-section-head" style={{ borderLeftColor: tribeColor }}>Tribal Council History</h2>
+      <h2 className="tp-section-head" style={{ borderLeftColor: tribeColor }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          Tribal Council History
+          {playUrl && (
+            <button className="tc-play-btn"
+              onClick={() => onPlay(playUrl, `Tribal Council — ${headerTribe?.name ?? 'Merged'}`)}
+              title="Watch tribal council">
+              ▶
+            </button>
+          )}
+        </span>
+      </h2>
 
       {/* Tab strip */}
       <div className="tp-tc-tabs">
@@ -112,23 +123,8 @@ function TcTabs({ tcs, season, sid, tribeColor, onPlay }) {
 
       {/* Active TC — rendered as the same tc-card from EpisodePage */}
       <div className="tc-card tp-tc-card-panel" style={headerTribe ? { background: headerTribe.color } : undefined}>
-        <div className="tc-card-header">
-          <span>Tribal Council:</span>
-          {headerTribe ? (
-            <TribeBadge tribe={headerTribe} sid={sid} />
-          ) : (
-            <span className="tribe-badge tribe-badge-merged">Merged</span>
-          )}
-          {playUrl && (
-            <button className="tc-play-btn"
-              onClick={() => onPlay(playUrl, `Tribal Council — ${headerTribe?.name ?? 'Merged'}`)}
-              title="Watch tribal council">
-              ▶
-            </button>
-          )}
-        </div>
 
-        {activeTc.notes && <div className="tc-section-notes">{activeTc.notes}</div>}
+        {activeTc.notes && <div className="tc-section-notes">{linkify(activeTc.notes, [{ season, sid }])}</div>}
 
         {activeTc.firemaking ? (
           <div className="tc-no-votes" style={{ padding: 16 }}>
@@ -318,12 +314,6 @@ export default function TribePage() {
 
   return (
     <div className="article">
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name, to: `/season/${sid}` },
-        { label: `${tribe.name} Tribe` },
-      ]} />
-
       {/* ── Title Banner ── */}
       <div className="tp-banner" style={{ borderLeftColor: tc }}>
         <div className="tp-banner-top">

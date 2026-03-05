@@ -2,7 +2,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { slugify, getTribeColor } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
 import Avatar from '../components/Avatar';
 
 export default function EpisodeList() {
@@ -27,12 +26,6 @@ export default function EpisodeList() {
 
   return (
     <div className="article">
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name, to: `/season/${sid}` },
-        { label: 'Episodes' },
-      ]} />
-
       <h1>{season.name} — Episodes</h1>
 
       <table className="challenge-table episode-list-table">

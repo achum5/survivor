@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { SEASONS } from '../data';
 import { getTribe, getTribeColor, getTribeName, getPlayer, getPlayerName, slugify, getYouTubeEmbedUrl } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
+import { linkify } from '../utils/linkify';
 import Avatar from '../components/Avatar';
 import TribeBadge from '../components/TribeBadge';
 
@@ -104,14 +104,6 @@ export default function ChallengePage() {
   return (
     <div className="article">
       {modal && <VideoModal src={modal.src} title={modal.title} onClose={() => setModal(null)} />}
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name, to: `/season/${sid}` },
-        { label: 'Episodes', to: `/season/${sid}/episodes` },
-        { label: `Episode ${episode.number}`, to: `/season/${sid}/episode/${eid}` },
-        { label: challengeName },
-      ]} />
-
       <h1>{challengeName}</h1>
 
       <div className="challenge-page-meta">
@@ -152,7 +144,7 @@ export default function ChallengePage() {
       <table className="challenge-table episode-challenge-table" style={{ marginTop: 20 }}>
         <tbody>
           {ch.description && (
-            <tr><th>Description</th><td>{ch.description}</td></tr>
+            <tr><th>Description</th><td>{linkify(ch.description, [{ season, sid }])}</td></tr>
           )}
           {(ch.winner !== undefined && ch.winner !== null) && (
             <tr>

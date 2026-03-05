@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, slugify, getYouTubeEmbedUrl } from '../utils/helpers';
-import Breadcrumbs from '../components/Breadcrumbs';
+import { linkify } from '../utils/linkify';
 import Avatar from '../components/Avatar';
 import TribeBadge from '../components/TribeBadge';
 
@@ -172,26 +172,11 @@ function TribalCouncilCard({ tcs, season, sid, episode, onPlay }) {
 
   return (
     <div id={`tribal-${tc0.tcid}`} className="tc-card" style={headerTribe ? { background: headerTribe.color } : undefined}>
-      <div className="tc-card-header">
-        <span>Tribal Council:</span>
-        {headerTribe ? (
-          <TribeBadge tribe={headerTribe} sid={sid} />
-        ) : (
-          <span className="tribe-badge tribe-badge-merged">Merged</span>
-        )}
-        {playUrl && (
-          <button className="tc-play-btn"
-            onClick={() => onPlay(playUrl, `Tribal Council — ${headerTribe?.name ?? 'Merged'}`)}
-            title="Watch tribal council">
-            ▶
-          </button>
-        )}
-      </div>
 
       {tcs.map((tc, i) => (
         <div key={tc.tcid}>
           {i > 0 && <div className="tc-revote-divider">↩ Revote</div>}
-          {tc.notes && <div className="tc-section-notes">{tc.notes}</div>}
+          {tc.notes && <div className="tc-section-notes">{linkify(tc.notes, [{ season, sid }])}</div>}
           {tc.votes.length > 0
             ? renderVoteGroups(tc, season, sid, elimTc?.eliminatedPid)
             : <div className="tc-no-votes">No votes recorded.</div>
@@ -242,7 +227,7 @@ function TribalCouncilCard({ tcs, season, sid, episode, onPlay }) {
               </div>
               <div className="tc-final-words-quote">
                 <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
-                {elimTc.confessionalQuote}
+                {linkify(elimTc.confessionalQuote, [{ season, sid }])}
                 <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
               </div>
             </div>
@@ -297,7 +282,7 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
             </tr>
           )}
           {challenge.description && (
-            <tr><th>Description</th><td>{challenge.description}</td></tr>
+            <tr><th>Description</th><td>{linkify(challenge.description, [{ season, sid }])}</td></tr>
           )}
           {challenge.winner !== undefined && (
             <tr>
@@ -343,7 +328,7 @@ export default function EpisodePage() {
   const episode = season.episodes.find((e) => e.eid === eid);
   if (!episode) return <div className="article"><p>Episode not found.</p></div>;
 
-  const tcs = season.votingHistory.filter((tc) => tc.episode === episode.number && !(tc.eliminatedPid === null && tc.votes.length === 0));
+  const tcs = season.votingHistory.filter((tc) => tc.episode === episode.number && !(tc.eliminatedPid === null && tc.votes.length === 0 && !tc.confessionals?.length));
 
   // Group TCs for tabbing — group by tid, keeping tie+revote pairs together
   // but splitting truly separate tribals (e.g. two different tribe TCs in same episode)
@@ -396,21 +381,17 @@ export default function EpisodePage() {
   const hasImmunity = episode.immunityChallenge?.name || episode.immunityChallenge?.winner;
 
   return (
-    <div className="article">
-      {modal && <VideoModal src={modal.src} title={modal.title} isImage={modal.isImage} onClose={() => setModal(null)} />}
-      <Breadcrumbs crumbs={[
-        { label: 'Main Page', to: '/' },
-        { label: season.name, to: `/season/${sid}` },
-        { label: 'Episodes', to: `/season/${sid}/episodes` },
-        { label: `Episode ${episode.number}` },
-      ]} />
-
-      <div className="episode-header-row">
-        <div className="ep-select-col">
-          <h1>
+    <>
+      <div className="ep-subheader">
+        <div className="ep-subheader-inner">
+          <div className="ep-header-nav-row">
+            {prev ? (
+              <Link to={`/season/${sid}/episode/${prev.eid}`} className="ep-nav-arrow" title={`Episode ${prev.number}`}>&lsaquo;</Link>
+            ) : (
+              <span className="ep-nav-arrow disabled">&lsaquo;</span>
+            )}
             <select
-              className="player-select"
-              style={{ width: 'auto' }}
+              className="ep-select"
               value={eid}
               onChange={(e) => navigate(`/season/${sid}/episode/${e.target.value}`)}
             >
@@ -418,35 +399,30 @@ export default function EpisodePage() {
                 <option key={ep.eid} value={ep.eid}>Episode {ep.number}</option>
               ))}
             </select>
-          </h1>
-          <div className="ep-arrow-nav">
-            {prev ? (
-              <Link to={`/season/${sid}/episode/${prev.eid}`} className="ep-arrow-btn">&#8249; Ep {prev.number}</Link>
-            ) : (
-              <span className="ep-arrow-btn disabled">&#8249; Ep</span>
-            )}
             {next ? (
-              <Link to={`/season/${sid}/episode/${next.eid}`} className="ep-arrow-btn">Ep {next.number} &#8250;</Link>
+              <Link to={`/season/${sid}/episode/${next.eid}`} className="ep-nav-arrow" title={`Episode ${next.number}`}>&rsaquo;</Link>
             ) : (
-              <span className="ep-arrow-btn disabled">Ep &#8250;</span>
+              <span className="ep-nav-arrow disabled">&rsaquo;</span>
             )}
           </div>
+          {(() => {
+            const sections = [];
+            if (hasReward || hasImmunity) sections.push({ id: 'challenges', label: 'Challenges' });
+            if (episode.journey) sections.push({ id: 'journey', label: 'Journey' });
+            if (tcs.some(tc => tc.confessionals?.length > 0)) sections.push({ id: 'confessionals', label: 'Confessionals' });
+            if (tcs.length > 0) sections.push({ id: 'tribal-council', label: 'Tribal Council' });
+            return sections.length > 0 ? (
+              <nav className="ep-section-nav">
+                {sections.map((s) => (
+                  <a key={s.id} href={`#${s.id}`} className="ep-section-link">{s.label}</a>
+                ))}
+              </nav>
+            ) : null;
+          })()}
         </div>
-        {(() => {
-          const sections = [];
-          if (hasReward || hasImmunity) sections.push({ id: 'challenges', label: 'Challenges' });
-          if (episode.journey) sections.push({ id: 'journey', label: 'Journey' });
-          if (tcs.some(tc => tc.confessionals?.length > 0)) sections.push({ id: 'confessionals', label: 'Confessionals' });
-          if (tcs.length > 0) sections.push({ id: 'tribal-council', label: 'Tribal Council' });
-          return sections.length > 1 ? (
-            <div className="ep-quicknav">
-              {sections.map((s) => (
-                <a key={s.id} href={`#${s.id}`} className="ep-quicknav-btn">{s.label}</a>
-              ))}
-            </div>
-          ) : null;
-        })()}
       </div>
+    <div className="article ep-article">
+      {modal && <VideoModal src={modal.src} title={modal.title} isImage={modal.isImage} onClose={() => setModal(null)} />}
 
       {/* Episode thumbnails — one per section (challenges, journey, TC, firemaking) */}
       {embedUrl ? (() => {
@@ -513,17 +489,16 @@ export default function EpisodePage() {
                 </div>
               );
             })()}
-            {tcs.filter(tc => tc.imageUrl).map((tc) => {
+            {tcs.filter(tc => tc.imageUrl).map((tc, i, arr) => {
               const tcEmbed = tc.videoTimestamp != null
                 ? buildEmbedAt(episode.videoUrl, tc.videoTimestamp)
                 : null;
-              const tcTribe = tc.tid ? season.tribes.find(t => t.tid === tc.tid) : null;
-              const label = tcs.filter(t => t.imageUrl).length > 1 && tcTribe
-                ? `TC — ${tcTribe.name}` : 'Tribal Council';
+              const isMulti = arr.length > 1;
+              const label = isMulti ? `Tribal Council ${i + 1}` : 'Tribal Council';
               return (
                 <div key={tc.tcid}>
                   <div className="episode-thumb-wrapper"
-                    onClick={tcEmbed ? () => setModal({ src: tcEmbed, title: `Tribal Council${tcTribe ? ' — ' + tcTribe.name : ''}` }) : undefined}
+                    onClick={tcEmbed ? () => setModal({ src: tcEmbed, title: label }) : undefined}
                     style={tcEmbed ? undefined : { cursor: 'default' }}>
                     <img src={tc.imageUrl} alt={label} />
                     {tcEmbed && (
@@ -596,7 +571,39 @@ export default function EpisodePage() {
               </span>
             </h2>
             <div className="journey-section">
-              {j.description && <p className="journey-description">{j.description}</p>}
+              {j.description && <p className="journey-description">{linkify(j.description, [{ season, sid }])}</p>}
+              {j.dialogue && j.dialogue.length > 0 && (
+                <div className="dialogue-chat">
+                  {j.dialogue.map((d, i) => {
+                    const member = season.cast.find((c) => c.pid === d.pid);
+                    if (!member) return null;
+                    const tribe = member ? season.tribes.find((t) => t.tid === member.tid) : null;
+                    const prevSame = i > 0 && j.dialogue[i - 1].pid === d.pid;
+                    return (
+                      <div key={i} className={`dialogue-msg${prevSame ? ' dialogue-msg-cont' : ''}`}>
+                        <div className="dialogue-msg-avatar">
+                          {!prevSame && (
+                            <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
+                              <Avatar name={member.name} color={tribe?.color || '#555'} size={32}
+                                photoUrl={member.photoUrl} imgStyle={member.photoStyle}
+                                pid={member.pid} noBorder />
+                            </Link>
+                          )}
+                        </div>
+                        <div className="dialogue-msg-body">
+                          {!prevSame && (
+                            <Link to={`/season/${sid}/cast/${slugify(member.name)}`}
+                              className="dialogue-msg-name" style={{ color: tribe?.color || '#aaa' }}>
+                              {member.name}
+                            </Link>
+                          )}
+                          <div className="dialogue-msg-text">{linkify(d.quote, [{ season, sid }])}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
               {j.participants && j.participants.length > 0 && (
                 <div className="journey-participants">
                   {j.participants.map((p) => {
@@ -619,38 +626,6 @@ export default function EpisodePage() {
                   })}
                 </div>
               )}
-              {j.dialogue && j.dialogue.length > 0 && (
-                <div className="confessional-bubbles" style={{ marginTop: 16 }}>
-                  {j.dialogue.map((d, i) => {
-                    const member = season.cast.find((c) => c.pid === d.pid);
-                    if (!member) return null;
-                    const tribe = member ? season.tribes.find((t) => t.tid === member.tid) : null;
-                    return (
-                      <div key={i} className="confessional-bubble" style={{ '--tribe-color': tribe?.color || '#555' }}>
-                        <div className="confessional-bubble-avatar">
-                          <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
-                            <Avatar name={member.name} color={tribe?.color || '#555'} size={48}
-                              photoUrl={member.photoUrl} imgStyle={member.photoStyle}
-                              pid={member.pid} noBorder />
-                          </Link>
-                        </div>
-                        <div className="confessional-bubble-content">
-                          <div className="confessional-bubble-header">
-                            <Link to={`/season/${sid}/cast/${slugify(member.name)}`} className="confessional-bubble-name">
-                              {member.name}
-                            </Link>
-                          </div>
-                          <div className="confessional-bubble-quote">
-                            <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
-                            {d.quote}
-                            <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </div>
           </>
         );
@@ -665,78 +640,91 @@ export default function EpisodePage() {
           (tc.confessionals || []).map(c => ({ ...c, tcid: tc.tcid, tid: tc.tid }))
         );
         if (allConfessionals.length === 0 && !isMultiTc) return null;
+
+        // On the finale episode only, split FTC confessionals: jury voting vs pre-FTC finalist
+        const isFinalEp = !next && season.juryVotes?.length > 0;
+        const jurorPids = isFinalEp ? new Set(season.juryVotes.map(jv => jv.jurorPid)) : new Set();
+        const preConfessionals = isFinalEp
+          ? allConfessionals.filter(c => !jurorPids.has(c.pid))
+          : allConfessionals;
+
         return (
           <>
-            <h2 id="confessionals">Confessionals</h2>
-            {isMultiTc && (
-              <div className="tp-tc-tabs" style={{ marginBottom: 12 }}>
-                {tcGroups.map((group, gi) => {
-                  const tc0 = group.tcs[0];
-                  const tribe = season.tribes.find(t => t.tid === tc0.tid);
-                  const isActive = group.key === resolvedKey;
-                  const label = tribe?.name || (tcGroups.length > 1 ? `Tribal ${gi + 1}` : 'Tribal');
-                  const color = tribe?.color || season.mergeTribe?.color;
-                  return (
-                    <button
-                      key={group.key}
-                      className={`tp-tc-tab${isActive ? ' active' : ''}`}
-                      style={isActive ? { borderBottomColor: color } : undefined}
-                      onClick={() => setActiveTabKey(group.key)}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-            <div className="confessional-bubbles">
-              {allConfessionals.map((c) => {
-                const member = season.cast.find(p => p.pid === c.pid);
-                if (!member) return null;
-                const isMergedTc = sourceTcs.some(tc => !tc.tid);
-                const tcTid = c.tid || sourceTcs[0]?.tid;
-                const tribeColor = isMergedTc
-                  ? (season.mergeTribe?.color || '#555')
-                  : (season.tribes.find(t => t.tid === tcTid)?.color || '#555');
-                const playUrl = (episode.videoUrl && c.timestamp != null)
-                  ? buildEmbedAt(episode.videoUrl, c.timestamp)
-                  : null;
-                return (
-                  <div key={c.pid} className="confessional-bubble" style={{ '--tribe-color': tribeColor }}>
-                    <div className="confessional-bubble-avatar">
-                      <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
-                        <Avatar name={member.name} color={tribeColor} size={48}
-                          photoUrl={member.photoUrl} imgStyle={member.photoStyle}
-                          pid={member.pid} noBorder />
-                      </Link>
-                    </div>
-                    <div className="confessional-bubble-content">
-                      <div className="confessional-bubble-header">
-                        <Link to={`/season/${sid}/cast/${slugify(member.name)}`} className="confessional-bubble-name">
-                          {member.name}
-                        </Link>
-                        {playUrl && (
-                          <button className="tc-play-btn confessional-play-btn"
-                            onClick={() => setModal({ src: playUrl, title: `${member.name} — Confessional (Ep. ${episode.number})` })}
-                            title={`Watch ${member.name}'s confessional`}>
-                            ▶
-                          </button>
-                        )}
-                      </div>
-                      {c.quote ? (
-                        <div className="confessional-bubble-quote">
-                          <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
-                          {c.quote}
-                          <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
-                        </div>
-                      ) : (
-                        <div className="confessional-bubble-empty">No quote recorded.</div>
-                      )}
-                    </div>
+            {preConfessionals.length > 0 && (
+              <>
+                <h2 id="confessionals">Confessionals</h2>
+                {isMultiTc && (
+                  <div className="tp-tc-tabs" style={{ marginBottom: 12 }}>
+                    {tcGroups.map((group, gi) => {
+                      const tc0 = group.tcs[0];
+                      const tribe = season.tribes.find(t => t.tid === tc0.tid);
+                      const isActive = group.key === resolvedKey;
+                      const label = tribe?.name || (tcGroups.length > 1 ? `Tribal ${gi + 1}` : 'Tribal');
+                      const color = tribe?.color || season.mergeTribe?.color;
+                      return (
+                        <button
+                          key={group.key}
+                          className={`tp-tc-tab${isActive ? ' active' : ''}`}
+                          style={isActive ? { borderBottomColor: color } : undefined}
+                          onClick={() => setActiveTabKey(group.key)}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
+                )}
+                <div className="confessional-bubbles">
+                  {preConfessionals.map((c, ci) => {
+                    const member = season.cast.find(p => p.pid === c.pid);
+                    if (!member) return null;
+                    const isMergedTc = sourceTcs.some(tc => !tc.tid);
+                    const tcTid = c.tid || sourceTcs[0]?.tid;
+                    const tribeColor = isMergedTc
+                      ? (season.mergeTribe?.color || '#555')
+                      : (season.tribes.find(t => t.tid === tcTid)?.color || '#555');
+                    const playUrl = (episode.videoUrl && c.timestamp != null)
+                      ? buildEmbedAt(episode.videoUrl, c.timestamp)
+                      : null;
+                    return (
+                      <div key={`${c.tcid}-${c.pid}-${ci}`} className="confessional-bubble" style={{ '--tribe-color': tribeColor }}>
+                        <div className="confessional-bubble-avatar">
+                          <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
+                            <Avatar name={member.name} color={tribeColor} size={48}
+                              photoUrl={member.photoUrl} imgStyle={member.photoStyle}
+                              pid={member.pid} noBorder />
+                          </Link>
+                        </div>
+                        <div className="confessional-bubble-content">
+                          <div className="confessional-bubble-header">
+                            <Link to={`/season/${sid}/cast/${slugify(member.name)}`} className="confessional-bubble-name">
+                              {member.name}
+                            </Link>
+                            {playUrl && (
+                              <button className="tc-play-btn confessional-play-btn"
+                                onClick={() => setModal({ src: playUrl, title: `${member.name} — Confessional (Ep. ${episode.number})` })}
+                                title={`Watch ${member.name}'s confessional`}>
+                                ▶
+                              </button>
+                            )}
+                          </div>
+                          {c.quote ? (
+                            <div className="confessional-bubble-quote">
+                              <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
+                              {linkify(c.quote, [{ season, sid }])}
+                              <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+                            </div>
+                          ) : (
+                            <div className="confessional-bubble-empty">No quote recorded.</div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
           </>
         );
       })()}
@@ -748,7 +736,21 @@ export default function EpisodePage() {
           : tcGroups;
         return (
           <>
-            <h2 id="tribal-council">Tribal Council{tcGroups.length > 1 ? 's' : ''}</h2>
+            <h2 id="tribal-council">
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                Tribal Council
+                {(() => {
+                  const activeTc = visibleGroups[0]?.tcs[0];
+                  const ts = activeTc?.videoTimestamp ?? null;
+                  const url = episode?.videoUrl && ts != null ? buildEmbedAt(episode.videoUrl, ts) : null;
+                  const activeIdx = tcGroups.findIndex(g => g.key === resolvedKey);
+                  const tcLabel = isMultiTc ? `Tribal Council ${activeIdx + 1}` : 'Tribal Council';
+                  return url ? (
+                    <button className="tc-play-btn" onClick={() => setModal({ src: url, title: tcLabel })} title="Watch tribal council">▶</button>
+                  ) : null;
+                })()}
+              </span>
+            </h2>
             {visibleGroups.map((group, gi) => (
               <TribalCouncilCard key={gi} tcs={group.tcs} season={season} sid={sid} episode={episode} onPlay={(src, title) => setModal({ src, title })} />
             ))}
@@ -782,11 +784,6 @@ export default function EpisodePage() {
           <>
             <h2>Final Tribal Council</h2>
             <div className="tc-card" style={{ background: mergeColor }}>
-              <div className="tc-card-header">
-                <span>Tribal Council {tcNumber}: Jury Vote</span>
-                <TribeBadge tribe={mergeTribe} sid={sid} />
-              </div>
-
               <div className="tc-cols-header">
                 <div className="tc-col-label">Voted for Winner</div>
                 <div className="tc-col-label">Voter</div>
@@ -865,6 +862,82 @@ export default function EpisodePage() {
         );
       })()}
 
+      {/* Jury Voting Confessionals — after FTC results, showing each juror's quote + who they voted for */}
+      {season.juryVotes?.length > 0 && !next && (() => {
+        const jurorPids = new Set(season.juryVotes.map(jv => jv.jurorPid));
+        const ftcTc = tcs.find(tc => tc.eliminatedPid === null) || tcs[tcs.length - 1];
+        const allConfs = ftcTc?.confessionals || [];
+        const juryConfs = allConfs.filter(c => jurorPids.has(c.pid));
+        if (juryConfs.length === 0) return null;
+        const mergeColor = season.mergeTribe?.color || '#555';
+
+        return (
+          <>
+            <h2 id="jury-votes">Jury Voting Confessionals</h2>
+            <div className="confessional-bubbles">
+              {juryConfs.map((c, ci) => {
+                const member = season.cast.find(p => p.pid === c.pid);
+                if (!member) return null;
+                const juryVote = season.juryVotes.find(jv => jv.jurorPid === c.pid);
+                const votedFor = juryVote ? season.cast.find(p => p.pid === juryVote.votedForPid) : null;
+                const votedForColor = votedFor ? (getTribeColor(season, votedFor.tid) || mergeColor) : mergeColor;
+                const playUrl = (episode.videoUrl && c.timestamp != null)
+                  ? buildEmbedAt(episode.videoUrl, c.timestamp)
+                  : null;
+                return (
+                  <div key={`jury-${c.pid}-${ci}`} className="confessional-bubble jury-vote-bubble" style={{ '--tribe-color': mergeColor }}>
+                    <div className="confessional-bubble-avatar">
+                      <Link to={`/season/${sid}/cast/${slugify(member.name)}`}>
+                        <Avatar name={member.name} color={mergeColor} size={48}
+                          photoUrl={member.photoUrl} imgStyle={member.photoStyle}
+                          pid={member.pid} noBorder />
+                      </Link>
+                    </div>
+                    <div className="confessional-bubble-content">
+                      <div className="confessional-bubble-header jury-vote-header">
+                        <span className="jury-vote-label">
+                          <Link to={`/season/${sid}/cast/${slugify(member.name)}`} className="confessional-bubble-name">
+                            {member.name}
+                          </Link>
+                          {votedFor && (
+                            <>
+                              <span className="jury-vote-connector">on voting for</span>
+                              <Link to={`/season/${sid}/cast/${slugify(votedFor.name)}`} className="jury-vote-chip" style={{ '--vote-color': votedForColor }}>
+                                <Avatar name={votedFor.name} color={votedForColor} size={20}
+                                  photoUrl={votedFor.photoUrl} imgStyle={votedFor.photoStyle}
+                                  pid={votedFor.pid} noBorder />
+                                <span>{votedFor.name}</span>
+                              </Link>
+                            </>
+                          )}
+                        </span>
+                        {playUrl && (
+                          <button className="tc-play-btn confessional-play-btn"
+                            onClick={() => setModal({ src: playUrl, title: `${member.name} — Jury Vote` })}
+                            title={`Watch ${member.name}'s jury vote`}>
+                            ▶
+                          </button>
+                        )}
+                      </div>
+                      {c.quote ? (
+                        <div className="confessional-bubble-quote">
+                          <span className="tc-quote-mark tc-quote-open">&ldquo;</span>
+                          {linkify(c.quote, [{ season, sid }])}
+                          <span className="tc-quote-mark tc-quote-close">&rdquo;</span>
+                        </div>
+                      ) : (
+                        <div className="confessional-bubble-empty">No quote recorded.</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        );
+      })()}
+
     </div>
+    </>
   );
 }
