@@ -1,4 +1,5 @@
 // src/pages/SeasonOverview.jsx
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SEASONS } from '../data';
 import { getTribeColor, getTribeName, ordinal, slugify } from '../utils/helpers';
@@ -29,6 +30,9 @@ export default function SeasonOverview() {
   const winner = season.cast.find((p) => p.pid === season.winnerPid);
   const runnerUp = season.cast.find((p) => p.pid === season.runnerUpPid);
   const fanFav = season.cast.find((p) => p.pid === season.fanFavoritePid);
+
+  // Upcoming season detection
+  const isUpcoming = !season.winnerPid && season.episodes.length === 0;
 
   const hasSwitch = season.cast.some((p) => p.switchedTid);
   const hasMerge  = season.cast.some((p) => p.merged);
@@ -87,7 +91,42 @@ export default function SeasonOverview() {
           />
         </div>
 
-          {season.summary && (
+          {isUpcoming && <UpcomingBanner filmingDates={season.filmingDates} />}
+
+          {isUpcoming && season.cast.length > 0 && (
+            <>
+              <h2 id="castaways">Cast</h2>
+              <div className="upcoming-cast-grid">
+                {[...season.cast].sort((a, b) => a.fullName.localeCompare(b.fullName)).map((p) => {
+                  // Link returners to their most recent previous season page
+                  const linkSid = p.seasonsPlayed?.length > 0
+                    ? p.seasonsPlayed[p.seasonsPlayed.length - 1]
+                    : sid;
+                  const linkTarget = `/season/${linkSid}/cast/${slugify(p.name)}`;
+                  return (
+                  <div key={p.pid} className="upcoming-cast-card">
+                    <Link to={linkTarget} className="upcoming-cast-photo">
+                      {p.photoUrl ? (
+                        <img src={p.photoUrl} alt={p.fullName} style={{
+                          objectPosition: p.portraitStyle?.objectPosition ?? '50% 0%',
+                          transform: p.portraitStyle?.transform,
+                          transformOrigin: p.portraitStyle?.transformOrigin,
+                        }} />
+                      ) : (
+                        <div className="upcoming-cast-placeholder" />
+                      )}
+                    </Link>
+                    <div className="upcoming-cast-info">
+                      <Link to={linkTarget} className="upcoming-cast-name">{p.fullName}</Link>
+                    </div>
+                  </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {!isUpcoming && season.summary && (
             <>
               <h2 id="summary">Season Summary</h2>
               {Array.isArray(season.summary)
@@ -97,6 +136,7 @@ export default function SeasonOverview() {
             </>
           )}
 
+      {!isUpcoming && <>
       {/* Episodes */}
       <h2 id="episodes">Episodes</h2>
       {season.episodes.length > 0 ? (
@@ -657,8 +697,52 @@ export default function SeasonOverview() {
             </>
           )}
 
+      </>}
+
       </div>
 
+    </div>
+  );
+}
+
+function UpcomingBanner({ filmingDates }) {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Parse "May 16-17, 2026" style dates — target first date at 11am ET
+  const target = (() => {
+    if (!filmingDates) return null;
+    const m = filmingDates.match(/(\w+)\s+(\d+).*?(\d{4})/);
+    if (!m) return null;
+    // 11:00 AM Eastern = 15:00 UTC (EDT) or 16:00 UTC (EST)
+    // May is EDT so UTC-4 → 11:00 ET = 15:00 UTC
+    return new Date(`${m[1]} ${m[2]}, ${m[3]} 15:00:00 UTC`);
+  })();
+
+  if (!target) return null;
+
+  const diff = target - now;
+  if (diff <= 0) return null;
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  return (
+    <div className="upcoming-banner">
+      <h2 className="upcoming-title">COMING SOON!</h2>
+      <div className="upcoming-countdown">
+        <div className="upcoming-cd-unit"><span className="upcoming-cd-num">{days}</span><span className="upcoming-cd-label">days</span></div>
+        <div className="upcoming-cd-unit"><span className="upcoming-cd-num">{hours}</span><span className="upcoming-cd-label">hours</span></div>
+        <div className="upcoming-cd-unit"><span className="upcoming-cd-num">{minutes}</span><span className="upcoming-cd-label">min</span></div>
+        <div className="upcoming-cd-unit"><span className="upcoming-cd-num">{seconds}</span><span className="upcoming-cd-label">sec</span></div>
+      </div>
+      <p className="upcoming-date">{filmingDates}</p>
     </div>
   );
 }

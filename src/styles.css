@@ -1437,9 +1437,9 @@ a.cast-tribe-label:hover {
 }
 .pvote-chose-f3 {
   font-size: 0.82rem;
-  color: var(--text-muted);
+  color: #fff;
 }
-.pvote-chose-f3 a { color: var(--link); }
+.pvote-chose-f3 a { color: #fff; }
 
 .pvote-winner td {
   background: rgba(245, 166, 35, 0.15);
@@ -2915,6 +2915,112 @@ a.cast-tribe-label:hover {
   margin-bottom: 6px;
   color: var(--text);
   line-height: 1.5;
+}
+
+/* ── Upcoming Season Banner ──────────────────────────────────── */
+.upcoming-banner {
+  text-align: center;
+  padding: 32px 16px 24px;
+  margin-bottom: 24px;
+}
+.upcoming-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  margin: 0 0 16px;
+}
+.upcoming-countdown {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.upcoming-cd-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.upcoming-cd-num {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+.upcoming-cd-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.upcoming-date {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Upcoming Cast Grid ─────────────────────────────────────── */
+.upcoming-cast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 16px 0 32px;
+}
+.upcoming-cast-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+}
+.upcoming-cast-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bg-table-even);
+}
+.upcoming-cast-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.upcoming-cast-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-table-even);
+}
+.upcoming-cast-info {
+  padding: 10px 8px 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.upcoming-cast-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.upcoming-cast-name:hover {
+  color: var(--link);
+}
+.upcoming-cast-ig {
+  color: var(--text-muted);
+  transition: color 0.15s;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.upcoming-cast-ig:hover {
+  color: var(--link);
 }
 
 /* ── Season Navigation ───────────────────────────────────────── */

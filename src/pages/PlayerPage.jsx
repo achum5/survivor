@@ -622,12 +622,14 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
                     Jury Votes<br />for {player.name}
                   </td>
                   <td colSpan={2} className="pvote-jury-voters" style={{ background: bg, color: '#fff', borderColor: bg }}>
-                    {row.voters.length > 0 ? row.voters.map((voter) => (
-                      <Link key={voter.pid} to={`/season/${sid}/cast/${slugify(voter.name)}`}>
-                        <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={24} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />
-                        {voter.name}
-                      </Link>
-                    )) : <em>No votes</em>}
+                    <div className="pvote-jury-voters-inner">
+                      {row.voters.length > 0 ? row.voters.map((voter) => (
+                        <Link key={voter.pid} to={`/season/${sid}/cast/${slugify(voter.name)}`}>
+                          <Avatar name={voter.name} color={getTribeColor(season, voter.tid)} size={24} photoUrl={voter.photoUrl} imgStyle={voter.photoStyle} pid={voter.pid} noBorder />
+                          {voter.name}
+                        </Link>
+                      )) : <em>No votes</em>}
+                    </div>
                   </td>
                 </tr>
               );
