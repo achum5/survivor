@@ -176,7 +176,18 @@ export default function SeasonOverview() {
                   };
                   // Get all winning tribes for multi-winner challenges (e.g., top 2 of 3 win immunity)
                   const resolveAllWinners = (ch) => {
-                    if (!ch?.results || ch.results.length <= 2) return [resolveWinner(ch)];
+                    if (!ch) return [{ label: null, color: null }];
+                    // Handle secondWinner (e.g., split tribal individual immunity)
+                    if (ch.secondWinner) {
+                      const resolveOne = (id) => {
+                        const tribe = season.tribes.find(t => t.tid === id);
+                        if (tribe) return { label: tribe.name, color: tribe.color };
+                        const player = season.cast.find(p => p.pid === id);
+                        return { label: player?.name || null, color: null };
+                      };
+                      return [resolveOne(ch.winner), resolveOne(ch.secondWinner)];
+                    }
+                    if (!ch.results || ch.results.length <= 2) return [resolveWinner(ch)];
                     const maxPlace = Math.max(...ch.results.map(r => r.place));
                     return ch.results
                       .filter(r => r.place < maxPlace)
@@ -267,8 +278,8 @@ export default function SeasonOverview() {
                                     {rcWinner.label && <span className="ep-tbl-chal-winner">{rcWinner.label}</span>}
                                   </Link>
                                   <Link to={`/season/${sid}/episode/${ep.eid}#challenges`}
-                                    className={`ep-tbl-chal-link ep-tbl-chal-row ep-tbl-colored${icWinners.length > 1 ? ' ep-tbl-chal-multi' : ''}`}
-                                    style={icWinners.length === 1 && icWinners[0].color ? { backgroundColor: icWinners[0].color } : icWinners.length > 1 ? {
+                                    className={`ep-tbl-chal-link ep-tbl-chal-row ep-tbl-colored${icWinners.length > 1 && icWinners.some(w => w.color) ? ' ep-tbl-chal-multi' : ''}`}
+                                    style={icWinners.length === 1 && icWinners[0].color ? { backgroundColor: icWinners[0].color } : icWinners.length > 1 && icWinners.some(w => w.color) ? {
                                       background: `linear-gradient(135deg, ${icWinners[0].color || '#555'} 50%, ${icWinners[1].color || '#555'} 50%)`
                                     } : {}}>
                                     <span className="ep-tbl-chal-type">Immunity</span>
@@ -278,8 +289,8 @@ export default function SeasonOverview() {
                                 </div>
                               ) : ic ? (
                                 <Link to={`/season/${sid}/episode/${ep.eid}#challenges`}
-                                  className={`ep-tbl-chal-link${icWinners.length > 1 ? ' ep-tbl-chal-multi' : ''}`}
-                                  style={icWinners.length === 1 && icWinners[0].color ? { display: 'block', padding: '8px 14px', backgroundColor: icWinners[0].color } : icWinners.length > 1 ? {
+                                  className={`ep-tbl-chal-link${icWinners.length > 1 && icWinners.some(w => w.color) ? ' ep-tbl-chal-multi' : ''}`}
+                                  style={icWinners.length === 1 && icWinners[0].color ? { display: 'block', padding: '8px 14px', backgroundColor: icWinners[0].color } : icWinners.length > 1 && icWinners.some(w => w.color) ? {
                                     display: 'block', padding: '8px 14px',
                                     background: `linear-gradient(135deg, ${icWinners[0].color || '#555'} 50%, ${icWinners[1].color || '#555'} 50%)`
                                   } : { display: 'block', padding: '8px 14px' }}>
