@@ -1,7 +1,7 @@
 // src/components/Infobox.jsx
 import { Link } from 'react-router-dom';
 
-export default function Infobox({ title, headerContent, headerColor = '#e74c3c', rows = [], logo, logoSubHeader, logoStyle, castPhoto, chronology, onLogoClick }) {
+export default function Infobox({ title, headerContent, headerColor = '#e74c3c', subtitle, subtitleColor, rows = [], logo, logoSubHeader, logoStyle, castPhoto, chronology, onLogoClick }) {
   const showHeader = title || headerContent;
   return (
     <table className="infobox">
@@ -12,6 +12,13 @@ export default function Infobox({ title, headerContent, headerColor = '#e74c3c',
               {headerContent || title}
             </th>
           </tr>
+          {subtitle && (
+            <tr>
+              <th colSpan={2} className={`infobox-subtitle${!subtitleColor ? ' winner-glow' : ''}`} style={subtitleColor ? { background: subtitleColor } : undefined}>
+                {subtitle}
+              </th>
+            </tr>
+          )}
         </thead>
       )}
       <tbody>

@@ -395,6 +395,42 @@ body {
   color: #fff;
   text-align: center;
 }
+.infobox-subtitle {
+  padding: 5px 12px;
+  font-family: Georgia, serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, #B8860B, #DAA520, #F4C430, #DAA520, #B8860B);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+.infobox-subtitle.winner-glow {
+  animation: winner-pulse 3s ease-in-out infinite;
+}
+.infobox-subtitle.winner-glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: winner-shimmer 4s ease-in-out infinite;
+}
+@keyframes winner-shimmer {
+  0%, 100% { left: -100%; }
+  50% { left: 140%; }
+}
+@keyframes winner-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(218,165,32,0.3); }
+  50% { box-shadow: 0 0 14px rgba(244,196,48,0.6); }
+}
 
 /* Player dropdown + IG inside infobox header */
 .infobox-header-player {
@@ -443,15 +479,16 @@ body {
 /* ── Infobox Slots (logo / cast photo / chronology) ─────────── */
 .infobox-logo-cell {
   text-align: center;
-  padding: 12px 8px 8px;
+  padding: 0;
   background: #111;
   overflow: hidden;
 }
 
 .infobox-logo-img {
-  max-width: 100%;
+  width: 100%;
   max-height: 140px;
   object-fit: contain;
+  display: block;
   display: block;
   margin: 0 auto;
 }
@@ -1236,6 +1273,11 @@ a.cast-tribe-label:hover {
   color: var(--text-muted);
   font-weight: 400;
   margin-left: auto;
+  text-decoration: none;
+}
+a.bio-quote-context:hover {
+  color: var(--link);
+  text-decoration: underline;
 }
 
 /* ─── Player Challenge History ──────────────────────── */
@@ -1429,11 +1471,11 @@ a.cast-tribe-label:hover {
 .pvote-jury-label {
   font-weight: 600;
   color: var(--text-muted);
-  white-space: nowrap;
   font-style: normal !important;
   text-align: center;
   line-height: 1.3;
   font-size: 0.72rem;
+  padding: 6px 10px !important;
 }
 .pvote-jury-target { font-style: normal !important; color: var(--text) !important; }
 .pvote-jury-target a { color: var(--link); text-decoration: none; }

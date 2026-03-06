@@ -1,11 +1,49 @@
 // src/pages/PlayerPage.jsx
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { SEASONS } from '../data';
 import { getPlayerBySlug, getTribeColor, getTribeName, getPlayerName, ordinal, slugify } from '../utils/helpers';
 import Infobox from '../components/Infobox';
 import { usePhotoEditor } from '../context/PhotoEditorContext';
 import TribeBadge from '../components/TribeBadge';
 import Avatar from '../components/Avatar';
+
+function getYouTubeVideoId(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    return u.hostname === 'youtu.be' ? u.pathname.slice(1) : u.searchParams.get('v');
+  } catch { return null; }
+}
+
+function buildEmbedAt(videoUrl, startSeconds) {
+  const videoId = getYouTubeVideoId(videoUrl);
+  if (!videoId || startSeconds == null) return null;
+  return `https://www.youtube.com/embed/${videoId}?start=${Math.round(startSeconds)}&autoplay=1`;
+}
+
+function VideoModal({ src, title, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  return (
+    <div className="video-modal-backdrop" onClick={onClose}>
+      <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="video-modal-bar">
+          {title && <span className="video-modal-title">{title}</span>}
+          <button className="video-modal-close" onClick={onClose} title="Close (Esc)">✕</button>
+        </div>
+        <iframe
+          src={src}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    </div>
+  );
+}
 
 // ── Bio linkifier ──────────────────────────────────────────────────────────
 
@@ -596,13 +634,15 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
 
             // ── Jury vote cast ────────────────────────────────────────
             if (row.type === 'juryVote') {
+              const mergeColor = season.mergeTribe?.color ?? '#228B22';
+              const jvBg = tribeRowBg(mergeColor);
               return (
                 <tr key={i} className="pvote-juryvote">
-                  <td className="pvote-jury-label">Voted for<br />Sole Survivor</td>
-                  <td colSpan={2} className="pvote-jury-target">
+                  <td colSpan={2} className="pvote-jury-label" style={{ background: jvBg, color: '#fff', borderColor: jvBg }}>Voted for Sole Survivor</td>
+                  <td className="pvote-jury-target" style={{ background: jvBg, borderColor: jvBg }}>
                     {row.target ? (
                       <Link to={`/season/${sid}/cast/${slugify(row.target.name)}`}
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: '#fff' }}>
                         <Avatar name={row.target.name} color={getTribeColor(season, row.target.tid)} size={24} photoUrl={row.target.photoUrl} imgStyle={row.target.photoStyle} pid={row.target.pid} noBorder />
                         {row.target.name}
                       </Link>
@@ -618,10 +658,10 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
               const bg = tribeRowBg(mergeColor);
               return (
                 <tr key={i} className="pvote-jury-received">
-                  <td className="pvote-jury-recv-label" style={{ background: bg, color: '#fff', borderColor: bg }}>
-                    Jury Votes<br />for {player.name}
+                  <td colSpan={2} className="pvote-jury-recv-label" style={{ background: bg, color: '#fff', borderColor: bg }}>
+                    Jury Votes for {player.name}
                   </td>
-                  <td colSpan={2} className="pvote-jury-voters" style={{ background: bg, color: '#fff', borderColor: bg }}>
+                  <td className="pvote-jury-voters" style={{ background: bg, color: '#fff', borderColor: bg }}>
                     <div className="pvote-jury-voters-inner">
                       {row.voters.length > 0 ? row.voters.map((voter) => (
                         <Link key={voter.pid} to={`/season/${sid}/cast/${slugify(voter.name)}`}>
@@ -691,7 +731,7 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
                       {' '}to Final 3
                     </span>
                   ) : tc.votes.length === 0 ? (
-                    <em className="pvote-no-vote">No Vote</em>
+                    <em className="pvote-no-vote">{tc.firemaking ? (tc.firemaking.winner === player.pid ? 'Won Fire-Making' : tc.firemaking.loser === player.pid ? 'Lost Fire-Making' : 'Fire-Making Challenge') : 'No Vote'}</em>
                   ) : myVote ? (
                     votedForPlayer ? (
                       <Link to={`/season/${sid}/cast/${slugify(votedForPlayer.name)}`}
@@ -752,10 +792,31 @@ export default function PlayerPage() {
   const player = getPlayerBySlug(season, slug);
   if (!player) return <div className="article"><p>Player not found.</p></div>;
 
+  const [modal, setModal] = useState(null);
   const { editMode, setEditing } = usePhotoEditor();
   const tribeColor = getTribeColor(season, player.tid);
   const tribeName = getTribeName(season, player.tid);
   const origTribe = season.tribes.find((t) => t.tid === player.tid);
+
+  // Build lookup: confessional quote snippet -> { timestamp, videoUrl, eid, hash } from TC data
+  const confessionalLookup = {};
+  (season.votingHistory || []).forEach(tc => {
+    const ep = season.episodes?.find(e => e.eid === tc.eid);
+    const videoUrl = ep?.videoUrl;
+    (tc.confessionals || []).forEach(c => {
+      if (c.quote) {
+        const key = `${c.pid}_${tc.episode}`;
+        if (!confessionalLookup[key]) confessionalLookup[key] = [];
+        confessionalLookup[key].push({ timestamp: c.timestamp, videoUrl, quote: c.quote, eid: tc.eid, hash: 'confessionals' });
+      }
+    });
+    // Exit confessional (final words)
+    if (tc.confessionalQuote && tc.eliminatedPid) {
+      const key = `${tc.eliminatedPid}_${tc.episode}`;
+      if (!confessionalLookup[key]) confessionalLookup[key] = [];
+      confessionalLookup[key].push({ timestamp: tc.confessionalTimestamp, videoUrl, quote: tc.confessionalQuote, eid: tc.eid, hash: `tribal-${tc.tcid}` });
+    }
+  });
 
   // Determine tribe color for a player at a given episode number
   // Uses the player's actual tribe progression (only merged color if they made merge)
@@ -901,6 +962,8 @@ export default function PlayerPage() {
             </div>
           }
           headerColor={tribeColor}
+          subtitle={player.pid === season.winnerPid ? 'Sole Survivor' : player.pid === season.runnerUpPid ? 'Runner-Up' : player.pid === season.secondRunnerUpPid ? '3rd Place' : undefined}
+          subtitleColor={player.pid === season.runnerUpPid ? 'linear-gradient(135deg, #6B6B6B, #A8A8A8, #C0C0C0, #A8A8A8, #6B6B6B)' : player.pid === season.secondRunnerUpPid ? 'linear-gradient(135deg, #8B4513, #B87333, #CD7F32, #B87333, #8B4513)' : undefined}
           rows={infoRows}
           logo={player.photoUrl}
           logoStyle={{ width: '100%', height: '280px', maxHeight: 'none', objectFit: 'cover', display: 'block', ...player.portraitStyle }}
@@ -924,6 +987,12 @@ export default function PlayerPage() {
                 const speakerColor = getPlayerTribeColorAtEpisode(speaker, item.episode) || '#555';
                 const epLabel = item.episode ? `Ep. ${item.episode}` : '';
                 const contextLabel = item.context || '';
+                // Find matching TC confessional for play button
+                const candidates = confessionalLookup[`${item.pid}_${item.episode}`] || [];
+                const snippet = item.quote.slice(0, 40).replace(/[[\]]/g, '');
+                const match = candidates.find(c => c.quote.includes(snippet)) || (candidates.length === 1 ? candidates[0] : null);
+                const playUrl = (match && match.videoUrl && match.timestamp != null) ? buildEmbedAt(match.videoUrl, match.timestamp) : null;
+                const epLink = match?.eid ? `/season/${sid}/episode/${match.eid}${match.hash ? `#${match.hash}` : ''}` : (item.episode ? `/season/${sid}/episode/${season.episodes?.find(e => e.number === item.episode)?.eid}#confessionals` : null);
                 return (
                   <div key={i} className="confessional-bubble bio-quote-bubble" style={{ '--tribe-color': speakerColor }}>
                     <div className="confessional-bubble-avatar">
@@ -935,13 +1004,28 @@ export default function PlayerPage() {
                     </div>
                     <div className="confessional-bubble-content">
                       <div className="confessional-bubble-header">
-                        <Link to={`/season/${sid}/cast/${slugify(speaker.name)}`} className="confessional-bubble-name">
-                          {speaker.name}
-                        </Link>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                          <Link to={`/season/${sid}/cast/${slugify(speaker.name)}`} className="confessional-bubble-name">
+                            {speaker.name}
+                          </Link>
+                          {playUrl && (
+                            <button className="tc-play-btn confessional-play-btn"
+                              onClick={() => setModal({ src: playUrl, title: `${speaker.name} — Confessional (Ep. ${item.episode})` })}
+                              title={`Watch ${speaker.name}'s confessional`}>
+                              ▶
+                            </button>
+                          )}
+                        </span>
                         {(epLabel || contextLabel) && (
-                          <span className="bio-quote-context">
-                            {[contextLabel, epLabel].filter(Boolean).join(' — ')}
-                          </span>
+                          epLink ? (
+                            <Link to={epLink} className="bio-quote-context">
+                              {[contextLabel, epLabel].filter(Boolean).join(' — ')}
+                            </Link>
+                          ) : (
+                            <span className="bio-quote-context">
+                              {[contextLabel, epLabel].filter(Boolean).join(' — ')}
+                            </span>
+                          )
                         )}
                       </div>
                       <div className="confessional-bubble-quote">
@@ -965,6 +1049,7 @@ export default function PlayerPage() {
         <ChallengeHistoryTab player={player} season={season} sid={sid} />
       </div>
     </div>
+    {modal && <VideoModal src={modal.src} title={modal.title} onClose={() => setModal(null)} />}
     </>
   );
 }
