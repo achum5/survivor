@@ -893,6 +893,7 @@ export default function PlayerPage() {
     : [];
 
   const stats = computePlayerStats(player, season);
+  const hasEpisodes = season.episodes.length > 0;
 
   const infoRows = [
     { label: 'Season',        value: <Link to={`/season/${sid}`}>{season.name}</Link> },
@@ -909,24 +910,37 @@ export default function PlayerPage() {
           {tribes.map((t) => <TribeBadge key={t.tid} tribe={t} sid={sid} />)}
         </span>;
       })() },
-    { label: 'Placement',     value: ordinal(player.placement) + (player.pid === season.winnerPid ? ' ★ Sole Survivor' : '') },
-    { label: 'Jury Member',   value: player.juryMember ? 'Yes' : 'No' },
+    { label: 'Placement',     value: player.placement != null ? ordinal(player.placement) + (player.pid === season.winnerPid ? ' ★ Sole Survivor' : '') : '-' },
+    { label: 'Jury Member',   value: player.juryMember ? 'Yes' : hasEpisodes ? 'No' : '-' },
     // ── Voting stats ──
     { section: 'Voting' },
-    { label: 'Tribals Attended',  value: stats.tribalsAttended, details: stats.tribalsDetails },
-    { label: 'Votes Against',     value: stats.votesReceived, details: stats.votesAgainstDetails },
-    { label: 'In Majority',        value: stats.majorityVotes, details: stats.majorityDetails },
-    { label: 'In Minority',        value: stats.minorityVotes, details: stats.minorityDetails },
-    ...(stats.idolsPlayed > 0 ? [{ label: 'Idols Played', value: stats.idolsPlayed, details: stats.idolPlayedDetails }] : []),
-    ...(stats.votesNullifiedByIdol > 0 ? [{ label: 'Votes Nullified', value: stats.votesNullifiedByIdol }] : []),
-    ...(stats.timesSavedByIdol > 0 ? [{ label: 'Saved by Idol', value: stats.timesSavedByIdol, details: stats.savedByIdolDetails }] : []),
-    ...(stats.timesVoteNullified > 0 ? [{ label: 'Own Votes Nullified', value: stats.timesVoteNullified, details: stats.voteNullifiedDetails }] : []),
+    ...(hasEpisodes ? [
+      { label: 'Tribals Attended',  value: stats.tribalsAttended, details: stats.tribalsDetails },
+      { label: 'Votes Against',     value: stats.votesReceived, details: stats.votesAgainstDetails },
+      { label: 'In Majority',        value: stats.majorityVotes, details: stats.majorityDetails },
+      { label: 'In Minority',        value: stats.minorityVotes, details: stats.minorityDetails },
+      ...(stats.idolsPlayed > 0 ? [{ label: 'Idols Played', value: stats.idolsPlayed, details: stats.idolPlayedDetails }] : []),
+      ...(stats.votesNullifiedByIdol > 0 ? [{ label: 'Votes Nullified', value: stats.votesNullifiedByIdol }] : []),
+      ...(stats.timesSavedByIdol > 0 ? [{ label: 'Saved by Idol', value: stats.timesSavedByIdol, details: stats.savedByIdolDetails }] : []),
+      ...(stats.timesVoteNullified > 0 ? [{ label: 'Own Votes Nullified', value: stats.timesVoteNullified, details: stats.voteNullifiedDetails }] : []),
+    ] : [
+      { label: 'Tribals Attended', value: '-' },
+      { label: 'Votes Against', value: '-' },
+      { label: 'In Majority', value: '-' },
+      { label: 'In Minority', value: '-' },
+    ]),
     // ── Challenge stats ──
     { section: 'Challenges' },
-    { label: 'Individual Wins',   value: `${stats.individualImmunityWins} / ${stats.individualChallenges}`, details: stats.individualWinDetails },
-    { label: 'Team Wins',         value: `${stats.teamChallengeWins} / ${stats.teamChallenges}`, details: stats.teamWinDetails },
-    { label: 'Win Rate',          value: `${stats.challengeWinRate}%` },
-    ...(stats.challengeSitOuts > 0 ? [{ label: 'Sat Out', value: stats.challengeSitOuts, details: stats.sitOutDetails }] : []),
+    ...(hasEpisodes ? [
+      { label: 'Individual Wins',   value: `${stats.individualImmunityWins} / ${stats.individualChallenges}`, details: stats.individualWinDetails },
+      { label: 'Team Wins',         value: `${stats.teamChallengeWins} / ${stats.teamChallenges}`, details: stats.teamWinDetails },
+      { label: 'Win Rate',          value: `${stats.challengeWinRate}%` },
+      ...(stats.challengeSitOuts > 0 ? [{ label: 'Sat Out', value: stats.challengeSitOuts, details: stats.sitOutDetails }] : []),
+    ] : [
+      { label: 'Individual Wins', value: '-' },
+      { label: 'Team Wins', value: '-' },
+      { label: 'Win Rate', value: '-' },
+    ]),
     // ── Jury stats (finalists only) ──
     ...(stats.juryVotesReceived !== null ? [
       { section: 'Jury' },
@@ -937,8 +951,10 @@ export default function PlayerPage() {
   // Build section nav links
   const sections = [];
   if (player.bio) sections.push({ id: 'bio', label: 'Bio' });
-  sections.push({ id: 'voting-history', label: 'Voting History' });
-  sections.push({ id: 'challenge-history', label: 'Challenge History' });
+  if (hasEpisodes) {
+    sections.push({ id: 'voting-history', label: 'Voting History' });
+    sections.push({ id: 'challenge-history', label: 'Challenge History' });
+  }
 
   // Sorted cast for prev/next navigation
   const sortedCast = [...season.cast].sort((a, b) => a.name.localeCompare(b.name));
@@ -1094,11 +1110,15 @@ export default function PlayerPage() {
           </>
         )}
 
-        <h2 id="voting-history" className="player-section-heading">Voting History</h2>
-        <VotingHistoryTab player={player} season={season} sid={sid} navigate={navigate} />
+        {hasEpisodes && (
+          <>
+            <h2 id="voting-history" className="player-section-heading">Voting History</h2>
+            <VotingHistoryTab player={player} season={season} sid={sid} navigate={navigate} />
 
-        <h2 id="challenge-history" className="player-section-heading">Challenge History</h2>
-        <ChallengeHistoryTab player={player} season={season} sid={sid} />
+            <h2 id="challenge-history" className="player-section-heading">Challenge History</h2>
+            <ChallengeHistoryTab player={player} season={season} sid={sid} />
+          </>
+        )}
       </div>
     </div>
     {modal && <VideoModal src={modal.src} title={modal.title} onClose={() => setModal(null)} />}
