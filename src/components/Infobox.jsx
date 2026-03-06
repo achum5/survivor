@@ -1,5 +1,55 @@
 // src/components/Infobox.jsx
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+
+function StatPopover({ details, onClose }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) onClose();
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [onClose]);
+
+  return (
+    <div className="stat-popover" ref={ref}>
+      <div className="stat-popover-list">
+        {details.map((d, i) => (
+          <Link key={i} to={d.link} className="stat-popover-item" onClick={onClose}>
+            <span className="stat-popover-ep">{d.label}</span>
+            <span className="stat-popover-sub">{d.sub}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function InfoboxRow({ row, className }) {
+  const [open, setOpen] = useState(false);
+  const hasDetails = row.details && row.details.length > 0;
+
+  return (
+    <tr className={className}>
+      <td className="infobox-label">{row.label}</td>
+      <td className={`infobox-value${hasDetails ? ' infobox-value--has-details' : ''}`}>
+        {hasDetails ? (
+          <span
+            className="infobox-stat-trigger"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {row.value}
+            {open && <StatPopover details={row.details} onClose={() => setOpen(false)} />}
+          </span>
+        ) : (
+          row.value
+        )}
+      </td>
+    </tr>
+  );
+}
 
 export default function Infobox({ title, headerContent, headerColor = '#e74c3c', subtitle, subtitleColor, rows = [], logo, logoSubHeader, logoStyle, castPhoto, chronology, onLogoClick }) {
   const showHeader = title || headerContent;
@@ -52,10 +102,7 @@ export default function Infobox({ title, headerContent, headerColor = '#e74c3c',
               <td colSpan={2} className="infobox-section-header">{row.section}</td>
             </tr>
           ) : (
-            <tr key={row.label} className={i % 2 === 0 ? 'infobox-row even' : 'infobox-row odd'}>
-              <td className="infobox-label">{row.label}</td>
-              <td className="infobox-value">{row.value}</td>
-            </tr>
+            <InfoboxRow key={row.label} row={row} className={i % 2 === 0 ? 'infobox-row even' : 'infobox-row odd'} />
           )
         )}
 

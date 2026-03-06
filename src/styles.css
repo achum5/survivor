@@ -479,6 +479,70 @@ body {
   border-top: 1px solid var(--border);
 }
 
+/* Stat popover trigger */
+.infobox-value--has-details {
+  position: relative;
+}
+.infobox-stat-trigger {
+  cursor: pointer;
+  border-bottom: 1px dotted rgba(255,255,255,0.35);
+  padding-bottom: 1px;
+}
+.infobox-stat-trigger:hover {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Stat popover dropdown */
+.stat-popover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 300;
+  min-width: 220px;
+  max-width: 300px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  margin-top: 4px;
+}
+.stat-popover-list {
+  display: flex;
+  flex-direction: column;
+}
+.stat-popover-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 10px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.78rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.stat-popover-item:last-child {
+  border-bottom: none;
+}
+.stat-popover-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+.stat-popover-ep {
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.stat-popover-sub {
+  color: rgba(255,255,255,0.65);
+  text-align: right;
+  font-size: 0.72rem;
+}
+
 /* ── Infobox Slots (logo / cast photo / chronology) ─────────── */
 .infobox-logo-cell {
   text-align: center;

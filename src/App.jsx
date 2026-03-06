@@ -10,7 +10,9 @@ function ScrollToTop() {
         const el = document.getElementById(hash.slice(1));
         if (el) {
           const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 56;
-          const top = el.getBoundingClientRect().top + window.scrollY - headerH - 16;
+          const subheader = document.querySelector('.ep-subheader');
+          const subH = subheader ? subheader.offsetHeight : 0;
+          const top = el.getBoundingClientRect().top + window.scrollY - headerH - subH - 16;
           window.scrollTo({ top, behavior: 'smooth' });
           return;
         }

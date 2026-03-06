@@ -63,8 +63,7 @@ export default function TopHeader() {
       const el = document.getElementById(section.id);
       if (el) {
         const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 56;
-        const subheader = document.querySelector('.ep-subheader');
-        const offset = headerH + (subheader ? subheader.offsetHeight : 0) + 16;
+        const offset = headerH + 8;
         const top = el.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: 'smooth' });
         setMobileNavOpen(false);

@@ -181,8 +181,19 @@ function computePlayerStats(player, season) {
   let currentStreak = 0;
   let longestStreak = 0;
 
+  // Detail tracking arrays
+  const tribalsDetails = [];
+  const majorityDetails = [];
+  const minorityDetails = [];
+  const votesAgainstDetails = [];
+  const voteNullifiedDetails = [];
+  const idolPlayedDetails = [];
+  const savedByIdolDetails = [];
+
   let eliminated = false;
   let lastAttendedEp = null;
+
+  const nameOf = (pid) => season.cast.find((p) => p.pid === pid)?.name || '?';
 
   season.votingHistory.forEach((tc) => {
     if (eliminated) return;
@@ -193,10 +204,15 @@ function computePlayerStats(player, season) {
     const present = isMerge || (tc.tid && tc.tid === playerTribe);
     if (!present) return;
 
+    const epLabel = `Ep. ${tc.episode}`;
+    const epLink = `/season/${season.sid}/episode/${tc.eid}#tribal-council`;
+
     // Count unique episodes (tie + revote = 1 tribal)
     if (tc.episode !== lastAttendedEp) {
       tribalsAttended++;
       lastAttendedEp = tc.episode;
+      const elimName = tc.eliminatedPid ? nameOf(tc.eliminatedPid) : null;
+      tribalsDetails.push({ label: epLabel, sub: elimName ? `${elimName} voted out` : 'No elimination', link: epLink });
     }
 
     // Votes cast by this player
@@ -204,15 +220,27 @@ function computePlayerStats(player, season) {
     if (myVote) {
       totalVotesCast++;
       if (tc.eliminatedPid) {
-        if (myVote.votedForPid === tc.eliminatedPid) majorityVotes++;
-        else minorityVotes++;
+        if (myVote.votedForPid === tc.eliminatedPid) {
+          majorityVotes++;
+          majorityDetails.push({ label: epLabel, sub: `Voted for ${nameOf(myVote.votedForPid)}`, link: epLink });
+        } else {
+          minorityVotes++;
+          minorityDetails.push({ label: epLabel, sub: `Voted for ${nameOf(myVote.votedForPid)}`, link: epLink });
+        }
       }
-      if (myVote.idolNullified) timesVoteNullified++;
+      if (myVote.idolNullified) {
+        timesVoteNullified++;
+        voteNullifiedDetails.push({ label: epLabel, sub: `Vote for ${nameOf(myVote.votedForPid)} nullified`, link: epLink });
+      }
     }
 
     // Votes received
     const against = tc.votes.filter((v) => v.votedForPid === player.pid);
-    votesReceived += against.length;
+    if (against.length > 0) {
+      votesReceived += against.length;
+      const fromNames = against.map((v) => nameOf(v.voterPid)).join(', ');
+      votesAgainstDetails.push({ label: `${epLabel} (${against.length})`, sub: `From: ${fromNames}`, link: epLink });
+    }
     if (against.length > 0 && tc.eliminatedPid !== player.pid) {
       timesReceivedButSurvived++;
     }
@@ -230,12 +258,15 @@ function computePlayerStats(player, season) {
       tc.idols.forEach((idol) => {
         if (idol.playerPid === player.pid) {
           idolsPlayed++;
-          votesNullifiedByIdol += tc.votes.filter(
+          const nullCount = tc.votes.filter(
             (v) => v.idolNullified && v.votedForPid === idol.playedOn
           ).length;
+          votesNullifiedByIdol += nullCount;
+          idolPlayedDetails.push({ label: epLabel, sub: `Played on ${nameOf(idol.playedOn)}, ${nullCount} nullified`, link: epLink });
         }
         if (idol.playedOn === player.pid && idol.playerPid !== player.pid) {
           timesSavedByIdol++;
+          savedByIdolDetails.push({ label: epLabel, sub: `Saved by ${nameOf(idol.playerPid)}`, link: epLink });
         }
       });
     }
@@ -251,6 +282,10 @@ function computePlayerStats(player, season) {
   let challengesParticipated = 0;
   let challengeSitOuts = 0;
 
+  const individualWinDetails = [];
+  const teamWinDetails = [];
+  const sitOutDetails = [];
+
   const elimEp = season.votingHistory.find((tc) => tc.eliminatedPid === player.pid)?.episode ?? Infinity;
 
   season.episodes.forEach((ep) => {
@@ -260,9 +295,15 @@ function computePlayerStats(player, season) {
 
     [ep.rewardChallenge, ep.immunityChallenge].forEach((ch) => {
       if (!ch?.winner) return;
+      const chType = ch.type || (ch === ep.rewardChallenge ? 'Reward' : 'Immunity');
+      const chLabel = ch.name || chType;
+      const epLabel = `Ep. ${ep.number}`;
+      const chKey = ch === ep.rewardChallenge ? 'reward' : 'immunity';
+      const chLink = `/season/${season.sid}/episode/${ep.eid}/challenge/${chKey}`;
 
       if (ch.sitOuts?.includes(player.pid)) {
         challengeSitOuts++;
+        sitOutDetails.push({ label: epLabel, sub: chLabel, link: chLink });
         return;
       }
 
@@ -270,10 +311,16 @@ function computePlayerStats(player, season) {
 
       if (isMerge) {
         individualChallenges++;
-        if (ch.winner === player.pid || ch.secondWinner === player.pid) individualImmunityWins++;
+        if (ch.winner === player.pid || ch.secondWinner === player.pid) {
+          individualImmunityWins++;
+          individualWinDetails.push({ label: epLabel, sub: chLabel, link: chLink });
+        }
       } else {
         teamChallenges++;
-        if (playerTribe && ch.winner === playerTribe) teamChallengeWins++;
+        if (playerTribe && ch.winner === playerTribe) {
+          teamChallengeWins++;
+          teamWinDetails.push({ label: epLabel, sub: chLabel, link: chLink });
+        }
       }
     });
   });
@@ -300,6 +347,11 @@ function computePlayerStats(player, season) {
     teamChallengeWins, teamChallenges,
     challengeWinRate, challengeSitOuts, challengesParticipated,
     juryVotesReceived, juryVoteTotal,
+    // Detail arrays for popover breakdowns
+    tribalsDetails, majorityDetails, minorityDetails,
+    votesAgainstDetails, voteNullifiedDetails,
+    idolPlayedDetails, savedByIdolDetails,
+    individualWinDetails, teamWinDetails, sitOutDetails,
   };
 }
 
@@ -861,20 +913,20 @@ export default function PlayerPage() {
     { label: 'Jury Member',   value: player.juryMember ? 'Yes' : 'No' },
     // ── Voting stats ──
     { section: 'Voting' },
-    { label: 'Tribals Attended',  value: stats.tribalsAttended },
-    { label: 'Votes Against',     value: stats.votesReceived },
-    { label: 'In Majority',        value: stats.majorityVotes },
-    { label: 'In Minority',        value: stats.minorityVotes },
-    ...(stats.idolsPlayed > 0 ? [{ label: 'Idols Played', value: stats.idolsPlayed }] : []),
+    { label: 'Tribals Attended',  value: stats.tribalsAttended, details: stats.tribalsDetails },
+    { label: 'Votes Against',     value: stats.votesReceived, details: stats.votesAgainstDetails },
+    { label: 'In Majority',        value: stats.majorityVotes, details: stats.majorityDetails },
+    { label: 'In Minority',        value: stats.minorityVotes, details: stats.minorityDetails },
+    ...(stats.idolsPlayed > 0 ? [{ label: 'Idols Played', value: stats.idolsPlayed, details: stats.idolPlayedDetails }] : []),
     ...(stats.votesNullifiedByIdol > 0 ? [{ label: 'Votes Nullified', value: stats.votesNullifiedByIdol }] : []),
-    ...(stats.timesSavedByIdol > 0 ? [{ label: 'Saved by Idol', value: stats.timesSavedByIdol }] : []),
-    ...(stats.timesVoteNullified > 0 ? [{ label: 'Own Votes Nullified', value: stats.timesVoteNullified }] : []),
+    ...(stats.timesSavedByIdol > 0 ? [{ label: 'Saved by Idol', value: stats.timesSavedByIdol, details: stats.savedByIdolDetails }] : []),
+    ...(stats.timesVoteNullified > 0 ? [{ label: 'Own Votes Nullified', value: stats.timesVoteNullified, details: stats.voteNullifiedDetails }] : []),
     // ── Challenge stats ──
     { section: 'Challenges' },
-    { label: 'Individual Wins',   value: `${stats.individualImmunityWins} / ${stats.individualChallenges}` },
-    { label: 'Team Wins',         value: `${stats.teamChallengeWins} / ${stats.teamChallenges}` },
+    { label: 'Individual Wins',   value: `${stats.individualImmunityWins} / ${stats.individualChallenges}`, details: stats.individualWinDetails },
+    { label: 'Team Wins',         value: `${stats.teamChallengeWins} / ${stats.teamChallenges}`, details: stats.teamWinDetails },
     { label: 'Win Rate',          value: `${stats.challengeWinRate}%` },
-    ...(stats.challengeSitOuts > 0 ? [{ label: 'Sat Out', value: stats.challengeSitOuts }] : []),
+    ...(stats.challengeSitOuts > 0 ? [{ label: 'Sat Out', value: stats.challengeSitOuts, details: stats.sitOutDetails }] : []),
     // ── Jury stats (finalists only) ──
     ...(stats.juryVotesReceived !== null ? [
       { section: 'Jury' },
