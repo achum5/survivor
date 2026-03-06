@@ -290,7 +290,7 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
               <td>
                 <WinnerDisplay winnerId={challenge.winner} season={season} sid={sid} />
                 {challenge.secondWinner && (
-                  <>, <WinnerDisplay winnerId={challenge.secondWinner} season={season} sid={sid} /></>
+                  <><br /><WinnerDisplay winnerId={challenge.secondWinner} season={season} sid={sid} /></>
                 )}
               </td>
             </tr>

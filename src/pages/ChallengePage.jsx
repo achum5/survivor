@@ -148,8 +148,13 @@ export default function ChallengePage() {
           )}
           {(ch.winner !== undefined && ch.winner !== null) && (
             <tr>
-              <th>Winner</th>
-              <td><WinnerDisplay winnerId={ch.winner} season={season} sid={sid} /></td>
+              <th>{ch.secondWinner ? 'Winners' : 'Winner'}</th>
+              <td>
+                <WinnerDisplay winnerId={ch.winner} season={season} sid={sid} />
+                {ch.secondWinner && (
+                  <><br /><WinnerDisplay winnerId={ch.secondWinner} season={season} sid={sid} /></>
+                )}
+              </td>
             </tr>
           )}
           {ch.reward && (
