@@ -32,6 +32,7 @@ import ChallengePage from './pages/ChallengePage';
 import TribePage from './pages/TribePage';
 import TwistPage from './pages/TwistPage';
 import { PhotoEditorProvider } from './context/PhotoEditorContext';
+import { Analytics } from '@vercel/analytics/react';
 import './styles.css';
 
 function AppInner() {
@@ -62,6 +63,7 @@ export default function App() {
   return (
     <PhotoEditorProvider>
       <AppInner />
+      <Analytics />
     </PhotoEditorProvider>
   );
 }

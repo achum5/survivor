@@ -167,12 +167,13 @@ export default function SeasonOverview() {
                   const ic = ep.immunityChallenge;
 
                   // Resolve winner info for a challenge
+                  const mergeColor = season.mergeTribe?.color || null;
                   const resolveWinner = (ch) => {
                     if (!ch?.winner) return { label: null, color: null };
                     const tribe = season.tribes.find((t) => t.tid === ch.winner);
                     if (tribe) return { label: tribe.name, color: tribe.color };
                     const player = season.cast.find((p) => p.pid === ch.winner);
-                    return { label: player?.name || null, color: null };
+                    return { label: player?.name || null, color: mergeColor };
                   };
                   // Get all winning tribes for multi-winner challenges (e.g., top 2 of 3 win immunity)
                   const resolveAllWinners = (ch) => {
@@ -183,7 +184,7 @@ export default function SeasonOverview() {
                         const tribe = season.tribes.find(t => t.tid === id);
                         if (tribe) return { label: tribe.name, color: tribe.color };
                         const player = season.cast.find(p => p.pid === id);
-                        return { label: player?.name || null, color: null };
+                        return { label: player?.name || null, color: mergeColor };
                       };
                       return [resolveOne(ch.winner), resolveOne(ch.secondWinner)];
                     }
@@ -201,8 +202,9 @@ export default function SeasonOverview() {
                   };
                   const rcWinner = resolveWinner(rc);
                   const icWinners = resolveAllWinners(ic);
-                  // For single-challenge coloring (backward compat)
-                  const winnerColor = !rc?.name && icWinners.length === 1 ? icWinners[0].color : null;
+                  // For single-challenge coloring — use td background when all winners share same color
+                  const icUniqueColors = [...new Set(icWinners.map(w => w.color).filter(Boolean))];
+                  const winnerColor = !rc?.name && icUniqueColors.length === 1 ? icUniqueColors[0] : null;
 
                   const isFinale =
                     season.juryVotes?.length > 0 &&
@@ -278,10 +280,13 @@ export default function SeasonOverview() {
                                     {rcWinner.label && <span className="ep-tbl-chal-winner">{rcWinner.label}</span>}
                                   </Link>
                                   <Link to={`/season/${sid}/episode/${ep.eid}#challenges`}
-                                    className={`ep-tbl-chal-link ep-tbl-chal-row ep-tbl-colored${icWinners.length > 1 && icWinners.some(w => w.color) ? ' ep-tbl-chal-multi' : ''}`}
-                                    style={icWinners.length === 1 && icWinners[0].color ? { backgroundColor: icWinners[0].color } : icWinners.length > 1 && icWinners.some(w => w.color) ? {
-                                      background: `linear-gradient(135deg, ${icWinners[0].color || '#555'} 50%, ${icWinners[1].color || '#555'} 50%)`
-                                    } : {}}>
+                                    className={`ep-tbl-chal-link ep-tbl-chal-row ep-tbl-colored${icWinners.length > 1 && new Set(icWinners.map(w => w.color).filter(Boolean)).size > 1 ? ' ep-tbl-chal-multi' : ''}`}
+                                    style={(() => {
+                                      const uniqueColors = [...new Set(icWinners.map(w => w.color).filter(Boolean))];
+                                      if (uniqueColors.length === 1) return { backgroundColor: uniqueColors[0] };
+                                      if (uniqueColors.length > 1) return { background: `linear-gradient(135deg, ${uniqueColors[0]} 50%, ${uniqueColors[1]} 50%)` };
+                                      return {};
+                                    })()}>
                                     <span className="ep-tbl-chal-type">Immunity</span>
                                     <span className="ep-tbl-chal-name">{ic.name} — </span>
                                     <span className="ep-tbl-chal-winner">{icWinners.map(w => w.label).filter(Boolean).join(' & ')}</span>
@@ -289,11 +294,14 @@ export default function SeasonOverview() {
                                 </div>
                               ) : ic ? (
                                 <Link to={`/season/${sid}/episode/${ep.eid}#challenges`}
-                                  className={`ep-tbl-chal-link${icWinners.length > 1 && icWinners.some(w => w.color) ? ' ep-tbl-chal-multi' : ''}`}
-                                  style={icWinners.length === 1 && icWinners[0].color ? { display: 'block', padding: '8px 14px', backgroundColor: icWinners[0].color } : icWinners.length > 1 && icWinners.some(w => w.color) ? {
-                                    display: 'block', padding: '8px 14px',
-                                    background: `linear-gradient(135deg, ${icWinners[0].color || '#555'} 50%, ${icWinners[1].color || '#555'} 50%)`
-                                  } : { display: 'block', padding: '8px 14px' }}>
+                                  className={`ep-tbl-chal-link${icWinners.length > 1 && new Set(icWinners.map(w => w.color).filter(Boolean)).size > 1 ? ' ep-tbl-chal-multi' : ''}`}
+                                  style={(() => {
+                                    const base = { display: 'block', padding: '8px 14px' };
+                                    const uniqueColors = [...new Set(icWinners.map(w => w.color).filter(Boolean))];
+                                    if (uniqueColors.length === 1) return { ...base, backgroundColor: uniqueColors[0] };
+                                    if (uniqueColors.length > 1) return { ...base, background: `linear-gradient(135deg, ${uniqueColors[0]} 50%, ${uniqueColors[1]} 50%)` };
+                                    return base;
+                                  })()}>
                                   {ic.name && <span className="ep-tbl-chal-name">{ic.name} — </span>}
                                   <span className="ep-tbl-chal-winner">{icWinners.map(w => w.label).filter(Boolean).join(' & ')}</span>
                                 </Link>
