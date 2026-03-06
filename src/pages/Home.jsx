@@ -7,10 +7,6 @@ import Avatar from '../components/Avatar';
 export default function Home() {
   return (
     <div className="article">
-      <div className="home-hero">
-        <h1>14508 Survivor Wiki</h1>
-      </div>
-
       <div className="season-cards">
         {SEASONS.map((s) => {
           const comingSoon = s.cast.length === 0;

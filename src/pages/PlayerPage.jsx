@@ -232,7 +232,7 @@ function computePlayerStats(player, season) {
 
       if (isMerge) {
         individualChallenges++;
-        if (ch.winner === player.pid) individualImmunityWins++;
+        if (ch.winner === player.pid || ch.secondWinner === player.pid) individualImmunityWins++;
       } else {
         teamChallenges++;
         if (playerTribe && ch.winner === playerTribe) teamChallengeWins++;
@@ -475,7 +475,7 @@ function VotingHistoryTab({ player, season, sid, navigate }) {
     const phase = isMerged ? 'merged' : isSwitched ? 'switched' : 'original';
 
     // Individual immunity: player won the immunity challenge this episode
-    const indivImmune = isMerged && ep.immunityChallenge?.winner === player.pid;
+    const indivImmune = isMerged && (ep.immunityChallenge?.winner === player.pid || ep.immunityChallenge?.secondWinner === player.pid);
 
     const episodeTcs = tcsByEp[epNum] ?? [];
     const playerTcs = isMerged
@@ -757,6 +757,22 @@ export default function PlayerPage() {
   const tribeName = getTribeName(season, player.tid);
   const origTribe = season.tribes.find((t) => t.tid === player.tid);
 
+  // Determine tribe color for a player at a given episode number
+  // Uses the player's actual tribe progression (only merged color if they made merge)
+  const getPlayerTribeColorAtEpisode = (p, epNum) => {
+    if (!epNum || !season.votingHistory?.length) return getTribeColor(season, p.tid);
+    const switchedTids = new Set(season.tribes.filter(t => t.phase === 'switched').map(t => t.tid));
+    const firstSwitchEp = season.votingHistory.find(tc => switchedTids.has(tc.tid))?.episode;
+    const firstMergeEp = season.votingHistory.find(tc => tc.tid === null)?.episode;
+    if (firstMergeEp && epNum >= firstMergeEp && p.merged) {
+      return season.mergeTribe?.color || '#555';
+    }
+    if (firstSwitchEp && epNum >= firstSwitchEp && p.switchedTid) {
+      return getTribeColor(season, p.switchedTid);
+    }
+    return getTribeColor(season, p.tid);
+  };
+
   // Cross-season appearances for returnees
   const appearances = player.personId
     ? SEASONS.filter(s => s.cast.some(c => c.personId === player.personId))
@@ -905,7 +921,7 @@ export default function PlayerPage() {
               if (item && item.type === 'quote') {
                 const speaker = season.cast.find(p => p.pid === item.pid);
                 if (!speaker) return null;
-                const speakerColor = getTribeColor(season, speaker.tid) || '#555';
+                const speakerColor = getPlayerTribeColorAtEpisode(speaker, item.episode) || '#555';
                 const epLabel = item.episode ? `Ep. ${item.episode}` : '';
                 const contextLabel = item.context || '';
                 return (

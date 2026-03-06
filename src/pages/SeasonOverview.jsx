@@ -29,6 +29,7 @@ export default function SeasonOverview() {
   const sorted = [...season.cast].sort((a, b) => b.placement - a.placement);
   const winner = season.cast.find((p) => p.pid === season.winnerPid);
   const runnerUp = season.cast.find((p) => p.pid === season.runnerUpPid);
+  const secondRunnerUp = season.cast.find((p) => p.pid === season.secondRunnerUpPid);
   const fanFav = season.cast.find((p) => p.pid === season.fanFavoritePid);
 
   // Upcoming season detection
@@ -43,7 +44,14 @@ export default function SeasonOverview() {
     { label: 'Filmed',    value: season.filmingDates },
     { label: 'Players',   value: season.cast.length || '—' },
     { label: 'Winner',    value: winner   ? <Link to={`/season/${sid}/cast/${slugify(winner.name)}`}>{winner.name}</Link>   : '—' },
-    { label: 'Runner-Up', value: runnerUp ? <Link to={`/season/${sid}/cast/${slugify(runnerUp.name)}`}>{runnerUp.name}</Link> : '—' },
+    { label: secondRunnerUp ? 'Runner(s)-Up' : 'Runner-Up', value: runnerUp ? (
+      <>
+        <Link to={`/season/${sid}/cast/${slugify(runnerUp.name)}`}>{runnerUp.name}</Link>
+        {secondRunnerUp && (
+          <><br /><Link to={`/season/${sid}/cast/${slugify(secondRunnerUp.name)}`}>{secondRunnerUp.name}</Link></>
+        )}
+      </>
+    ) : '—' },
     ...(fanFav ? [{ label: 'Fan Favorite', value: <Link to={`/season/${sid}/cast/${slugify(fanFav.name)}`}>{fanFav.name}</Link> }] : []),
     ...(season.tribes.length > 0 ? [{
       label: 'Tribes',
@@ -340,9 +348,10 @@ export default function SeasonOverview() {
           const epNum = tc.episode;
           if (episodeSpans.length && episodeSpans[episodeSpans.length - 1].episode === epNum) {
             episodeSpans[episodeSpans.length - 1].span++;
+            episodeSpans[episodeSpans.length - 1].tcids.push(tc.tcid);
           } else {
             const ep = season.episodes.find((e) => e.number === epNum);
-            episodeSpans.push({ episode: epNum, eid: ep?.eid, span: 1 });
+            episodeSpans.push({ episode: epNum, eid: ep?.eid, span: 1, tcids: [tc.tcid] });
           }
         });
 
@@ -404,7 +413,7 @@ export default function SeasonOverview() {
                     {episodeSpans.map((es, i) => (
                       <th key={i} colSpan={es.span} className="vh-ep-header">
                         {es.eid
-                          ? <Link to={`/season/${sid}/episode/${es.eid}`}>{es.episode}</Link>
+                          ? <Link to={`/season/${sid}/episode/${es.eid}#tribal-${es.tcids[0]}`}>{es.episode}</Link>
                           : es.episode}
                       </th>
                     ))}
@@ -423,11 +432,13 @@ export default function SeasonOverview() {
                       const revoteTc = tieTcRevoteMap[tc.tcid];
                       const elimPid = revoteTc ? revoteTc.eliminatedPid : tc.eliminatedPid;
                       const elim = elimPid ? season.cast.find((p) => p.pid === elimPid) : null;
+                      const ep = season.episodes.find((e) => e.number === tc.episode);
+                      const tcLink = ep ? `/season/${sid}/episode/${ep.eid}#tribal-${tc.tcid}` : null;
 
                       return (
                         <th key={tc.tcid} className="vh-elim-header" colSpan={revoteTc ? 2 : 1}>
                           {elim ? (
-                            <Link to={`/season/${sid}/cast/${slugify(elim.name)}`} className="vh-elim-link">
+                            <Link to={tcLink || `/season/${sid}/cast/${slugify(elim.name)}`} className="vh-elim-link">
                               <Avatar name={elim.name} color={getPlayerTribeColor(elim)} size={36}
                                 photoUrl={elim.photoUrl} imgStyle={elim.photoStyle} pid={elim.pid} noBorder />
                               <span className="vh-elim-name">{elim.name}</span>
@@ -451,9 +462,15 @@ export default function SeasonOverview() {
 
                   {/* Row 3: Vote counts */}
                   <tr>
-                    {vhTcs.map((tc) => (
-                      <th key={tc.tcid} className="vh-vote-count">{getVoteStr(tc)}</th>
-                    ))}
+                    {vhTcs.map((tc) => {
+                      const ep = season.episodes.find((e) => e.number === tc.episode);
+                      const tcLink = ep ? `/season/${sid}/episode/${ep.eid}#tribal-${tc.tcid}` : null;
+                      return (
+                        <th key={tc.tcid} className="vh-vote-count">
+                          {tcLink ? <Link to={tcLink} style={{ color: 'inherit', textDecoration: 'none' }}>{getVoteStr(tc)}</Link> : getVoteStr(tc)}
+                        </th>
+                      );
+                    })}
                     {finalists.map((f) => (
                       <th key={f.pid} className="vh-vote-count vh-jury-col">{juryCountByPid[f.pid]}</th>
                     ))}

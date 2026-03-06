@@ -123,11 +123,13 @@ export default function VotingHistory() {
                   ? season.cast.find((p) => p.pid === tc.eliminatedPid)
                   : null;
                 const color = getTcColor(tc);
+                const ep = season.episodes.find((e) => e.number === tc.episode);
+                const tcLink = ep ? `/season/${sid}/episode/${ep.eid}#tribal-${tc.tcid}` : null;
                 return (
                   <td key={tc.tcid} className="vhist-elim-header"
                     style={{ background: hexToRgba(color, 0.65) }}>
                     {elim ? (
-                      <Link to={`/season/${sid}/cast/${slugify(elim.name)}`}
+                      <Link to={tcLink || `/season/${sid}/cast/${slugify(elim.name)}`}
                         style={{ color: '#fff', fontWeight: 700, fontSize: '0.75rem', textDecoration: 'none' }}>
                         {elim.name}
                       </Link>

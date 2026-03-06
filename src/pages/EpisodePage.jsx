@@ -286,8 +286,13 @@ function ChallengeSection({ label, challenge, season, sid, eid, ctype, episode, 
           )}
           {challenge.winner !== undefined && (
             <tr>
-              <th>Winner</th>
-              <td><WinnerDisplay winnerId={challenge.winner} season={season} sid={sid} /></td>
+              <th>{challenge.secondWinner ? 'Winners' : 'Winner'}</th>
+              <td>
+                <WinnerDisplay winnerId={challenge.winner} season={season} sid={sid} />
+                {challenge.secondWinner && (
+                  <>, <WinnerDisplay winnerId={challenge.secondWinner} season={season} sid={sid} /></>
+                )}
+              </td>
             </tr>
           )}
           {challenge.reward && (
@@ -360,17 +365,23 @@ export default function EpisodePage() {
   // Hash-based TC tab switching: #tribal-<tcid> → switch to that TC's tab & scroll
   useEffect(() => {
     const hash = window.location.hash;
-    if (!hash || !isMultiTc) return;
+    if (!hash) return;
     const m = hash.match(/^#tribal-(.+)/);
     if (!m) return;
-    const tcid = m[1];
-    const group = tcGroups.find(g => g.tcs.some(t => t.tcid === tcid));
-    if (group) {
-      setActiveTabKey(group.key);
-      setTimeout(() => {
-        document.getElementById('tribal-council')?.scrollIntoView({ behavior: 'smooth' });
-      }, 50);
+    if (isMultiTc) {
+      const tcid = m[1];
+      const group = tcGroups.find(g => g.tcs.some(t => t.tcid === tcid));
+      if (group) setActiveTabKey(group.key);
     }
+    setTimeout(() => {
+      const el = document.getElementById('tribal-council');
+      if (!el) return;
+      const headerH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 56;
+      const subheader = document.querySelector('.ep-subheader');
+      const offset = headerH + (subheader ? subheader.offsetHeight : 0) + 16;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }, 100);
   }, [eid]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const idx = season.episodes.findIndex((e) => e.eid === eid);
