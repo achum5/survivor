@@ -24,9 +24,9 @@ function getQuickNavSections(season) {
 
   const sections = [];
   if (season.summary) sections.push({ id: 'summary', label: 'Summary' });
-  sections.push({ id: 'episodes', label: 'Episodes' });
-  sections.push({ id: 'voting-history', label: 'Voting History' });
-  sections.push({ id: 'castaways', label: 'Castaways' });
+  if (season.episodes?.length > 0) sections.push({ id: 'episodes', label: 'Episodes' });
+  if (season.episodes?.length > 0) sections.push({ id: 'voting-history', label: 'Voting History' });
+  if (season.cast?.length > 0) sections.push({ id: 'castaways', label: 'Castaways' });
   if (season.twists?.length > 0) sections.push({ id: 'twists', label: 'Twists' });
   return sections;
 }
@@ -75,16 +75,18 @@ export default function TopHeader() {
     setMobileNavOpen(false);
   }
 
+  const isHome = location.pathname === '/' || location.pathname === '';
+
   return (
-    <header className="top-header">
+    <header className={`top-header${isHome ? ' top-header--home' : ''}`}>
       <div className="top-header-left">
         <Link to="/" className="top-header-title">
           14508 Survivor Wiki
         </Link>
       </div>
 
-      {/* Center: season select + nav items */}
-      <div className="top-header-center">
+      {/* Center: season select + nav items (hidden on home) */}
+      {!isHome && <div className="top-header-center">
         <div className="top-header-season-drop" ref={seasonDropRef}>
           <button
             className={`top-header-season-btn${seasonDropOpen ? ' open' : ''}`}
@@ -146,7 +148,7 @@ export default function TopHeader() {
             )}
           </div>
         )}
-      </div>
+      </div>}
     </header>
   );
 }

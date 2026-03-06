@@ -735,9 +735,9 @@ function UpcomingBanner({ filmingDates }) {
     if (!filmingDates) return null;
     const m = filmingDates.match(/(\w+)\s+(\d+).*?(\d{4})/);
     if (!m) return null;
-    // 11:00 AM Eastern = 15:00 UTC (EDT) or 16:00 UTC (EST)
-    // May is EDT so UTC-4 → 11:00 ET = 15:00 UTC
-    return new Date(`${m[1]} ${m[2]}, ${m[3]} 15:00:00 UTC`);
+    // 10:00 AM Eastern = 14:00 UTC (EDT) or 15:00 UTC (EST)
+    // May is EDT so UTC-4 → 10:00 ET = 14:00 UTC
+    return new Date(`${m[1]} ${m[2]}, ${m[3]} 14:00:00 UTC`);
   })();
 
   if (!target) return null;

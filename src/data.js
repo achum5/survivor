@@ -1445,6 +1445,7 @@ export const SEASONS = [
     subtitle: "",
     location: null,
     filmingDates: "May 16–17, 2026",
+    premiereDate: "2026-05-16T10:00:00-04:00",
     days: null,
     winnerPid: null,
     runnerUpPid: null,
